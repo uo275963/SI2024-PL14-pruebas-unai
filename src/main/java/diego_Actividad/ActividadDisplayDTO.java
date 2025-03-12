@@ -4,145 +4,79 @@ import java.util.Date;
 
 public class ActividadDisplayDTO {
 
-	// Declaramos variables
-	private int id;
-	private String nombre;
-	private String descripcion;
-	private int instalacion_id;
-	private int aforoMaximo;
-	private double costeSocio;
-	private double costeNoSocio;
-	private Date fechaInicio;
-	private Date fechaFin;
-	private String dias;
-	private String horaInicio;
-	private String horaFin;
-	private int periodoInscripcionId;
+    // Declaramos variables
+    private int id;
+    private String nombre;
+    private String descripcion;
+    private int instalacion_id;
+    private int aforo_maximo;
+    private double coste_socio;
+    private double coste_no_socio;
+    private String fecha_inicio;
+    private String fecha_fin;
+    private String dias;
+    private String hora_inicio;
+    private String hora_fin;
+    private int periodo_inscripcion_id;
 
-	// Constructor
-	public ActividadDisplayDTO() {
-	}
+    // Constructor
+    public ActividadDisplayDTO() {}
 
-	public ActividadDisplayDTO(int id, String nombre, String descripcion, int instalacion_id, int aforoMaximo,
-			double costeSocio, double costeNoSocio, Date fechaInicio, Date fechaFin, String dias, String horaInicio,
-			String horaFin, int periodoInscripcionId) {
-		this.id = id;
-		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.instalacion_id = instalacion_id;
-		this.aforoMaximo = aforoMaximo;
-		this.costeSocio = costeSocio;
-		this.costeNoSocio = costeNoSocio;
-		this.fechaInicio = fechaInicio;
-		this.fechaFin = fechaFin;
-		this.dias = dias;
-		this.horaInicio = horaInicio;
-		this.horaFin = horaFin;
-		this.periodoInscripcionId = periodoInscripcionId;
-	}
+    public ActividadDisplayDTO(int id, String nombre, String descripcion, int instalacion_id, int aforo_maximo,
+                                double coste_socio, double coste_no_socio, String fecha_inicio, String fecha_fin, 
+                                String dias, String hora_inicio, String hora_fin, int periodo_inscripcion_id) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.instalacion_id = instalacion_id;
+        this.aforo_maximo = aforo_maximo;
+        this.coste_socio = coste_socio;
+        this.coste_no_socio = coste_no_socio;
+        this.fecha_inicio = fecha_inicio;
+        this.fecha_fin = fecha_fin;
+        this.dias = dias;
+        this.hora_inicio = hora_inicio;
+        this.hora_fin = hora_fin;
+        this.periodo_inscripcion_id = periodo_inscripcion_id;
+    }
 
-	// Getters y Setters
-	public int getId() {
-		return id;
-	}
+    // Getters y Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public int getInstalacion_id() { return instalacion_id; }
+    public void setInstalacion_id(int instalacion_id) { this.instalacion_id = instalacion_id; }
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public int getAforo_maximo() { return aforo_maximo; }
+    public void setAforo_maximo(int aforo_maximo) { this.aforo_maximo = aforo_maximo; }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public double getCoste_socio() { return coste_socio; }
+    public void setCoste_socio(double coste_socio) { this.coste_socio = coste_socio; }
 
-	public int getInstalacionId() {
-		return instalacion_id;
-	}
+    public double getCoste_no_socio() { return coste_no_socio; }
+    public void setCoste_no_socio(double coste_no_socio) { this.coste_no_socio = coste_no_socio; }
 
-	public void setInstalacionId(int instalacionId) {
-		this.instalacion_id = instalacionId;
-	}
+    public String getFecha_inicio() { return fecha_inicio; }
+    public void setFecha_inicio(String fecha_inicio) { this.fecha_inicio = fecha_inicio; }
 
-	public int getAforoMaximo() {
-		return aforoMaximo;
-	}
+    public String getFecha_fin() { return fecha_fin; }
+    public void setFecha_fin(String fecha_fin) { this.fecha_fin = fecha_fin; }
 
-	public void setAforoMaximo(int aforoMaximo) {
-		this.aforoMaximo = aforoMaximo;
-	}
+    public String getDias() { return dias; }
+    public void setDias(String dias) { this.dias = dias; }
 
-	public double getCosteSocio() {
-		return costeSocio;
-	}
+    public String getHora_inicio() { return hora_inicio; }
+    public void setHora_inicio(String hora_inicio) { this.hora_inicio = hora_inicio; }
 
-	public void setCosteSocio(double costeSocio) {
-		this.costeSocio = costeSocio;
-	}
+    public String getHora_fin() { return hora_fin; }
+    public void setHora_fin(String hora_fin) { this.hora_fin = hora_fin; }
 
-	public double getCosteNoSocio() {
-		return costeNoSocio;
-	}
-
-	public void setCosteNoSocio(double costeNoSocio) {
-		this.costeNoSocio = costeNoSocio;
-	}
-
-	public Date getFechaInicio() {
-		return fechaInicio;
-	}
-
-	public void setFechaInicio(Date fechaInicio) {
-		this.fechaInicio = fechaInicio;
-	}
-
-	public Date getFechaFin() {
-		return fechaFin;
-	}
-
-	public void setFechaFin(Date fechaFin) {
-		this.fechaFin = fechaFin;
-	}
-
-	public String getDias() {
-		return dias;
-	}
-
-	public void setDias(String dias) {
-		this.dias = dias;
-	}
-
-	public String getHoraInicio() {
-		return horaInicio;
-	}
-
-	public void setHoraInicio(String horaInicio) {
-		this.horaInicio = horaInicio;
-	}
-
-	public String getHoraFin() {
-		return horaFin;
-	}
-
-	public void setHoraFin(String horaFin) {
-		this.horaFin = horaFin;
-	}
-
-	public int getPeriodoInscripcionId() {
-		return periodoInscripcionId;
-	}
-
-	public void setPeriodoInscripcionId(int periodoInscripcionId) {
-		this.periodoInscripcionId = periodoInscripcionId;
-	}
+    public int getPeriodo_inscripcion_id() { return periodo_inscripcion_id; }
+    public void setPeriodo_inscripcion_id(int periodo_inscripcion_id) { this.periodo_inscripcion_id = periodo_inscripcion_id; }
 }

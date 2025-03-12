@@ -45,6 +45,7 @@ public class ActividadController {
 	}
 
 	public void initView() {
+		cargarListaPeriodosInscripcion();
 		cargarInstalacionesEnComboBox();
 		view.getFrame().setVisible(true);
 	}
@@ -56,34 +57,34 @@ public class ActividadController {
 		try {
 			String nombre = view.getNombreField().getText();
 			String descripcion = view.getDescripcionField().getText();
-			int aforoMaximo = Integer.parseInt(view.getAforoMaximoField().getText());
-			double costeSocio = Double.parseDouble(view.getCosteSocioField().getText());
-			double costeNoSocio = Double.parseDouble(view.getCosteNoSocioField().getText());
-			String fechaInicio = Util.dateToIsoString(view.getFechaInicioChooser().getDate());
-			String fechaFin = Util.dateToIsoString(view.getFechaFinChooser().getDate());
+			int aforo_maximo = Integer.parseInt(view.getAforoMaximoField().getText());
+			double coste_socio = Double.parseDouble(view.getCosteSocioField().getText());
+			double coste_no_socio = Double.parseDouble(view.getCosteNoSocioField().getText());
+			String fecha_inicio = Util.dateToIsoString(view.getFechaInicioChooser().getDate());
+			String fecha_fin = Util.dateToIsoString(view.getFechaFinChooser().getDate());
 			String dias = view.getDiasField().getText();
-			String horaInicio = view.getHoraInicioField().getText();
-			String horaFin = view.getHoraFinField().getText();
+			String hora_inicio = view.getHoraInicioField().getText();
+			String hora_fin = view.getHoraFinField().getText();
 
 			// Obtener id periodo
 			Object selectedItem = view.getListaPeriodosInscripcion().getSelectedItem();
-			int periodoInscripcionId = 0;
+			int periodo_inscripcion_id = 0;
 			Object[] selectedPeriodo = (Object[]) selectedItem;
-			periodoInscripcionId = (int) selectedPeriodo[0];
+			periodo_inscripcion_id = (int) selectedPeriodo[0];
 
 			// Obtener id instalacion
 			Object selectedItem2 = view.getListaInstalaciones().getSelectedItem();
-			int instalacionId = 0;
+			int instalacion_id = 0;
 			Object[] selectedInstal = (Object[]) selectedItem2;
-			instalacionId = (int) selectedInstal[0];
+			instalacion_id = (int) selectedInstal[0];
 
-			if (nombre.isEmpty() || descripcion.isEmpty() || fechaInicio == null || fechaFin == null || dias.isEmpty()
-					|| horaInicio.isEmpty() || horaFin.isEmpty()) {
+			if (nombre.isEmpty() || descripcion.isEmpty() || fecha_inicio == null || fecha_fin == null || dias.isEmpty()
+					|| hora_inicio.isEmpty() || hora_fin.isEmpty()) {
 				throw new ApplicationException("Todos los campos deben estar completos.");
 			}
 
-			model.guardarActividad(nombre, descripcion, instalacionId, aforoMaximo, costeSocio, costeNoSocio,
-					fechaInicio, fechaFin, dias, horaInicio, horaFin, periodoInscripcionId);
+			model.guardarActividad(nombre, descripcion, instalacion_id, aforo_maximo, coste_socio, coste_no_socio,
+					fecha_inicio, fecha_fin, dias, hora_inicio, hora_fin, periodo_inscripcion_id);
 			view.mostrarMensaje("Actividad guardada correctamente.");
 			getListaActividades();
 		} catch (ApplicationException ex) {
@@ -149,10 +150,10 @@ public class ActividadController {
 		// Verificar que el item seleccionado no sea nulo y sea un array (id, nombre)
 		if (selectedItem != null && selectedItem instanceof Object[]) {
 			Object[] selectedPeriodo = (Object[]) selectedItem;
-			int idPeriodoInscripcion = (int) selectedPeriodo[0]; // El primer elemento es el ID del periodo
+			int periodo_inscripcion_id = (int) selectedPeriodo[0]; // El primer elemento es el ID del periodo
 
 			// Usar el ID para obtener el periodo de inscripción completo
-			PeriodoEntity periodoInscripcion = model.getPeriodoInscripcion(idPeriodoInscripcion);
+			PeriodoEntity periodosInscripcion = model.getPeriodoInscripcion(periodo_inscripcion_id);
 
 		}
 	}
