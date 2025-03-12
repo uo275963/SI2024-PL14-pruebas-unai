@@ -75,7 +75,7 @@ public class ActividadController {
 			Object selectedItem2 = view.getListaInstalaciones().getSelectedItem();
 			int instalacionId = 0;
 			Object[] selectedInstal = (Object[]) selectedItem2;
-			instalacionId = (int) selectedPeriodo[0];
+			instalacionId = (int) selectedInstal[0];
 
 			if (nombre.isEmpty() || descripcion.isEmpty() || fechaInicio == null || fechaFin == null || dias.isEmpty()
 					|| horaInicio.isEmpty() || horaFin.isEmpty()) {
