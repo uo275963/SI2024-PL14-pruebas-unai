@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+import javax.swing.JTextArea;
 
 public class CancelarReservaSocioView {
 
@@ -17,6 +19,12 @@ public class CancelarReservaSocioView {
 	private JTextField TFFecha;
 	private JTable TReservas;
 	private JButton bMostrar;
+	private JTextField TFHoraInicio;
+	private JTextField TFHoraFin;
+	private JTextField TFInstalacion;
+	private JTextArea tAMotivo;
+	private JButton BEliminar;
+	private JButton bCerrar;
 
 	/**
 	 * Launch the application.
@@ -46,7 +54,7 @@ public class CancelarReservaSocioView {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 632, 338);
+		frame.setBounds(100, 100, 702, 338);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Fecha: ");
@@ -64,14 +72,14 @@ public class CancelarReservaSocioView {
 		frame.getContentPane().add(bMostrar);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 67, 600, 82);
+		scrollPane.setBounds(10, 67, 670, 82);
 		frame.getContentPane().add(scrollPane);
 		
 		TReservas = new JTable();
 		scrollPane.setViewportView(TReservas);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(20, 160, 590, 2);
+		separator.setBounds(20, 160, 670, 2);
 		frame.getContentPane().add(separator);
 		
 		JLabel lblNewLabel_1 = new JLabel("Eliminar reserva:");
@@ -82,6 +90,50 @@ public class CancelarReservaSocioView {
 		JLabel lblNewLabel_2 = new JLabel("Hora inicio: ");
 		lblNewLabel_2.setBounds(10, 193, 91, 14);
 		frame.getContentPane().add(lblNewLabel_2);
+		
+		TFHoraInicio = new JTextField();
+		TFHoraInicio.setBounds(122, 190, 106, 20);
+		frame.getContentPane().add(TFHoraInicio);
+		TFHoraInicio.setColumns(10);
+		
+		JLabel lblNewLabel_3 = new JLabel("Hora fin:");
+		lblNewLabel_3.setBounds(10, 218, 91, 23);
+		frame.getContentPane().add(lblNewLabel_3);
+		
+		TFHoraFin = new JTextField();
+		TFHoraFin.setBounds(122, 221, 106, 20);
+		frame.getContentPane().add(TFHoraFin);
+		TFHoraFin.setColumns(10);
+		
+		JLabel lblNewLabel_4 = new JLabel("Instalacion: ");
+		lblNewLabel_4.setBounds(10, 252, 91, 14);
+		frame.getContentPane().add(lblNewLabel_4);
+		
+		TFInstalacion = new JTextField();
+		TFInstalacion.setBounds(122, 249, 106, 20);
+		frame.getContentPane().add(TFInstalacion);
+		TFInstalacion.setColumns(10);
+		
+		JLabel lblNewLabel_5 = new JLabel("Motivo:");
+		lblNewLabel_5.setBounds(264, 173, 48, 14);
+		frame.getContentPane().add(lblNewLabel_5);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setOrientation(SwingConstants.VERTICAL);
+		separator_1.setBounds(253, 160, 1, 132);
+		frame.getContentPane().add(separator_1);
+		
+		tAMotivo = new JTextArea();
+		tAMotivo.setBounds(264, 188, 416, 44);
+		frame.getContentPane().add(tAMotivo);
+		
+		bCerrar = new JButton("Cerrar\r\n");
+		bCerrar.setBounds(589, 269, 91, 23);
+		frame.getContentPane().add(bCerrar);
+		
+		BEliminar = new JButton("Eliminar Reserva");
+		BEliminar.setBounds(406, 269, 173, 23);
+		frame.getContentPane().add(BEliminar);
 	}
 
 	public JFrame getFrame() {
@@ -115,4 +167,62 @@ public class CancelarReservaSocioView {
 	public void setbMostrar(JButton bMostrar) {
 		this.bMostrar = bMostrar;
 	}
+
+	public JTextField getTFHoraInicio() {
+		return TFHoraInicio;
+	}
+
+	public void setTFHoraInicio(JTextField tFHoraInicio) {
+		TFHoraInicio = tFHoraInicio;
+	}
+
+	public JTextField getTFHoraFin() {
+		return TFHoraFin;
+	}
+
+	public void setTFHoraFin(JTextField tFHoraFin) {
+		TFHoraFin = tFHoraFin;
+	}
+
+	public JTextField getTFInstalacion() {
+		return TFInstalacion;
+	}
+
+	public void setTFInstalacion(JTextField tFInstalacion) {
+		TFInstalacion = tFInstalacion;
+	}
+
+	public JTextArea gettAMotivo() {
+		return tAMotivo;
+	}
+
+	public void settAMotivo(JTextArea tAMotivo) {
+		this.tAMotivo = tAMotivo;
+	}
+
+	public JButton getBtnNewButton() {
+		return BEliminar;
+	}
+
+	public void setBtnNewButton(JButton btnNewButton) {
+		this.BEliminar = btnNewButton;
+	}
+
+	public JButton getbCerrar() {
+		return bCerrar;
+	}
+
+	public void setbCerrar(JButton bCerrar) {
+		this.bCerrar = bCerrar;
+	}
+
+	public JButton getBEliminar() {
+		return BEliminar;
+	}
+
+	public void setBEliminar(JButton bEliminar) {
+		BEliminar = bEliminar;
+	}
+	
+	
 }
