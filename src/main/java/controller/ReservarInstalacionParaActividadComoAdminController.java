@@ -317,7 +317,7 @@ public class ReservarInstalacionParaActividadComoAdminController {
 		    }
 
 		    // Definir los nombres de las columnas
-		    String[] columnNames = {"Reserva id", "Usuario", "Instalación", "Hora Inicio", "Hora Fin", "Pagado"};
+		    String[] columnNames = {"Reserva id", "Usuario", "Instalación","Fecha", "Hora Inicio", "Hora Fin", "Pagado"};
 
 		    // Crear un DefaultTableModel con los datos obtenidos
 		    DefaultTableModel modelTable = new DefaultTableModel(data, columnNames);
