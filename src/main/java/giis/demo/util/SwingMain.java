@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
+import controller.VisualizarPagosComoSocioController;
 import controller.VisualizarReservasComoSocioController;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -13,9 +14,11 @@ import java.awt.event.ActionEvent;
 import giis.demo.tkrun.*;
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
+import model.VisualizarPagosComoSocioModel;
 import model.VisualizarReservasComoSocioModel;
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
+import view.VisualizarPagosComoSocioView;
 import view.VisualizarReservasComoSocioView;
 import diego_Actividad.*;
 import diego_periodoInscripcion.*;
@@ -171,6 +174,15 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnReservarSocioComoAdmin);
+		
+		JButton btnVerPagosComoSocio = new JButton("Ver pagos como socio");
+		btnVerPagosComoSocio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				VisualizarPagosComoSocioController controller = new VisualizarPagosComoSocioController(new VisualizarPagosComoSocioModel(), new VisualizarPagosComoSocioView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnVerPagosComoSocio);
 
 		/*
 		JButton btnVisualizarReservasComoSocio = new JButton("Ver reservas como socio");
