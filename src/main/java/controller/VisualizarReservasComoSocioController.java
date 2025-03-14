@@ -64,47 +64,39 @@ public class VisualizarReservasComoSocioController {
 			actualizarAforo(view.getCBInstalaciones().getSelectedItem().toString());
 		}));
 
-		// Listener para la seleccion de columnas en la tabla
 		this.view.getTablaReservas().getSelectionModel().addListSelectionListener(e -> {
-		    // Verifica si una fila está seleccionada
 		    if (!e.getValueIsAdjusting()) {
-		        // Obtener las filas seleccionadas
 		        int[] selectedRows = this.view.getTablaReservas().getSelectedRows();
-		        
-		        // Comprobamos si hay filas seleccionadas
 		        if (selectedRows.length > 0) {
-		            // Solo procesamos la primera fila seleccionada
 		            int selectedRow = selectedRows[0];
-		            
-		            // Obtener los valores de la primera fila seleccionada
 		            String reservadoPor = (String) this.view.getTablaReservas().getValueAt(selectedRow, 2);
-
-		            // Mensaje a mostrar en el JTextField
-		            String mensaje = "";
+		            String horaSeleccionada = (String) this.view.getTablaReservas().getValueAt(selectedRow, 0);
+		            String mensaje;
 
 		            if (reservadoPor.equalsIgnoreCase("N/A")) {
-		                this.view.getTFDescripcion().setText("Esta hora está disponible");
-		            } else if (reservadoPor.equals("Reservado por ti")) {
-		                // Aquí podrías obtener el nombre completo del socio si lo deseas
-		                // String nombreCompleto = this.model.getNombreSocio(this.view.getTFDni().getText());
-		                // this.view.getTFDescripcion().setText("Reservado por " + nombreCompleto);
-		                this.view.getTFDescripcion().setText("Reservado por ti");
-		            } else if (reservadoPor.equals("Reservado")) {
-		                // En este caso, la hora está reservada por otro usuario
-		                this.view.getTFDescripcion().setText("Esta hora está reservada por otro usuario");
+		                mensaje = "Esta hora está disponible";
+		            } else if (reservadoPor.equals("Socio")) {
+		                // Obtener el DNI del socio que reservó la hora
+		                String dniSocioReserva = this.model.getDniSocioReserva(this.view.getFTFFecha().getText(),
+		                                                                     this.view.getCBInstalaciones().getSelectedItem().toString(),
+		                                                                     horaSeleccionada);
+		                // Obtener el nombre del socio que reservó la hora
+		                String nombreSocioReserva = this.model.getNombreUsuarioPorDni(dniSocioReserva);
+
+		                if (dniSocioReserva != null && dniSocioReserva.equals(this.model.getDniUsuarioPorId(idsocio))) {
+		                    mensaje = "Reservado por " + this.model.getNombreUsuarioPorId(idsocio);
+		                } else {
+		                    mensaje = "Reservado por " + nombreSocioReserva;
+		                }
 		            } else {
-		                // Si la hora está reservada para una actividad
-		                String nombreActividad = (String) this.view.getTablaReservas().getValueAt(selectedRow, 2);
-		                mensaje = "Reservado para '" + nombreActividad + "'";
-		                this.view.getTFDescripcion().setText(mensaje);
+		                mensaje = "Reservado para '" + reservadoPor + "'";
 		            }
+		            this.view.getTFDescripcion().setText(mensaje);
 		        } else {
-		            // Si no se ha seleccionado ninguna fila
 		            this.view.getTFDescripcion().setText("No se ha seleccionado ninguna hora.");
 		        }
 		    }
 		});
-
 		
 		
 		this.view.getBtnReservar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> realizarReserva()));
@@ -123,8 +115,7 @@ public class VisualizarReservasComoSocioController {
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	    LocalDate fechaSeleccionada = LocalDate.parse(fechaSeleccionadaStr, formatter);
 
-	    // Comprobar si la fecha seleccionada es al menos 15 días después de la fecha actual
-	    if (ChronoUnit.DAYS.between(fechaActual, fechaSeleccionada) < 15) {
+	    if (ChronoUnit.DAYS.between(fechaActual, fechaSeleccionada) > 15) {
 	        return false; // La fecha de la reserva es inválida
 	    }
 
@@ -172,7 +163,7 @@ public class VisualizarReservasComoSocioController {
 
 	    // Comprobar si la fecha de la reserva es válida
 	    if (!esReservaValida(fechaSeleccionadaStr)) {
-	        JOptionPane.showMessageDialog(null, "Las reservas se hacen con un tiempo de antelacion mínimo de 15 dias.", "Error", JOptionPane.ERROR_MESSAGE);
+	        JOptionPane.showMessageDialog(null, "Las reservas se hacen con un tiempo máximo de 15 dias.", "Error", JOptionPane.ERROR_MESSAGE);
 	        return; // Detener el proceso si la reserva no es válida
 	    }
 	    

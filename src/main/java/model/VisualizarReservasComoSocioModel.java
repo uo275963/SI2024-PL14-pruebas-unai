@@ -275,6 +275,40 @@ public class VisualizarReservasComoSocioModel {
 	}
 
 	
+	
+	public String getDniSocioReserva(String fecha, String instalacion, String horaInicio) {
+        String sql = "SELECT u.dni FROM USUARIO u " +
+                     "JOIN RESERVA_INSTALACION r ON u.id = r.usuario_id " +
+                     "JOIN INSTALACION i ON r.instalacion_id = i.id " +
+                     "WHERE r.fecha = ? AND i.nombre = ? AND r.hora_inicio = ?";
+        List<Object[]> resultado = db.executeQueryArray(sql, fecha, instalacion, horaInicio);
+
+        if (resultado != null && !resultado.isEmpty()) {
+            return (String) resultado.get(0)[0];
+        }
+        return null;
+    }
+	
+	
+	public String getDniUsuarioPorId(int idsocio) {
+        String sql = "SELECT dni FROM USUARIO WHERE id = ?";
+        List<Object[]> resultado = db.executeQueryArray(sql, idsocio);
+
+        if (resultado != null && !resultado.isEmpty()) {
+            return (String) resultado.get(0)[0];
+        }
+        return null;
+    }
+	
+	public String getNombreUsuarioPorDni(String dni) {
+	    String sql = "SELECT nombre FROM USUARIO WHERE dni = ?";
+	    List<Object[]> resultado = db.executeQueryArray(sql, dni);
+
+	    if (resultado != null && !resultado.isEmpty()) {
+	        return (String) resultado.get(0)[0];
+	    }
+	    return null;
+	}
 
 	
 	
