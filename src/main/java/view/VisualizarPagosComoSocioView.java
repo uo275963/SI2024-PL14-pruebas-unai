@@ -15,6 +15,8 @@ import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JTable;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class VisualizarPagosComoSocioView {
 
@@ -22,6 +24,8 @@ public class VisualizarPagosComoSocioView {
 	private JTable TablaPagos;
 	private JLabel lblNewLabel;
 	private JLabel lblNombreSocio;
+	private JButton btnBuscar;
+	private JComboBox CBMeses;
 
 	/**
 	 * Launch the application.
@@ -69,6 +73,27 @@ public class VisualizarPagosComoSocioView {
 	public void setLblNombreSocio(JLabel lblNombreSocio) {
 		this.lblNombreSocio = lblNombreSocio;
 	}
+	
+
+	public JButton getBtnBuscar() {
+		return btnBuscar;
+	}
+
+	public void setBtnBuscar(JButton btnBuscar) {
+		this.btnBuscar = btnBuscar;
+	}
+	
+	
+	
+	
+
+	public JComboBox getCBMeses() {
+		return CBMeses;
+	}
+
+	public void setCBMeses(JComboBox cBMeses) {
+		this.CBMeses = cBMeses;
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -76,7 +101,7 @@ public class VisualizarPagosComoSocioView {
 	private void initialize() {
 		frame = new JFrame("Visualización de pagos");
 		frame.setBounds(100, 100, 889, 682);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		lblNewLabel = new JLabel("Socio:");
@@ -101,9 +126,13 @@ public class VisualizarPagosComoSocioView {
 		lblNewLabel_1.setBounds(283, 33, 149, 13);
 		frame.getContentPane().add(lblNewLabel_1);
 
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(400, 29, 166, 21);
-		frame.getContentPane().add(comboBox);
+		CBMeses = new JComboBox();
+		CBMeses.setBounds(400, 29, 166, 21);
+		frame.getContentPane().add(CBMeses);
+		
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.setBounds(10, 84, 139, 21);
+		frame.getContentPane().add(btnBuscar);
 	}
 
 	public JFrame getFrame() {
