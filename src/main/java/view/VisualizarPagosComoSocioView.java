@@ -26,6 +26,7 @@ public class VisualizarPagosComoSocioView {
 	private JLabel lblNombreSocio;
 	private JButton btnBuscar;
 	private JComboBox CBMeses;
+	private JLabel lblCosteMensual;
 
 	/**
 	 * Launch the application.
@@ -131,8 +132,13 @@ public class VisualizarPagosComoSocioView {
 		frame.getContentPane().add(CBMeses);
 		
 		btnBuscar = new JButton("Buscar");
+		btnBuscar.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnBuscar.setBounds(10, 84, 139, 21);
 		frame.getContentPane().add(btnBuscar);
+		
+		lblCosteMensual = new JLabel("");
+		lblCosteMensual.setBounds(10, 595, 158, 13);
+		frame.getContentPane().add(lblCosteMensual);
 	}
 
 	public JFrame getFrame() {
@@ -150,4 +156,14 @@ public class VisualizarPagosComoSocioView {
 	public DefaultTableModel getTablaReservasModel() {
 		return (DefaultTableModel) this.TablaPagos.getModel(); // Obtener y devolver el modelo de la tabla
 	}
+
+	public JLabel getLblCosteMensual() {
+		return lblCosteMensual;
+	}
+
+	public void setLblCosteMensual(JLabel lblCosteMensual) {
+		this.lblCosteMensual = lblCosteMensual;
+	}
+	
+	
 }

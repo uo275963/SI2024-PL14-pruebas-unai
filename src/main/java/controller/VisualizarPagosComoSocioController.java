@@ -49,9 +49,11 @@ public class VisualizarPagosComoSocioController {
 	public void initController() {
 		mostrarNombreSocio(idSocio);
 		
-		this.view.getBtnBuscar().addActionListener(e -> mostrarNombreSocio(1));
 		this.cargarMesesConPagosEnComboBox(1);
-		this.view.getBtnBuscar().addActionListener(e -> cargarPagosPorMesSeleccionado(idSocio));
+		this.view.getBtnBuscar().addActionListener(e -> {
+		    cargarPagosPorMesSeleccionado(idSocio);
+		    calcularTotalPagos();
+		});
 
 	}
 	
@@ -80,6 +82,26 @@ public class VisualizarPagosComoSocioController {
 	            modelo.addRow(pago);
 	        }
 	    }
+	}
+	
+	public void calcularTotalPagos() {
+	    DefaultTableModel modelo = (DefaultTableModel) view.getTablaPagos().getModel();
+	    double total = 0.0;
+
+	    // Recorremos todas las filas y sumamos los valores de la quinta columna (índice 4)
+	    for (int i = 0; i < modelo.getRowCount(); i++) {
+	        Object valor = modelo.getValueAt(i, 4);
+	        if (valor != null) {
+	            try {
+	                total += Double.parseDouble(valor.toString());
+	            } catch (NumberFormatException e) {
+	                System.err.println("Error al convertir el valor de la fila " + i + " a número: " + valor);
+	            }
+	        }
+	    }
+
+	    // Mostramos el total en la etiqueta correspondiente de la vista
+	    view.getLblCosteMensual().setText("Total Mensual: " + String.format("%.2f", total) + " €");
 	}
 
 
