@@ -34,11 +34,9 @@ public class InscribirSocioView {
 
 	private JFrame frame;
 	private JTable tabActividades;
-	private JDateChooser fecha1;
-	private JDateChooser fecha2;
-	private JComboBox<Object> cbPeriodo;
 	private JTable tabSocios;
 	private JButton btnInscribir;
+	private JButton btnVolver;
 
 	/**
 	 * Create the application.
@@ -54,7 +52,7 @@ public class InscribirSocioView {
 		frame = new JFrame();
 		frame.setTitle("Carreras");
 		frame.setName("Carreras");
-		frame.setBounds(0, 0, 1497, 644);
+		frame.setBounds(0, 0, 1497, 525);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -64,35 +62,8 @@ public class InscribirSocioView {
 		contentPane.setBounds(20, 11, 1451, 564);
 		frame.getContentPane().add(contentPane);
 		
-		cbPeriodo = new JComboBox<>();
-		cbPeriodo.setBounds(138, 48, 194, 22);
-		contentPane.add(cbPeriodo);
-		
-		JLabel lblPeriodo = new JLabel("Periodo:");
-		lblPeriodo.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblPeriodo.setBounds(20, 52, 108, 14);
-		contentPane.add(lblPeriodo);
-		
-		fecha1 = new JDateChooser();
-		fecha1.setBounds(138, 77, 103, 20);
-		contentPane.add(fecha1);
-		
-		fecha2 = new JDateChooser();
-		fecha2.setBounds(138, 108, 103, 20);
-		contentPane.add(fecha2);
-		
-		JLabel lblFechaInicio = new JLabel("Fecha inicio:");
-		lblFechaInicio.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblFechaInicio.setBounds(20, 83, 108, 14);
-		contentPane.add(lblFechaInicio);
-		
-		JLabel lblFechaFin = new JLabel("Fecha fin:");
-		lblFechaFin.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblFechaFin.setBounds(20, 114, 108, 14);
-		contentPane.add(lblFechaFin);
-		
 		JScrollPane tablePanel = new JScrollPane((Component) null);
-		tablePanel.setBounds(20, 164, 828, 312);
+		tablePanel.setBounds(20, 66, 828, 312);
 		contentPane.add(tablePanel);
 		
 		tabActividades = new JTable();
@@ -104,27 +75,28 @@ public class InscribirSocioView {
 		contentPane.add(lblSeleccionaFechasPara);
 		
 		JScrollPane tablePanel_1 = new JScrollPane((Component) null);
-		tablePanel_1.setBounds(886, 164, 521, 312);
+		tablePanel_1.setBounds(886, 66, 521, 312);
 		contentPane.add(tablePanel_1);
 		
 		tabSocios = new JTable();
 		tablePanel_1.setViewportView(tabSocios);
 		
 		btnInscribir = new JButton("Realizar inscripción");
-		btnInscribir.setBounds(20, 498, 167, 43);
+		btnInscribir.setBounds(206, 412, 167, 43);
 		contentPane.add(btnInscribir);
+		
+		btnVolver = new JButton("Volver");
+		btnVolver.setBounds(29, 412, 167, 43);
+		contentPane.add(btnVolver);
 	}
 
 	//Getters y Setters anyadidos para acceso desde el controlador (repersentacion compacta)
 	public JFrame getFrame() { return this.frame; }
 	public JTable getTablaActividades() { return this.tabActividades; }
-	public JDateChooser fechaInicio() { return this.fecha1;}
-	public JDateChooser fechaFin() {return this.fecha2;}
-	public void setFechaInicio(Date fecha) { this.fecha1.setDate(fecha);}
-	public void setFechaFin(Date fecha) { this.fecha2.setDate(fecha);}
+
 	public JTable getTabSocios() { return this.tabSocios; }
-	public JButton getBoton() { return this.btnInscribir; }
+	public JButton getBotonInsc() { return this.btnInscribir; }
+	public JButton getBotonVolver() { return this.btnVolver; }
 
 
-	public JComboBox<Object> getListaPeriodo() { return this.cbPeriodo; }
 }

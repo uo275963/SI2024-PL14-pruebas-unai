@@ -42,7 +42,9 @@ INSERT INTO PERIODO_INSCRIPCION (nombre, fecha_inicio_socios, fecha_fin_socios, 
 DELETE FROM ACTIVIDAD;
 INSERT INTO ACTIVIDAD (nombre, descripcion, instalacion_id, aforo_maximo, coste_socio, coste_no_socio, fecha_inicio, fecha_fin, dias, hora_inicio, hora_fin, periodo_inscripcion_id) VALUES
 ('Spinning Intensivo', 'Clase de spinning avanzada', 3, 15, 10.00, 15.00, '2025-03-01', '2025-03-31', 'Lunes,Miércoles,Viernes', '18:00', '19:00', 2),
-('Torneo de Tenis', 'Competencia amateur', 2, 8, 5.00, 10.00, '2025-04-10', '2025-04-15', 'Sábado,Domingo', '09:00', '14:00', 1);
+('Torneo de Tenis', 'Competencia amateur', 2, 8, 5.00, 10.00, '2025-04-10', '2025-04-15', 'Sábado,Domingo', '09:00', '14:00', 1),
+('Torneo de Padel', 'Competencia amateur', 2, 8, 6.00, 12.00, '2025-04-10', '2025-04-15', 'Lunes,Martes', '09:00', '11:00', 1);
+
 
 DELETE FROM RESERVA_INSTALACION;
 INSERT INTO RESERVA_INSTALACION (usuario_id, instalacion_id, fecha, hora_inicio, hora_fin, pagado) VALUES
