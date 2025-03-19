@@ -3,6 +3,7 @@ package giis.demo.util;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
+import controller.ReservaAutomaticaController;
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
 import controller.VisualizarReservasComoSocioController;
@@ -11,9 +12,11 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import giis.demo.tkrun.*;
+import model.ReservaAutomaticaModel;
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
 import model.VisualizarReservasComoSocioModel;
+import view.ReservaAutomaticaView;
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
 import view.VisualizarReservasComoSocioView;
@@ -171,6 +174,15 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnReservarSocioComoAdmin);
+
+		JButton btnReservaAutomatica = new JButton("Reserva automática");
+		btnReservaAutomatica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ReservaAutomaticaController controller = new ReservaAutomaticaController(new ReservaAutomaticaModel(), new ReservaAutomaticaView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnReservaAutomatica);
 
 		/*
 		JButton btnVisualizarReservasComoSocio = new JButton("Ver reservas como socio");
