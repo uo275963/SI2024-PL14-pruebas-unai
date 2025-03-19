@@ -8,12 +8,20 @@ import java.awt.Font;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 public class VisualizarActividadesComoSocioView {
 
 	private JFrame frame;
 	private JLabel lblNombreSocio;
 	private JTable tablaActividades;
+	private JComboBox cbInstalaciones;
+	private JLabel lblNewLabel_1;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JButton btnFiltrar;
 
 	/**
 	 * Launch the application.
@@ -54,14 +62,29 @@ public class VisualizarActividadesComoSocioView {
 	public void setTablaActividades(JTable tablaActividades) {
 		this.tablaActividades = tablaActividades;
 	}
-	
-	
+
 	public void setTablaActividadesModel(DefaultTableModel modelo) {
 		tablaActividades.setModel(modelo); // Reemplaza el modelo de la tabla existente
 	}
 
 	public DefaultTableModel getTablaActividadesModel() {
 		return (DefaultTableModel) this.tablaActividades.getModel(); // Obtener y devolver el modelo de la tabla
+	}
+
+	public JComboBox getCbInstalaciones() {
+		return cbInstalaciones;
+	}
+
+	public void setCbInstalaciones(JComboBox cbInstalaciones) {
+		this.cbInstalaciones = cbInstalaciones;
+	}
+
+	public JButton getBtnFiltrar() {
+		return btnFiltrar;
+	}
+
+	public void setBtnFiltrar(JButton btnFiltrar) {
+		this.btnFiltrar = btnFiltrar;
 	}
 
 	/**
@@ -76,20 +99,54 @@ public class VisualizarActividadesComoSocioView {
 	 */
 	private void initialize() {
 		frame = new JFrame("Visualizar actividades");
-		frame.setBounds(100, 100, 613, 392);
+		frame.setBounds(100, 100, 722, 392);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		lblNombreSocio = new JLabel("");
 		lblNombreSocio.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNombreSocio.setBounds(10, 11, 46, 14);
+		lblNombreSocio.setBounds(10, 11, 126, 14);
 		frame.getContentPane().add(lblNombreSocio);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 55, 577, 274);
+		scrollPane.setBounds(10, 86, 686, 243);
 		frame.getContentPane().add(scrollPane);
 
 		tablaActividades = new JTable();
 		scrollPane.setViewportView(tablaActividades);
+
+		btnFiltrar = new JButton("Filtrar");
+		btnFiltrar.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnFiltrar.setBounds(10, 52, 89, 23);
+		frame.getContentPane().add(btnFiltrar);
+
+		JLabel lblNewLabel = new JLabel("Instalaciones:");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNewLabel.setBounds(203, 11, 89, 14);
+		frame.getContentPane().add(lblNewLabel);
+
+		cbInstalaciones = new JComboBox();
+		cbInstalaciones.setBounds(285, 8, 126, 22);
+		frame.getContentPane().add(cbInstalaciones);
+
+		lblNewLabel_1 = new JLabel("De");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNewLabel_1.setBounds(203, 57, 28, 14);
+		frame.getContentPane().add(lblNewLabel_1);
+
+		textField = new JTextField();
+		textField.setBounds(228, 54, 118, 20);
+		frame.getContentPane().add(textField);
+		textField.setColumns(10);
+
+		JLabel lblNewLabel_1_1 = new JLabel("a");
+		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNewLabel_1_1.setBounds(350, 57, 19, 14);
+		frame.getContentPane().add(lblNewLabel_1_1);
+
+		textField_1 = new JTextField();
+		textField_1.setColumns(10);
+		textField_1.setBounds(375, 54, 118, 20);
+		frame.getContentPane().add(textField_1);
 	}
 }
