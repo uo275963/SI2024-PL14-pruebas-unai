@@ -1,5 +1,8 @@
 package model;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import giis.demo.util.Database;
@@ -40,8 +43,43 @@ public class CancelarReservaSocioModel {
 
 	    return count == 0;  // Si count es 0, la reserva fue eliminada correctamente
 	}
+	
+	// Método para obtener el rol de un usuario basado en la reserva
+	public String obtenerRolUsuarioReserva(int reservaId) {
+	    String query = "SELECT u.rol FROM USUARIO u JOIN RESERVA_INSTALACION r ON u.id = r.usuario_id WHERE r.id = ?";
+	    String rol = null;
+	    try (PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
+	        stmt.setInt(1, reservaId);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                rol = rs.getString("rol");
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return rol;
+	}
+	
+	public Object[] obtenerDetallesReserva(int reservaId) {
+	    // Definir la consulta SQL para obtener los detalles de la reserva
+	    String query = "SELECT u.nombre, r.fecha, r.hora_inicio, r.hora_fin, r.pagado " +
+	                   "FROM RESERVA_INSTALACION r " +
+	                   "JOIN USUARIO u ON r.usuario_id = u.id " +
+	                   "WHERE r.id = ?";
+
+	    // Ejecutar la consulta y devolver el resultado
+	    List<Object[]> result = db.executeQueryArray(query, reservaId);
+
+	    // Si no se encuentra el resultado, devolvemos null
+	    if (result.isEmpty()) {
+	        return null;
+	    }
+
+	    // Devuelve los detalles de la reserva como un array de objetos
+	    return result.get(0); // El primer (y único) resultado
+	}
 
 
-
-
+	
 }

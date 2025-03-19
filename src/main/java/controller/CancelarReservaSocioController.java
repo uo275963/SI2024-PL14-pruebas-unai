@@ -80,6 +80,8 @@ public class CancelarReservaSocioController {
         String horaFin = view.getTFHoraFin().getText();
         String instalacion = view.getTFInstalacion().getText();
         String motivo = view.gettAMotivo().getText();
+        
+
 
         // 1. Comprobar si las horas están en formato HH:00
         if (!horaInicio.matches("^\\d{2}:00$") || !horaFin.matches("^\\d{2}:00$")) {
@@ -102,6 +104,7 @@ public class CancelarReservaSocioController {
         // 4. Comprobar si hay una reserva en la fecha indicada
         List<Object[]> reservas = model.obtenerReservas(fecha); // Obtener reservas para la fecha
         boolean reservaExistente = false;
+        int reservaId=-1;
 
         // Buscar si hay alguna reserva con la misma hora de inicio y fin, y la misma instalación
         for (Object[] reserva : reservas) {
@@ -111,26 +114,61 @@ public class CancelarReservaSocioController {
 
             if (reservaHoraInicio.equals(horaInicio) && reservaHoraFin.equals(horaFin) && reservaInstalacion.equals(instalacion)) {
                 reservaExistente = true;
+                reservaId = (int) reserva[0];
                 break;
             }
         }
-
         if (!reservaExistente) {
             JOptionPane.showMessageDialog(view.getFrame(), "No hay una reserva con la fecha, hora y instalación especificadas.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
+        //5. Verificar el rol del usuario que hizo la reserva
+        String rol = model.obtenerRolUsuarioReserva(reservaId);
+        if("ADMIN".equalsIgnoreCase(rol.trim())) {
+        	JOptionPane.showMessageDialog(null, 
+        			"No puedes eliminar una actividad",
+        			"Error",
+        			JOptionPane.WARNING_MESSAGE);
+        	return;
+        }
         
+        // Obtener los detalles de la reserva
+        Object[] reservaDetalles = model.obtenerDetallesReserva(reservaId);
+        String nombreUsuario = reservaDetalles[0].toString(); // Nombre del usuario que hizo la reserva
+        //String estadoPago = reservaDetalles[4].toString(); // Estado de pago
+        String motivoReserva = view.gettAMotivo().getText(); // Motivo de la reserva
+        int estadoPago = Integer.parseInt(reservaDetalles[4].toString()); // Estado del pago (0 o 1)
+        // Si todas las validaciones son correctas, procedemos con la eliminación
+        // Eliminar la reserva
         // Si todas las validaciones son correctas, procedemos con la eliminación
         // Suponiendo que tienes un método en el modelo para eliminar la reserva
+     // Convertir el estado de pago a un mensaje adecuado
+        String estadoPagoMensaje = (estadoPago == 0) ? "Sin devolución" : "Pago devuelto";
+        
         boolean eliminada = model.eliminarReserva(horaInicio, horaFin, instalacion, motivo);
 
-        if (eliminada) {
-            JOptionPane.showMessageDialog(view.getFrame(), "Reserva eliminada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            // Aquí podrías refrescar la lista de reservas o vaciar la tabla si lo deseas
+        if(eliminada) {
+        	// Mostrar un mensaje con los detalles de la reserva eliminada
+            JOptionPane.showMessageDialog(view.getFrame(), 
+                "Reserva eliminada correctamente.\n\nDetalles de la reserva:\n" +
+                "Usuario: " + nombreUsuario + "\n" +
+                "Fecha: " + fecha + "\n" +
+                "Hora de inicio: " + horaInicio + "\n" +
+                "Hora de fin: " + horaFin + "\n" +
+                "Motivo: " + motivoReserva + "\n" +
+                "Estado del pago: " + estadoPagoMensaje + "\n\n" +
+                "Haz click en 'Aceptar' para avisar al socio.", 
+                "Éxito", 
+                JOptionPane.INFORMATION_MESSAGE);
+
+            // Vaciar la tabla de reservas o actualizar la vista
             vaciarTabla();
+
         } else {
             JOptionPane.showMessageDialog(view.getFrame(), "Hubo un error al eliminar la reserva", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+
 }
