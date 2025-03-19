@@ -1,11 +1,14 @@
 package controller;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -156,24 +159,20 @@ public class VisualizarReservasComoSocioController {
 	
 	
 	private void realizarReserva() {
-		
-		String fechaSeleccionadaStr = this.view.getFTFFecha().getText();
-		
-		
+	    String fechaSeleccionadaStr = this.view.getFTFFecha().getText();
 
 	    // Comprobar si la fecha de la reserva es válida
 	    if (!esReservaValida(fechaSeleccionadaStr)) {
 	        JOptionPane.showMessageDialog(null, "Las reservas se hacen con un tiempo máximo de 15 dias.", "Error", JOptionPane.ERROR_MESSAGE);
 	        return; // Detener el proceso si la reserva no es válida
 	    }
-	    
-	    
+
 	    if (this.model.masdexhorasreservadas(idsocio)) {
 	        JOptionPane.showMessageDialog(null, "No puede realizar la reserva porque ya tiene más de 15 horas reservadas en los últimos 15 días.", "Error", JOptionPane.ERROR_MESSAGE);
 	        return;
 	    }
-		
-		//Comprobaciones previas
+
+	    // Comprobaciones previas
 	    if (this.model.esUsuarioMoroso(idsocio)) {
 	        JOptionPane.showMessageDialog(null, "No puede realizar reservas debido a impagos de la cuota.", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
 	        return;
@@ -209,20 +208,12 @@ public class VisualizarReservasComoSocioController {
 	            return;
 	        }
 	    }
-	    
-	    
-	    //Obtencion de precios
 
-	    // Obtener el precio total de la reserva para las horas seleccionadas
+	    // Obtención de precios
 	    String fecha = this.view.getFTFFecha().getText();
 	    String instalacion = this.view.getCBInstalaciones().getSelectedItem().toString();
 	    Double precioTotal = obtenerPrecioTotalReserva(horasSeleccionadas, instalacion); // Ahora calculamos con las horas seleccionadas
-	    
-	    
-	    //Calculo de horas
-	    
-	    
-	    
+
 	    // Proceder con la reserva
 	    int horasActuales = this.model.obtenerHorasReservadas(idsocio, fecha);
 	    int horasNuevas = horasSeleccionadas.size();
@@ -232,14 +223,7 @@ public class VisualizarReservasComoSocioController {
 	        return;
 	    }
 
-	    
-	    //Ventanas de metodos de pago
-	    
-	    
-	    
-	    
-
-	    // Mostrar ventana con confirmación, opción de pago y precio total
+	    // Ventanas de métodos de pago
 	    Object[] options = {"Confirmar reserva y pagar ahora", "Confirmar reserva y pagar al final del mes", "Cancelar"};
 	    String mensaje = String.format("¿Está seguro de que desea confirmar la reserva?\n" +
 	                                   "Horas seleccionadas: %d\n" +
@@ -262,58 +246,43 @@ public class VisualizarReservasComoSocioController {
 	    }
 
 	    boolean pagado = false;
-	    
+	    String fechaPago = null;
+
 	    // Dependiendo de la opción seleccionada, procesamos el pago
 	    if (opcionSeleccionada == 0) { // Pagar ahora
-	    	pagado = true;  // Marcar la reserva como pagada
+	        pagado = true;  // Marcar la reserva como pagada
 	    } else if (opcionSeleccionada == 1) { // Pagar al final del mes
 	        pagado = false;
-
+	        fechaPago = obtenerFechaPago(); // Establecer la fecha de pago al 25 del mes
 	    }
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	 // Obtener la fecha seleccionada
-	    String fechaRecibo = this.view.getFTFFecha().getText();
 
-	    // Concatenar las horas seleccionadas a la fecha
+	    // Mostrar ventana con los datos de la reserva (Recibo)
 	    StringBuilder fechaHora = new StringBuilder(fecha);
 	    for (Integer hora : horasSeleccionadas) {
 	        fechaHora.append(" " + String.format("%02d:00", hora)); // Formatear la hora
 	    }
-	    
 	    String nombreUsuario = this.model.getNombreUsuarioPorId(idsocio);  // Obtener el nombre del usuario con id = 1
 
-	    
-	    
-	 // Mostrar ventana con los datos de la reserva (Recibo)
-        String recibo = String.format(
-                "**RESERVA**\n\n" +
-                "Nombre: %s\n" +
-                "Instalación: %s\n" +
-                "Fecha y hora: %s\n" +
-                "Horas reservadas: %d\n" +
-                "Precio total: %.2f €\n" +
-                "Método de pago: %s\n\n" +
-                "¡Gracias por su reserva!",
-                nombreUsuario, 
-                instalacion, 
-                fechaHora, 
-                horasSeleccionadas.size(), 
-                precioTotal, 
-                (opcionSeleccionada == 0) ? "Pago inmediato" : "Pago a fin de mes"
-        );
+	    String recibo = String.format(
+	            "**RESERVA**\n\n" +
+	            "Nombre: %s\n" +
+	            "Instalación: %s\n" +
+	            "Fecha y hora: %s\n" +
+	            "Horas reservadas: %d\n" +
+	            "Precio total: %.2f €\n" +
+	            "Método de pago: %s\n\n" +
+	            "¡Gracias por su reserva!",
+	            nombreUsuario, 
+	            instalacion, 
+	            fechaHora, 
+	            horasSeleccionadas.size(), 
+	            precioTotal, 
+	            (opcionSeleccionada == 0) ? "Pago inmediato" : "Pago a fin de mes"
+	    );
 
-        JOptionPane.showMessageDialog(null, recibo, "Recibo de Reserva", JOptionPane.INFORMATION_MESSAGE);
-	    
+	    JOptionPane.showMessageDialog(null, recibo, "Recibo de Reserva", JOptionPane.INFORMATION_MESSAGE);
 
 	    // Realizamos las reservas de las horas
-        
 	    int i = 0;
 	    while (i < horasSeleccionadas.size()) {
 	        int horaInicio = horasSeleccionadas.get(i);
@@ -327,36 +296,42 @@ public class VisualizarReservasComoSocioController {
 	        String horaInicioStr = String.format("%02d:00", horaInicio);
 	        String horaFinStr = String.format("%02d:00", horaFin);
 
-	        
-	        
-	        this.model.reservarHora(idsocio, fecha, instalacion, horaInicioStr, horaFinStr,pagado);
+	        this.model.reservarHora(idsocio, fecha, instalacion, horaInicioStr, horaFinStr, pagado);
 
 	        i++;
-	        
-	        System.out.println(horaInicioStr);
-	        Integer idReserva = this.model.obtenerIdReserva(idsocio,fecha, instalacion, horaInicioStr);
-	        System.out.println(idReserva);
-		    if (idReserva != null) {
-		        // Hacer algo con el idReserva, como mostrarlo en un mensaje
-		    	if(pagado) {
-		    		registrarPago(idReserva, idsocio, precioTotal, pagado);
-		    	}else {
-		    		registrarPago(idReserva, idsocio, precioTotal, pagado);
-		    	}
-		    	
-		    }
-	    }
-	    
 
+	        Integer idReserva = this.model.obtenerIdReserva(idsocio, fecha, instalacion, horaInicioStr);
+	        if (idReserva != null) {
+	            if (pagado) {
+	                registrarPago(idReserva, idsocio, precioTotal, pagado,null);
+	            } else {
+	                registrarPago(idReserva, idsocio, precioTotal, pagado, fechaPago); // Pasar la fecha de pago si es a cuota
+	            }
+	        }
+	    }
 
 	    // Actualizar la tabla con la nueva reserva
 	    actualizarTabla(fecha, instalacion);
 
 	    JOptionPane.showMessageDialog(null, "Reserva realizada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-	    
-	   
-
 	}
+
+	// Método para obtener la fecha del próximo 25 del mes
+	private String obtenerFechaPago() {
+	    Calendar calendar = Calendar.getInstance();
+	    int currentMonth = calendar.get(Calendar.MONTH);
+	    int currentYear = calendar.get(Calendar.YEAR);
+	    calendar.set(currentYear, currentMonth, 25); // Establecer al día 25 del mes actual
+
+	    // Si la fecha ya pasó, se establece el 25 del mes siguiente
+	    if (calendar.getTime().before(new Date())) {
+	        calendar.add(Calendar.MONTH, 1);
+	    }
+
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	    return dateFormat.format(calendar.getTime());
+	}
+
 	
 	private boolean esFormatoFechaValido(String fecha) {
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -373,16 +348,20 @@ public class VisualizarReservasComoSocioController {
 	
 	
 	
-	private void registrarPago(int idReserva, int idsocio, double monto, boolean pagado) {
+	private void registrarPago(int idReserva, int idsocio, double monto, boolean pagado, String fechaPago) {
 	    // Crear una nueva entrada en la tabla de pagos
 	    // Puedes usar tu modelo para insertar un nuevo pago, o un código específico para tu base de datos
 	    String estadoPago = pagado ? "Pagado" : "Pendiente";
 
-	    // Aquí asumimos que tienes un método en el modelo que pueda registrar el pago
-	    this.model.registrarPagoReserva(idsocio ,idReserva, monto);
+	    if (pagado) {
+	        fechaPago = LocalDate.now().toString(); // Fecha actual en formato "yyyy-MM-dd"
+	    }
 	    
-	 
+	    
+	    // Llamamos al método para registrar el pago en la base de datos, pasando la fecha de pago
+	    this.model.registrarPagoReserva(idsocio, idReserva, monto, fechaPago);
 	}
+
 
 	
 	

@@ -253,17 +253,15 @@ public class VisualizarReservasComoSocioModel {
 	}
 	
 	*/
-	public void registrarPagoReserva(int usuarioId, int reservaInstalacionId, double monto) {
-	   
-
+	public void registrarPagoReserva(int usuarioId, int reservaInstalacionId, double monto, String fechaPago) {
+	    // Aquí utilizamos la fecha de pago que nos pasa el método
 	    String sql = "INSERT INTO PAGO (usuario_id, reserva_instalacion_id, monto, concepto, fecha_pago) " +
-	                 "VALUES (?, ?, ?, 'reserva', CURRENT_DATE)";
+	                 "VALUES (?, ?, ?, 'reserva', ?)"; // Modificamos para usar la fecha de pago personalizada
 
 	    try {
 	        // Ejecutamos la consulta para insertar el pago en la tabla PAGO
-	        db.executeUpdate(sql, usuarioId, reservaInstalacionId, monto);
+	        db.executeUpdate(sql, usuarioId, reservaInstalacionId, monto, fechaPago);
 	        
-
 	        // Mostrar mensaje de éxito
 	        JOptionPane.showMessageDialog(null, "Pago registrado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 	        
@@ -273,6 +271,8 @@ public class VisualizarReservasComoSocioModel {
 	        JOptionPane.showMessageDialog(null, "Error al registrar el pago. Inténtelo de nuevo.", "Error", JOptionPane.ERROR_MESSAGE);
 	    }
 	}
+
+	
 
 	
 	
