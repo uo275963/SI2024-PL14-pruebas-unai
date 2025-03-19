@@ -37,6 +37,8 @@ public class InscribirSocioView {
 	private JDateChooser fecha1;
 	private JDateChooser fecha2;
 	private JComboBox<Object> cbPeriodo;
+	private JTable tabSocios;
+	private JButton btnInscribir;
 
 	/**
 	 * Create the application.
@@ -52,14 +54,14 @@ public class InscribirSocioView {
 		frame = new JFrame();
 		frame.setTitle("Carreras");
 		frame.setName("Carreras");
-		frame.setBounds(0, 0, 919, 614);
+		frame.setBounds(0, 0, 1497, 644);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JPanel contentPane = new JPanel();
 		contentPane.setLayout(null);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setBounds(20, 11, 873, 564);
+		contentPane.setBounds(20, 11, 1451, 564);
 		frame.getContentPane().add(contentPane);
 		
 		cbPeriodo = new JComboBox<>();
@@ -96,10 +98,21 @@ public class InscribirSocioView {
 		tabActividades = new JTable();
 		tablePanel.setViewportView(tabActividades);
 		
-		JLabel lblSeleccionaFechasPara = new JLabel("Selecciona fechas para mostrar las actividades disponibles");
+		JLabel lblSeleccionaFechasPara = new JLabel("Selecciona una actividad y el socio que deseas inscribir");
 		lblSeleccionaFechasPara.setFont(new Font("Tahoma", Font.BOLD, 17));
 		lblSeleccionaFechasPara.setBounds(20, 11, 602, 26);
 		contentPane.add(lblSeleccionaFechasPara);
+		
+		JScrollPane tablePanel_1 = new JScrollPane((Component) null);
+		tablePanel_1.setBounds(886, 164, 521, 312);
+		contentPane.add(tablePanel_1);
+		
+		tabSocios = new JTable();
+		tablePanel_1.setViewportView(tabSocios);
+		
+		btnInscribir = new JButton("Realizar inscripción");
+		btnInscribir.setBounds(20, 498, 167, 43);
+		contentPane.add(btnInscribir);
 	}
 
 	//Getters y Setters anyadidos para acceso desde el controlador (repersentacion compacta)
@@ -109,6 +122,9 @@ public class InscribirSocioView {
 	public JDateChooser fechaFin() {return this.fecha2;}
 	public void setFechaInicio(Date fecha) { this.fecha1.setDate(fecha);}
 	public void setFechaFin(Date fecha) { this.fecha2.setDate(fecha);}
+	public JTable getTabSocios() { return this.tabSocios; }
+	public JButton getBoton() { return this.btnInscribir; }
+
 
 	public JComboBox<Object> getListaPeriodo() { return this.cbPeriodo; }
 }

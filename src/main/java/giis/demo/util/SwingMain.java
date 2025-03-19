@@ -21,6 +21,7 @@ import diego_Actividad.*;
 import diego_periodoInscripcion.*;
 import unai.lista_actividades.*;
 import unai.ver_reservas.*;
+import unai.inscribir_socio.*;
 
 import model.VisualizarReservasComoSocioModel;
 import view.VisualizarReservasComoSocioView;
@@ -171,6 +172,15 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnReservarSocioComoAdmin);
+		
+		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad");
+		btnInscribirSocio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InscribirSocioController controller = new InscribirSocioController(new InscribirSocioModel(), new InscribirSocioView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnInscribirSocio);
 
 		/*
 		JButton btnVisualizarReservasComoSocio = new JButton("Ver reservas como socio");

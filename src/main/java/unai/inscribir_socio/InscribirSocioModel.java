@@ -1,5 +1,6 @@
 package unai.inscribir_socio;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,37 @@ public class InscribirSocioModel {
 	
 	private Database db=new Database();
 
+	
+	  public List<SocioDTO> getListaSocios() {
+	        String sql = "SELECT nombre, dni FROM USUARIO WHERE rol = 'SOCIO' AND estado = 'ACTIVO'";
+	        return db.executeQueryPojo(SocioDTO.class, sql);
+	    }
+	 
+	  public List<ListaActividadesDisplayDTO> getListaActividadesValidas() {
+	        // Obtener la fecha actual en formato YYYY-MM-DD
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	        String fechaHoy = sdf.format(new Date());
 
+	        String sql = 
+	            "SELECT a.nombre AS nombre, " +
+	            "       a.descripcion AS desc, " +
+	            "       i.nombre AS inst, " +
+	            "       a.coste_socio AS precio_s, " +
+	            "       a.coste_no_socio AS precio_n, " +
+	            "       p.nombre AS periodo, " +
+	            "       a.fecha_inicio AS finicio, " +
+	            "       a.fecha_fin AS ffin " +
+	            "FROM ACTIVIDAD a " +
+	            "JOIN INSTALACION i ON a.instalacion_id = i.id " +
+	            "LEFT JOIN PERIODO_INSCRIPCION p ON a.periodo_inscripcion_id = p.id " +
+	            "WHERE p.fecha_inicio_socios <= " + "\"" + "2025-03-19" + "\" "
+	            + "AND p.fecha_fin_no_socios >= " + "\"" + "2025-03-19" + "\" ";
+	        
+	        System.out.println(sql);
+
+	        return db.executeQueryPojo(ListaActividadesDisplayDTO.class, sql);
+	    }
+	  
 	public List<ListaActividadesDisplayDTO> getListaActividades(String fechaInicio, String fechaFin) {
 		validateNotNull(fechaInicio,MSG_PERIODO_NO_NULO);
 		validateNotNull(fechaFin,MSG_PERIODO_NO_NULO);

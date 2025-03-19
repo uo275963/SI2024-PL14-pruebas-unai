@@ -29,6 +29,8 @@ public class InscribirSocioController {
 	public void initView() {
 		//Inicializa la fecha de hoy a un valor que permitira mostrar carreras en diferentes fases 
 		//y actualiza los datos de la vista
+        cargarTablaSocios();
+        cargarTablaActividadesValidas();
 	    cargarPeriodosEnComboBox();
 	    //actualizarFechasDesdePeriodo();
 	    
@@ -53,23 +55,55 @@ public class InscribirSocioController {
 
 	}
 
+	
     public void initController() {
         // Agrega los eventos a los componentes de la vista
         view.getListaPeriodo().addActionListener(e -> actualizarFechasDesdePeriodo());
-        view.getTablaActividades().setModel(new DefaultTableModel(new Object[]{"Nombre", "Descripción", "Instalación", "Precio Socio", "Precio No Socio", "Periodo", "Inicio", "Fin"}, 0));
-   
-        PropertyChangeListener fechaListener = new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (view.fechaInicio().getDate() != null && view.fechaFin().getDate() != null) {
-                    actualizarTabla();  // Solo se actualiza cuando ambas fechas están definidas
-                }
-            }
-        };
-
-        view.fechaInicio().getDateEditor().addPropertyChangeListener("date", fechaListener);
-        view.fechaFin().getDateEditor().addPropertyChangeListener("date", fechaListener);
     }
+
+    
+    /**
+     * Carga la lista de socios en la tabla de la vista
+     */
+    private void cargarTablaSocios() {
+        List<SocioDTO> socios = model.getListaSocios();
+
+        DefaultTableModel tableModel = new DefaultTableModel();
+        tableModel.setColumnIdentifiers(new Object[]{"Nombre", "DNI"});
+
+        for (SocioDTO socio : socios) {
+            tableModel.addRow(new Object[]{socio.getNombre(), socio.getDni()});
+        }
+
+        view.getTabSocios().setModel(tableModel);
+        view.getTabSocios().revalidate();
+        view.getTabSocios().repaint();
+    }
+    
+    private void cargarTablaActividadesValidas() {
+        List<ListaActividadesDisplayDTO> actividades = model.getListaActividadesValidas();
+
+        DefaultTableModel tableModel = new DefaultTableModel();
+        tableModel.setColumnIdentifiers(new Object[]{"Nombre", "Descripción", "Instalación", "Precio Socio", "Precio No Socio", "Periodo", "Inicio", "Fin"});
+
+        for (ListaActividadesDisplayDTO actividad : actividades) {
+            tableModel.addRow(new Object[]{
+                actividad.getNombre(),
+                actividad.getDesc(),
+                actividad.getInst(),
+                actividad.getPrecio_s(),
+                actividad.getPrecio_n(),
+                actividad.getPeriodo(),
+                actividad.getFinicio(),
+                actividad.getFfin()
+            });
+        }
+
+        view.getTablaActividades().setModel(tableModel);
+        view.getTablaActividades().revalidate();
+        view.getTablaActividades().repaint();
+    }
+
 
     private void cargarPeriodosEnComboBox() {
     	List<PeriodoDTO> periodos = model.getPeriodos();
