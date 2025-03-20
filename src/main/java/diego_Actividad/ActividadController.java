@@ -11,6 +11,7 @@ import diego_periodoInscripcion.PeriodoEntity;
 import giis.demo.util.ApplicationException;
 import giis.demo.util.SwingUtil;
 import giis.demo.util.Util;
+import unai.lista_actividades.PeriodoDTO;
 import unai.ver_reservas.InstalacionDTO;
 
 public class ActividadController {
@@ -35,13 +36,6 @@ public class ActividadController {
 			}
 		});
 
-		// Agregar el ActionListener para el ComboBox de períodos de inscripción
-		view.getListaPeriodosInscripcion().addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SwingUtil.exceptionWrapper(() -> actualizarPeriodoInscripcion());
-			}
-		});
 	}
 
 	public void initView() {
@@ -139,33 +133,15 @@ public class ActividadController {
 		SwingUtil.autoAdjustColumns(view.getDetalleActividad());
 	}
 
-	/**
-	 * Actualiza la información del periodo de inscripción basado en la selección
-	 * del ComboBox.
-	 */
-	public void actualizarPeriodoInscripcion() {
-		// Obtener el objeto seleccionado en el ComboBox
-		Object selectedItem = view.getListaPeriodosInscripcion().getSelectedItem();
-
-		// Verificar que el item seleccionado no sea nulo y sea un array (id, nombre)
-		if (selectedItem != null && selectedItem instanceof Object[]) {
-			Object[] selectedPeriodo = (Object[]) selectedItem;
-			int periodo_inscripcion_id = (int) selectedPeriodo[0]; // El primer elemento es el ID del periodo
-
-			// Usar el ID para obtener el periodo de inscripción completo
-			PeriodoEntity periodosInscripcion = model.getPeriodoInscripcion(periodo_inscripcion_id);
-
-		}
-	}
-
-	/**
-	 * Obtiene la lista de períodos de inscripción y los muestra en el ComboBox
-	 */
-	public void cargarListaPeriodosInscripcion() {
-		List<Object[]> periodosInscripcion = model.getListaPeriodosInscripcionArray(); // Método similar a
-																						// getListaPeriodosArray
-		ComboBoxModel<Object> lmodel = SwingUtil.getComboModelFromList(periodosInscripcion);
-		view.getListaPeriodosInscripcion().setModel(lmodel);
+	 private void cargarListaPeriodosInscripcion() {
+	    	List<PeriodoDTO> periodos = model.getPeriodosInscripcion();
+	    	view.getListaPeriodosInscripcion().removeAllItems();
+	    	
+	    	// Agregar un valor por defecto que indique que no hay periodo seleccionado
+	        view.getListaPeriodosInscripcion().addItem(""); // Esto agregará un elemento vacío al combo box
+	    	for (PeriodoDTO periodo : periodos) {
+	    		view.getListaPeriodosInscripcion().addItem(periodo.getNombre());
+	    }
 	}
 
 	/**
