@@ -63,15 +63,22 @@ public class ActividadController {
 			// Obtener id periodo
 			Object selectedItem = view.getListaPeriodosInscripcion().getSelectedItem();
 			int periodo_inscripcion_id = 0;
-			Object[] selectedPeriodo = (Object[]) selectedItem;
-			periodo_inscripcion_id = (int) selectedPeriodo[0];
+			if (selectedItem instanceof Object[]) {
+			    Object[] selectedPeriodo = (Object[]) selectedItem;
+			    periodo_inscripcion_id = (int) selectedPeriodo[0];  // Aseguramos que sea el ID del periodo
+			} else if (selectedItem instanceof Integer) {
+			    periodo_inscripcion_id = (int) selectedItem;  // Si es un Integer directamente, lo usamos
+			}
 
 			// Obtener id instalacion
 			Object selectedItem2 = view.getListaInstalaciones().getSelectedItem();
 			int instalacion_id = 0;
-			Object[] selectedInstal = (Object[]) selectedItem2;
-			instalacion_id = (int) selectedInstal[0];
-
+			if (selectedItem2 instanceof Object[]) {
+			    Object[] selectedInstal = (Object[]) selectedItem2;
+			    instalacion_id = (int) selectedInstal[0];  // Aseguramos que sea el ID de la instalación
+			} else if (selectedItem2 instanceof Integer) {
+			    instalacion_id = (int) selectedItem2;  // Si es un Integer directamente, lo usamos
+			}
 			if (nombre.isEmpty() || descripcion.isEmpty() || fecha_inicio == null || fecha_fin == null || dias.isEmpty()
 					|| hora_inicio.isEmpty() || hora_fin.isEmpty()) {
 				throw new ApplicationException("Todos los campos deben estar completos.");
