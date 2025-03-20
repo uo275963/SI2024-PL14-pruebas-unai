@@ -28,7 +28,7 @@ public class ActividadEntity {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.instalacion_id = instalacion_id;
-        this.aforo_maximo = aforomaximo;
+        this.aforo_maximo = aforo_maximo;
         this.coste_socio = coste_socio;
         this.coste_no_socio = coste_no_socio;
         this.fecha_inicio = fecha_inicio;
