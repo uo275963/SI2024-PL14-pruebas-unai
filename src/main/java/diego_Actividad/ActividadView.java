@@ -20,7 +20,6 @@ public class ActividadView {
     private JComboBox<Object> listaPeriodosInscripcion;
     private JComboBox<Object> listaActividades;
     private JButton btnGuardar;
-    private JButton btnMostrar;
     private JTable tablaActividades;
     private JTable detalleActividad;
 
@@ -88,8 +87,6 @@ public class ActividadView {
 
         btnGuardar = new JButton("Guardar Actividad");
         panelFormulario.add(btnGuardar);
-        btnMostrar = new JButton("Mostrar Actividades");
-        panelFormulario.add(btnMostrar);
 
         frame.add(panelFormulario, BorderLayout.NORTH);
 
@@ -166,10 +163,6 @@ public class ActividadView {
 
     public JButton getBtnGuardar() {
         return btnGuardar;
-    }
-
-    public JButton getBtnMostrar() {
-        return btnMostrar;
     }
 
     public JTable getTablaActividades() {
