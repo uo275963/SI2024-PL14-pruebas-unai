@@ -18,10 +18,8 @@ public class ActividadView {
     private JTextField txtHoraFin;
     private JComboBox<Object> listaInstalaciones;
     private JComboBox<Object> listaPeriodosInscripcion;
-    private JComboBox<Object> listaActividades;
     private JButton btnGuardar;
     private JTable tablaActividades;
-    private JTable detalleActividad;
 
     public ActividadView() {
         initialize();
@@ -29,79 +27,93 @@ public class ActividadView {
 
     private void initialize() {
         frame = new JFrame("Gestión de Actividades");
-        frame.setBounds(100, 100, 600, 600);
+        frame.setBounds(100, 100, 750, 750);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+        frame.getContentPane().setLayout(new BorderLayout());
+
+        // Panel de encabezado con mensaje
+        JPanel panelEncabezado = new JPanel();
+        JLabel lblEncabezado = new JLabel("Introduzca los siguientes datos para añadir una actividad");
+        lblEncabezado.setFont(new Font("Arial", Font.BOLD, 14));
+        panelEncabezado.add(lblEncabezado);
+        frame.getContentPane().add(panelEncabezado, BorderLayout.NORTH);
 
         // Panel de formulario
         JPanel panelFormulario = new JPanel();
-        panelFormulario.setLayout(new GridLayout(7, 2, 5, 5));
+        panelFormulario.setLayout(new GridLayout(7, 2, 10, 20)); // Mejor organización con más espacio
 
+        // Nombre de la actividad
         panelFormulario.add(new JLabel("Nombre:"));
         txtNombre = new JTextField();
         panelFormulario.add(txtNombre);
 
+        // Descripción
         panelFormulario.add(new JLabel("Descripción:"));
         txtDescripcion = new JTextField();
         panelFormulario.add(txtDescripcion);
 
+        // Instalación
         panelFormulario.add(new JLabel("Instalación:"));
         listaInstalaciones = new JComboBox<>();
         panelFormulario.add(listaInstalaciones);
 
+        // Aforo máximo
         panelFormulario.add(new JLabel("Aforo Máximo:"));
         txtAforoMaximo = new JTextField();
         panelFormulario.add(txtAforoMaximo);
 
+        // Coste para socios
         panelFormulario.add(new JLabel("Coste Socio:"));
         txtCosteSocio = new JTextField();
         panelFormulario.add(txtCosteSocio);
 
+        // Coste para no socios
         panelFormulario.add(new JLabel("Coste No Socio:"));
         txtCosteNoSocio = new JTextField();
         panelFormulario.add(txtCosteNoSocio);
 
+        // Fecha de inicio
         panelFormulario.add(new JLabel("Fecha Inicio:"));
         dateFechaInicio = new JDateChooser();
         panelFormulario.add(dateFechaInicio);
 
+        // Fecha de fin
         panelFormulario.add(new JLabel("Fecha Fin:"));
         dateFechaFin = new JDateChooser();
         panelFormulario.add(dateFechaFin);
 
-        panelFormulario.add(new JLabel("Días:"));
+        // Hora de inicio
+        panelFormulario.add(new JLabel("Hora Inicio:"));
         txtDias = new JTextField();
         panelFormulario.add(txtDias);
-
-        panelFormulario.add(new JLabel("Hora Inicio:"));
+        
+                // Hora de fin
+                JLabel label_1 = new JLabel("Hora Fin:");
+                panelFormulario.add(label_1);
         txtHoraInicio = new JTextField();
         panelFormulario.add(txtHoraInicio);
-
-        panelFormulario.add(new JLabel("Hora Fin:"));
+        
+                // Días
+                JLabel label = new JLabel("Días:");
+                panelFormulario.add(label);
         txtHoraFin = new JTextField();
         panelFormulario.add(txtHoraFin);
 
+        // Periodo de inscripción
         panelFormulario.add(new JLabel("Periodo Inscripción:"));
         listaPeriodosInscripcion = new JComboBox<>();
         panelFormulario.add(listaPeriodosInscripcion);
 
+        // Botón para guardar
         btnGuardar = new JButton("Guardar Actividad");
         panelFormulario.add(btnGuardar);
 
-        frame.add(panelFormulario, BorderLayout.NORTH);
+        frame.getContentPane().add(panelFormulario, BorderLayout.CENTER);
 
         // Tabla para mostrar actividades
         tablaActividades = new JTable();
         JScrollPane scrollTabla = new JScrollPane(tablaActividades);
-        frame.add(scrollTabla, BorderLayout.CENTER);
-
-        // Panel de detalles de actividad
-        JPanel panelDetalles = new JPanel(new BorderLayout());
-        detalleActividad = new JTable();
-        panelDetalles.add(new JLabel("Detalles de la Actividad"), BorderLayout.NORTH);
-        panelDetalles.add(new JScrollPane(detalleActividad), BorderLayout.CENTER);
-
-        frame.add(panelDetalles, BorderLayout.SOUTH);
+        frame.getContentPane().add(scrollTabla, BorderLayout.SOUTH);
     }
 
     // Métodos para acceder a los componentes desde el controlador
@@ -156,10 +168,6 @@ public class ActividadView {
     public JComboBox<Object> getListaPeriodosInscripcion() {
         return listaPeriodosInscripcion;
     }
-    
-    public JComboBox<Object> getListaActividades() {
-        return listaActividades;
-    }
 
     public JButton getBtnGuardar() {
         return btnGuardar;
@@ -167,10 +175,6 @@ public class ActividadView {
 
     public JTable getTablaActividades() {
         return tablaActividades;
-    }
-
-    public JTable getDetalleActividad() {
-        return detalleActividad;
     }
 
     public void mostrarMensaje(String mensaje) {
@@ -181,4 +185,3 @@ public class ActividadView {
         JOptionPane.showMessageDialog(frame, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
-
