@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.JSeparator;
@@ -199,12 +200,16 @@ public class ReservaAutomaticaView {
 		this.tDias = tDias;
 	}
 
-	public JComboBox getCbActividades() {
+	public JComboBox<Integer> getCbActividades() {
 		return cbActividades;
 	}
 
-	public void setCbActividades(JComboBox cbActividades) {
+	public void setCbActividades(JComboBox<Integer> cbActividades) {
 		this.cbActividades = cbActividades;
+	}
+	
+	public void setCbActividadesModel(DefaultComboBoxModel cBActividades) {
+		cbActividades.setModel(cBActividades);
 	}
 
 	public JLabel getlActividad() {

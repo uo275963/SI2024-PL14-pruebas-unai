@@ -1,5 +1,9 @@
 package controller;
 
+import java.util.List;
+
+import javax.swing.DefaultComboBoxModel;
+
 import model.ReservaAutomaticaModel;
 import view.ReservaAutomaticaView;
 
@@ -19,4 +23,19 @@ public class ReservaAutomaticaController {
 	public void initController() {
 		
 	}
+	
+	public void meterInstalaciones() {
+		List<Object[]> list = this.model.getActividades();
+		
+		DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<String>();
+		
+		for(Object[] fila: list) {
+			if(fila.length > 0 && fila[0] !=null) {
+				String nombreInstalacion = fila[0].toString();
+				modelo.addElement(nombreInstalacion);
+			}
+		}
+		this.view.setCbActividadesModel(modelo);
+	}
+	
 }
