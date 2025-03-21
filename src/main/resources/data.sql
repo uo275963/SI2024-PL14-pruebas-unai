@@ -48,10 +48,10 @@ DELETE FROM RESERVA_INSTALACION;
 INSERT INTO RESERVA_INSTALACION (usuario_id, instalacion_id, fecha, hora_inicio, hora_fin, pagado) VALUES
 (1, 1, '2025-02-25', '10:00', '11:00', TRUE),
 (2, 2, '2025-02-26', '11:00', '12:00', FALSE),
-(2, 2, '2025-03-10', '11:00', '12:00', FALSE),
-(1, 2, '2025-03-11', '12:00', '13:00', TRUE),
-(4, 3, '2025-03-08', '09:00', '11:00', FALSE),
-(3, 3, '2025-03-13', '15:00', '16:00', TRUE);
+(2, 2, '2025-03-31', '11:00', '12:00', FALSE),
+(1, 2, '2025-03-27', '12:00', '13:00', TRUE),
+(4, 3, '2025-03-24', '09:00', '11:00', FALSE),
+(3, 3, '2025-03-25', '15:00', '16:00', TRUE);
 
 DELETE FROM INSCRIPCION_ACTIVIDAD;
 INSERT INTO INSCRIPCION_ACTIVIDAD (usuario_id, actividad_id, pagado) VALUES
