@@ -34,20 +34,43 @@ public class ActividadController {
 	}
 
 	private void cargarTablaActividades() {
-		List<ActividadDisplayDTO> actividades = model.getListaActividades();
-		DefaultTableModel tableModel = new DefaultTableModel(
-				new String[] { "ID", "Nombre", "Descripción", "Instalación", "Aforo", "Coste Socio", "Coste No Socio",
-						"Fecha Inicio", "Fecha Fin", "Días", "Hora Inicio", "Hora Fin", "Periodo Inscripción" },
-				0);
+	    List<ActividadDisplayDTO> actividades = model.getListaActividades();
+	    DefaultTableModel tableModel = new DefaultTableModel(
+	            new String[] { "ID", "Nombre", "Descripción", "Instalación", "Aforo", "Coste Socio", "Coste No Socio",
+	                    "Fecha Inicio", "Fecha Fin", "Días", "Hora Inicio", "Hora Fin", "Periodo Inscripción" },
+	            0);
 
-		for (ActividadDisplayDTO actividad : actividades) {
-			tableModel.addRow(new Object[] { actividad.getId(), actividad.getNombre(), actividad.getDescripcion(),
-					actividad.getInstalacion_id(), actividad.getAforo_maximo(), actividad.getCoste_socio(),
-					actividad.getCoste_no_socio(), actividad.getFecha_inicio(), actividad.getFecha_fin(),
-					actividad.getDias(), actividad.getHora_inicio(), actividad.getHora_fin(),
-					actividad.getPeriodo_inscripcion_id() });
-		}
-		view.getTablaActividades().setModel(tableModel);
+	    // Obtenemos las listas de periodos e instalaciones
+	    List<PeriodoDTO> periodos = model.getPeriodosInscripcion();
+	    List<InstalacionDTO> instalaciones = model.getInstalaciones();
+
+	    // Rellenar la tabla con los datos de actividades
+	    for (ActividadDisplayDTO actividad : actividades) {
+	        // Buscar el nombre de la instalación y el periodo basándonos en sus IDs
+	        String nombreInstalacion = "";
+	        for (InstalacionDTO instalacion : instalaciones) {
+	            if (instalacion.getId() == actividad.getInstalacion_id()) {
+	                nombreInstalacion = instalacion.getNombre();
+	                break;
+	            }
+	        }
+
+	        String nombrePeriodoInscripcion = "";
+	        for (PeriodoDTO periodo : periodos) {
+	            if (periodo.getId() == actividad.getPeriodo_inscripcion_id()) {
+	                nombrePeriodoInscripcion = periodo.getNombre();
+	                break;
+	            }
+	        }
+
+	        // Añadir la fila con los nombres de la instalación y el periodo
+	        tableModel.addRow(new Object[] { actividad.getId(), actividad.getNombre(), actividad.getDescripcion(),
+	                nombreInstalacion, actividad.getAforo_maximo(), actividad.getCoste_socio(),
+	                actividad.getCoste_no_socio(), actividad.getFecha_inicio(), actividad.getFecha_fin(),
+	                actividad.getDias(), actividad.getHora_inicio(), actividad.getHora_fin(), nombrePeriodoInscripcion });
+	    }
+
+	    view.getTablaActividades().setModel(tableModel);
 	}
 
 	private void guardarActividad() {
