@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -58,7 +59,6 @@ public class ReservaAutomaticaView {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 567, 608);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Seleccionar actividades: ");
@@ -94,6 +94,7 @@ public class ReservaAutomaticaView {
 		frame.getContentPane().add(lblNewLabel_2);
 		
 		tfInstalacion = new JTextField();
+		tfInstalacion.setEditable(false);
 		tfInstalacion.setBounds(10, 179, 132, 20);
 		frame.getContentPane().add(tfInstalacion);
 		tfInstalacion.setColumns(10);
@@ -104,6 +105,7 @@ public class ReservaAutomaticaView {
 		frame.getContentPane().add(lblNewLabel_3);
 		
 		tfFechaInicio = new JTextField();
+		tfFechaInicio.setEditable(false);
 		tfFechaInicio.setBounds(177, 179, 113, 20);
 		frame.getContentPane().add(tfFechaInicio);
 		tfFechaInicio.setColumns(10);
@@ -114,6 +116,7 @@ public class ReservaAutomaticaView {
 		frame.getContentPane().add(lblNewLabel_4);
 		
 		tfFechaFin = new JTextField();
+		tfFechaFin.setEditable(false);
 		tfFechaFin.setBounds(316, 179, 106, 20);
 		frame.getContentPane().add(tfFechaFin);
 		tfFechaFin.setColumns(10);
@@ -144,6 +147,7 @@ public class ReservaAutomaticaView {
 		frame.getContentPane().add(lblNewLabel_6);
 		
 		taConflictos = new JTextArea();
+		taConflictos.setEditable(false);
 		taConflictos.setBounds(10, 412, 520, 76);
 		frame.getContentPane().add(taConflictos);
 		
@@ -198,6 +202,14 @@ public class ReservaAutomaticaView {
 
 	public void settDias(JTable tDias) {
 		this.tDias = tDias;
+	}
+	
+	public void setTablaDiasModel(DefaultTableModel modelo) {
+		tDias.setModel(modelo); // Reemplaza el modelo de la tabla existente
+	}
+
+	public DefaultTableModel getTablaDiasModel() {
+		return (DefaultTableModel) this.tDias.getModel(); // Obtener y devolver el modelo de la tabla
 	}
 
 	public JComboBox<Integer> getCbActividades() {
