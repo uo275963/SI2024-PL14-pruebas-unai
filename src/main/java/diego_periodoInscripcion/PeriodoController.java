@@ -24,8 +24,6 @@ public class PeriodoController {
 
     public void initController() {
         view.getBtnGuardar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> guardarPeriodo()));
-        view.getBtnMostrar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> getListaPeriodos()));
-
         view.getTablaPeriodos().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseReleased(java.awt.event.MouseEvent e) {

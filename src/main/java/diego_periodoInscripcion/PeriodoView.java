@@ -11,7 +11,6 @@ public class PeriodoView {
 	private JDateChooser dateFin;
 	private JDateChooser dateFinNoSocios;
 	private JButton btnGuardar;
-	private JButton btnMostrar;
 	private JTable tablaPeriodos;
 	private JTable detallePeriodo;
 	private JComboBox<Object> listaPeriodos;
@@ -22,7 +21,7 @@ public class PeriodoView {
 
 	private void initialize() {
 		frame = new JFrame("Gestión de Períodos");
-		frame.setBounds(100, 100, 600, 500);
+		frame.setBounds(100, 100, 760, 760);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout());
 
@@ -47,8 +46,6 @@ public class PeriodoView {
 
 		btnGuardar = new JButton("Guardar Período");
 		panelFormulario.add(btnGuardar);
-		btnMostrar = new JButton("Mostrar Períodos");
-		panelFormulario.add(btnMostrar);
 
 		frame.getContentPane().add(panelFormulario, BorderLayout.NORTH);
 
@@ -92,10 +89,6 @@ public class PeriodoView {
 
 	public JButton getBtnGuardar() {
 		return btnGuardar;
-	}
-
-	public JButton getBtnMostrar() {
-		return btnMostrar;
 	}
 
 	public JTable getTablaPeriodos() {
