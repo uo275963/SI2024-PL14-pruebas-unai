@@ -43,7 +43,7 @@ public class ContabilidadController {
 			return;
 		}
 
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter("socios.txt"))) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter("Socios.txt"))) {
 			// Escribir cabecera del archivo
 			writer.write("Nombre\tDNI\tEstado\tMontante Reserva\tActividades\tTotal\n");
 
