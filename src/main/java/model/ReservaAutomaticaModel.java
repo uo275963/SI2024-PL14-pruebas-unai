@@ -1,8 +1,11 @@
 package model;
 
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import giis.demo.util.Database;
 
@@ -28,6 +31,8 @@ public class ReservaAutomaticaModel {
 	 * @param nombreActividad
 	 * @return
 	 */
+
+	
 	public List<Object[]> getActividadDetalles(String nombreActividad) {
 	    // Modificar la consulta SQL para incluir el nombre de la instalación
 	    String sql = "SELECT a.nombre, a.fecha_inicio, a.fecha_fin, i.nombre " +
@@ -36,6 +41,20 @@ public class ReservaAutomaticaModel {
 	                 "WHERE a.nombre = ?";
 	    return db.executeQueryArray(sql, new Object[]{nombreActividad});
 	}
+	
+	public List<Object[]> getActividadDetalles2(String nombreActividad) {
+	    String sql = "SELECT a.nombre, a.fecha_inicio, a.fecha_fin, i.id, a.dias, a.hora_inicio, a.hora_fin " +
+	                 "FROM ACTIVIDAD a " +
+	                 "JOIN INSTALACION i ON a.instalacion_id = i.id " +
+	                 "WHERE a.nombre = ?";
+	    return db.executeQueryArray(sql, new Object[]{nombreActividad});
+	}
+	
+	// He incluido dos métodos para que en la visualización de la instalacion, aparezca el nombre y no el id numero
+	// Actividad detalles -> Muestra el nombre 
+	// Actividad detales 2 -> Muestra el numero
+
+
 
 	/**
 	 * Método para imprimir los días y las horas
@@ -50,6 +69,51 @@ public class ReservaAutomaticaModel {
 	    return db.executeQueryArray(sql, new Object[]{nombreActividad});
 	}
 
+	/**
+	 * Método para reservar la instalacion los días asociados a esa actividad
+	 * @param usuarioId
+	 * @param instalacionId
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @param dias
+	 * @param horaInicio
+	 * @param horaFin
+	 */
+	public void reservarInstalacion(int usuarioId, int instalacionId, String fechaInicio, String fechaFin, String dias, String horaInicio, String horaFin) {
+	    String sql = "INSERT INTO RESERVA_INSTALACION (usuario_id, instalacion_id, fecha, hora_inicio, hora_fin, pagado) VALUES (?, ?, ?, ?, ?, ?)";
+
+	    // Convertir fechas de inicio y fin en formato LocalDate
+	    LocalDate inicio = LocalDate.parse(fechaInicio);
+	    LocalDate fin = LocalDate.parse(fechaFin);
+
+	    // Separar los días de la actividad en un array
+	    String[] diasArray = dias.split(",");
+
+	    // Iterar sobre el rango de fechas
+	    for (LocalDate fecha = inicio; !fecha.isAfter(fin); fecha = fecha.plusDays(1)) {
+	        // Obtener el día de la semana de la fecha actual
+	        String diaSemana = fecha.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
+
+	        // Comprobar si el día está en los días especificados de la actividad
+	        for (String dia : diasArray) {
+	            if (dia.trim().equalsIgnoreCase(diaSemana)) {
+	                // Insertar la reserva en la base de datos
+	                db.executeUpdate(sql, new Object[]{usuarioId, instalacionId, fecha.toString(), horaInicio, horaFin, true});
+	            }
+	        }
+	    }
+	}
+	
+	public List<Object[]> verificarConflictos(int instalacionId, String fechaInicio, String fechaFin, String dias, String horaInicio, String horaFin) {
+	    // Consulta SQL para verificar si ya existe una reserva en la instalación para esa fecha y hora
+	    String sql = "SELECT r.fecha, r.hora_inicio, r.hora_fin, u.nombre " +  // Aquí se selecciona 'u.nombre' (nombre del usuario)
+	                 "FROM RESERVA_INSTALACION r " +
+	                 "JOIN USUARIO u ON r.usuario_id = u.id " +  // Nos aseguramos de hacer JOIN con la tabla 'USUARIO'
+	                 "WHERE r.instalacion_id = ? AND r.fecha BETWEEN ? AND ? " +
+	                 "AND ((r.hora_inicio <= ? AND r.hora_fin > ?) OR (r.hora_inicio < ? AND r.hora_fin >= ?))";
+
+	    return db.executeQueryArray(sql, new Object[]{instalacionId, fechaInicio, fechaFin, horaInicio, horaInicio, horaFin, horaFin});
+	}
 
 
 
