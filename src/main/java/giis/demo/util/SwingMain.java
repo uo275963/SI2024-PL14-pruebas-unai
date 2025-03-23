@@ -20,6 +20,9 @@ import view.VisualizarReservasComoSocioView;
 import diego_Actividad.*;
 import diego_periodoInscripcion.*;
 import diego_ContabilidadReservas.*;
+import diego_InscripcionSocios.InscripcionController;
+import diego_InscripcionSocios.InscripcionModel;
+import diego_InscripcionSocios.InscripcionView;
 import unai.lista_actividades.*;
 import unai.ver_reservas.*;
 
@@ -192,7 +195,20 @@ public class SwingMain {
 		});
 		frame.getContentPane().add(btnContabilidad);
 
-	}
+	
+	/*
+	JButton btnInscripcion = new JButton("Inscripción Socios");
+	btnInscripcion.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			InscripcionController controller = new InscripcionController(
+					new InscripcionView(),
+					new InscripcionModel());
+			controller.initController();
+		}
+	});
+	frame.getContentPane().add(btnInscripcion);*/
+
+}
 
 	public JFrame getFrame() {
 		return this.frame;

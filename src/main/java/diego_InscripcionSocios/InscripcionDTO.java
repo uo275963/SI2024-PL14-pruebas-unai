@@ -1,48 +1,59 @@
 package diego_InscripcionSocios;
 
 public class InscripcionDTO {
-	private int id;
-	private int socioId;
-	private int actividadId;
-	private String fechaInscripcion;
+    private int id;
+    private int usuarioId;
+    private int actividadId;
+    private boolean pagado;
 
-	public InscripcionDTO(int id, int socioId, int actividadId, String fechaInscripcion) {
-		this.id = id;
-		this.socioId = socioId;
-		this.actividadId = actividadId;
-		this.fechaInscripcion = fechaInscripcion;
-	}
+    public InscripcionDTO() {}
 
-	public int getId() {
-		return id;
-	}
+    public InscripcionDTO(int id, int usuarioId, int actividadId, boolean pagado) {
+        this.id = id;
+        this.usuarioId = usuarioId;
+        this.actividadId = actividadId;
+        this.pagado = pagado;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getSocioId() {
-		return socioId;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setSocioId(int socioId) {
-		this.socioId = socioId;
-	}
+    public int getUsuarioId() {
+        return usuarioId;
+    }
 
-	public int getActividadId() {
-		return actividadId;
-	}
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
 
-	public void setActividadId(int actividadId) {
-		this.actividadId = actividadId;
-	}
+    public int getActividadId() {
+        return actividadId;
+    }
 
-	public String getFechaInscripcion() {
-		return fechaInscripcion;
-	}
+    public void setActividadId(int actividadId) {
+        this.actividadId = actividadId;
+    }
 
-	public void setFechaInscripcion(String fechaInscripcion) {
-		this.fechaInscripcion = fechaInscripcion;
-	}
+    public boolean isPagado() {
+        return pagado;
+    }
 
+    public void setPagado(boolean pagado) {
+        this.pagado = pagado;
+    }
+
+    @Override
+    public String toString() {
+        return "InscripcionDTO{" +
+                "id=" + id +
+                ", usuarioId=" + usuarioId +
+                ", actividadId=" + actividadId +
+                ", pagado=" + pagado +
+                '}';
+    }
 }
