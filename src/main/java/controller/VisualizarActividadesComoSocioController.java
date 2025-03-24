@@ -2,6 +2,8 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -60,6 +62,19 @@ public class VisualizarActividadesComoSocioController {
 	}
 	
 	
+	private boolean esFechaValida(String fecha) {
+	    if (fecha == null || fecha.isEmpty()) return true; // Permitir campos vacíos
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    sdf.setLenient(false);
+	    try {
+	        sdf.parse(fecha);
+	        return true;
+	    } catch (ParseException e) {
+	        return false;
+	    }
+	}
+	
+	
 	private void actualizarNombreSocio(int idUsuario) {
 	    // Usamos el método del modelo para obtener el nombre del socio
 	    String nombreSocio = this.model.getNombreUsuarioPorId(idUsuario);
@@ -97,6 +112,12 @@ public class VisualizarActividadesComoSocioController {
 	    String instalacionSeleccionada = (String) this.view.getCbInstalaciones().getSelectedItem();
 	    String fechaInicio = this.view.getTFFechaInicio().getText();
 	    String fechaFin = this.view.getTFFechaFin().getText();
+	    
+	 // Validar formato de fechas
+	    if (!esFechaValida(fechaInicio) || !esFechaValida(fechaFin)) {
+	        JOptionPane.showMessageDialog(null, "Las fechas deben tener el formato YYYY-MM-DD.", "Error de formato", JOptionPane.ERROR_MESSAGE);
+	        return;
+	    }
 
 	    // Obtener las actividades del usuario filtradas desde el modelo
 	    List<Object[]> actividades = this.model.getActividadesPorUsuarioId(usuarioId, instalacionSeleccionada, fechaInicio, fechaFin);
