@@ -22,6 +22,7 @@ import diego_periodoInscripcion.*;
 import unai.lista_actividades.*;
 import unai.ver_reservas.*;
 import unai.inscribir_socio.*;
+import unai.inscribir_no_socio.*;
 
 import model.VisualizarReservasComoSocioModel;
 import view.VisualizarReservasComoSocioView;
@@ -182,6 +183,14 @@ public class SwingMain {
 		});
 		frame.getContentPane().add(btnInscribirSocio);
 
+		JButton btnInscribirNoSocio = new JButton("Inscribir un no socio en una actividad");
+		btnInscribirNoSocio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InscribirNoSocioController controller = new InscribirNoSocioController(new InscribirNoSocioModel(), new InscribirNoSocioView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnInscribirSocio);
 		/*
 		JButton btnVisualizarReservasComoSocio = new JButton("Ver reservas como socio");
 		btnVisualizarReservasComoSocio.addActionListener(new ActionListener() {
