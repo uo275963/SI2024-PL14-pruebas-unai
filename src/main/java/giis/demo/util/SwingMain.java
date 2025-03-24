@@ -190,7 +190,7 @@ public class SwingMain {
 				controller.initController();
 			}
 		});
-		frame.getContentPane().add(btnInscribirSocio);
+		frame.getContentPane().add(btnInscribirNoSocio);
 		/*
 		JButton btnVisualizarReservasComoSocio = new JButton("Ver reservas como socio");
 		btnVisualizarReservasComoSocio.addActionListener(new ActionListener() {
