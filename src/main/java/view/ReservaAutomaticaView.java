@@ -146,11 +146,6 @@ public class ReservaAutomaticaView {
 		lblNewLabel_6.setBounds(10, 379, 152, 22);
 		frame.getContentPane().add(lblNewLabel_6);
 		
-		taConflictos = new JTextArea();
-		taConflictos.setEditable(false);
-		taConflictos.setBounds(10, 412, 520, 76);
-		frame.getContentPane().add(taConflictos);
-		
 		JSeparator separator_3 = new JSeparator();
 		separator_3.setBounds(0, 516, 555, 2);
 		frame.getContentPane().add(separator_3);
@@ -162,6 +157,14 @@ public class ReservaAutomaticaView {
 		bReserva = new JButton("Hacer Reserva");
 		bReserva.setBounds(298, 539, 124, 23);
 		frame.getContentPane().add(bReserva);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(10, 416, 520, 78);
+		frame.getContentPane().add(scrollPane_1);
+		
+		taConflictos = new JTextArea();
+		scrollPane_1.setViewportView(taConflictos);
+		taConflictos.setEditable(false);
 	}
 
 	public JFrame getFrame() {
@@ -263,6 +266,4 @@ public class ReservaAutomaticaView {
 	public void setbCerrar(JButton bCerrar) {
 		this.bCerrar = bCerrar;
 	}
-	
-	
 }
