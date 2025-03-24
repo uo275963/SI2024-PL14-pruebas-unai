@@ -130,6 +130,23 @@ public class InscribirSocioController {
         // Obtener el ID de la actividad seleccionada en la tabla
         int actividadId = model.getIdActividadPorNombre(view.getTablaActividades().getValueAt(view.getTablaActividades().getSelectedRow(), 0).toString());
 
+
+        // Obtener el aforo máximo y el número de inscritos
+        int aforoMaximo = model.getAforoMaximoDeActividad(actividadId);
+        int inscritos = model.getNumeroDeInscritos(actividadId);
+
+        if (aforoMaximo == -1 || inscritos == -1) {
+            JOptionPane.showMessageDialog(view.getFrame(), "Error al verificar la disponibilidad de plazas.");
+            return;
+        }
+
+        // Comprobar si hay plazas disponibles
+        if (inscritos >= aforoMaximo) {
+            JOptionPane.showMessageDialog(view.getFrame(), "No hay plazas disponibles para esta actividad.");
+            return;
+        }
+        
+        
         // Llamar al método para inscribir al socio
         model.inscribirSocioEnActividad(socioId, actividadId);
 
