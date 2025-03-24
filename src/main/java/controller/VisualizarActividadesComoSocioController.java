@@ -52,6 +52,9 @@ public class VisualizarActividadesComoSocioController {
 		    // Llamar al método para actualizar las actividades del usuario con el idSocio
 		    actualizarActividadesUsuario(idSocio);
 		}));
+		
+	    this.view.getBtnCerrar().addActionListener(e -> this.view.getFrame().setVisible(false));
+
 
 		
 	}
@@ -90,8 +93,13 @@ public class VisualizarActividadesComoSocioController {
 	
 	
 	public void actualizarActividadesUsuario(int usuarioId) {
-	    // Obtener las actividades del usuario desde el modelo
-	    List<Object[]> actividades = this.model.getActividadesPorUsuarioId(usuarioId);
+	    // Obtener la instalación seleccionada desde el JComboBox
+	    String instalacionSeleccionada = (String) this.view.getCbInstalaciones().getSelectedItem();
+	    String fechaInicio = this.view.getTFFechaInicio().getText();
+	    String fechaFin = this.view.getTFFechaFin().getText();
+
+	    // Obtener las actividades del usuario filtradas desde el modelo
+	    List<Object[]> actividades = this.model.getActividadesPorUsuarioId(usuarioId, instalacionSeleccionada, fechaInicio, fechaFin);
 
 	    // Obtener el modelo de la tabla
 	    DefaultTableModel modelo = (DefaultTableModel) this.view.getTablaActividades().getModel();
@@ -107,9 +115,9 @@ public class VisualizarActividadesComoSocioController {
 	        }
 	    } else {
 	        // Si no hay actividades, mostrar un mensaje
-	        JOptionPane.showMessageDialog(null, "No hay actividades registradas para este usuario.", "Sin actividades", JOptionPane.INFORMATION_MESSAGE);
+	        JOptionPane.showMessageDialog(null, "No hay actividades registradas para este usuario con los filtros aplicados.", "Sin actividades", JOptionPane.INFORMATION_MESSAGE);
 	    }
-	}
+	} 
 
 	
 	

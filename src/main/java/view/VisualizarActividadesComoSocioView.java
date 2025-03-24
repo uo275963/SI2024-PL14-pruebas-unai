@@ -19,9 +19,10 @@ public class VisualizarActividadesComoSocioView {
 	private JTable tablaActividades;
 	private JComboBox cbInstalaciones;
 	private JLabel lblNewLabel_1;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField TFFechaInicio;
+	private JTextField TFFechaFin;
 	private JButton btnFiltrar;
+	private JButton btnCerrar;
 
 	/**
 	 * Launch the application.
@@ -93,13 +94,39 @@ public class VisualizarActividadesComoSocioView {
 	public VisualizarActividadesComoSocioView() {
 		initialize();
 	}
+	
+	
+
+	public JTextField getTFFechaInicio() {
+		return TFFechaInicio;
+	}
+
+	public void setTFFechaInicio(JTextField tFFechaInicio) {
+		TFFechaInicio = tFFechaInicio;
+	}
+
+	public JTextField getTFFechaFin() {
+		return TFFechaFin;
+	}
+
+	public void setTFFechaFin(JTextField tFFechaFin) {
+		TFFechaFin = tFFechaFin;
+	}
+
+	public JButton getBtnCerrar() {
+		return btnCerrar;
+	}
+
+	public void setBtnCerrar(JButton btnCerrar) {
+		this.btnCerrar = btnCerrar;
+	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 		frame = new JFrame("Visualizar actividades");
-		frame.setBounds(100, 100, 722, 392);
+		frame.setBounds(100, 100, 759, 424);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -109,7 +136,7 @@ public class VisualizarActividadesComoSocioView {
 		frame.getContentPane().add(lblNombreSocio);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 86, 686, 243);
+		scrollPane.setBounds(10, 86, 686, 260);
 		frame.getContentPane().add(scrollPane);
 
 		tablaActividades = new JTable();
@@ -134,19 +161,23 @@ public class VisualizarActividadesComoSocioView {
 		lblNewLabel_1.setBounds(203, 57, 28, 14);
 		frame.getContentPane().add(lblNewLabel_1);
 
-		textField = new JTextField();
-		textField.setBounds(228, 54, 118, 20);
-		frame.getContentPane().add(textField);
-		textField.setColumns(10);
+		TFFechaInicio = new JTextField();
+		TFFechaInicio.setBounds(228, 54, 118, 20);
+		frame.getContentPane().add(TFFechaInicio);
+		TFFechaInicio.setColumns(10);
 
 		JLabel lblNewLabel_1_1 = new JLabel("a");
 		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblNewLabel_1_1.setBounds(350, 57, 19, 14);
 		frame.getContentPane().add(lblNewLabel_1_1);
 
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(375, 54, 118, 20);
-		frame.getContentPane().add(textField_1);
+		TFFechaFin = new JTextField();
+		TFFechaFin.setColumns(10);
+		TFFechaFin.setBounds(375, 54, 118, 20);
+		frame.getContentPane().add(TFFechaFin);
+		
+		btnCerrar = new JButton("Cerrar");
+		btnCerrar.setBounds(611, 356, 85, 21);
+		frame.getContentPane().add(btnCerrar);
 	}
 }

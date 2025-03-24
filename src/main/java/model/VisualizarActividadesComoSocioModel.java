@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import giis.demo.util.Database;
@@ -30,11 +31,11 @@ public class VisualizarActividadesComoSocioModel {
 
 	}
 	
-	public List<Object[]> getActividadesPorUsuarioId(int usuarioId) {
+	public List<Object[]> getActividadesPorUsuarioId(int usuarioId, String instalacion, String fechaInicio, String fechaFin) {
 	    String sql = "SELECT a.nombre AS actividad_nombre, " +
 	                 "i.nombre AS instalacion_nombre, " +
 	                 "a.fecha_inicio AS fecha_actividad, " +
-	                 "pi.fecha_inicio_socios AS fecha_inscripcion, " + // Asumiendo que tomamos la fecha de inicio de socios
+	                 "pi.fecha_inicio_socios AS fecha_inscripcion, " +
 	                 "a.coste_socio AS coste " +
 	                 "FROM ACTIVIDAD a " +
 	                 "JOIN INSCRIPCION_ACTIVIDAD ia ON a.id = ia.actividad_id " +
@@ -42,9 +43,43 @@ public class VisualizarActividadesComoSocioModel {
 	                 "JOIN PERIODO_INSCRIPCION pi ON a.periodo_inscripcion_id = pi.id " +
 	                 "WHERE ia.usuario_id = ?";
 
-	    // Ejecutamos la consulta con el ID del usuario y devolvemos el resultado
-	    return db.executeQueryArray(sql, usuarioId);
+	    List<Object> params = new ArrayList<>();
+	    params.add(usuarioId);
+
+	    // Solo agregamos filtros si están completos
+	    if (instalacion != null && !instalacion.isEmpty()) {
+	        sql += " AND i.nombre = ?";
+	        params.add(instalacion);
+	    }
+	    if (fechaInicio != null && !fechaInicio.isEmpty()) {
+	        sql += " AND a.fecha_inicio >= ?";
+	        params.add(fechaInicio);
+	    }
+	    if (fechaFin != null && !fechaFin.isEmpty()) {
+	        sql += " AND a.fecha_fin <= ?";
+	        params.add(fechaFin);
+	    }
+
+	    // Si no hay filtros, devolver todas las actividades del usuario
+	    if (instalacion.isEmpty() && fechaInicio.isEmpty() && fechaFin.isEmpty()) {
+	        sql = "SELECT a.nombre AS actividad_nombre, " +
+	              "i.nombre AS instalacion_nombre, " +
+	              "a.fecha_inicio AS fecha_actividad, " +
+	              "pi.fecha_inicio_socios AS fecha_inscripcion, " +
+	              "a.coste_socio AS coste " +
+	              "FROM ACTIVIDAD a " +
+	              "JOIN INSCRIPCION_ACTIVIDAD ia ON a.id = ia.actividad_id " +
+	              "JOIN INSTALACION i ON a.instalacion_id = i.id " +
+	              "JOIN PERIODO_INSCRIPCION pi ON a.periodo_inscripcion_id = pi.id " +
+	              "WHERE ia.usuario_id = ?";
+	        params.clear();
+	        params.add(usuarioId);
+	    }
+
+	    // Ejecutamos la consulta con los parámetros
+	    return db.executeQueryArray(sql, params.toArray());
 	}
+
 
 
 
