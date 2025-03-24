@@ -12,34 +12,17 @@ public class ContabilidadModel {
      */
     public List<ContabilidadDTO> obtenerSocios() {
         String sql = "SELECT u.nombre, u.dni, u.estado, " +
-                     "(SELECT SUM(i.precio_hora) FROM reserva_instalacion r " +
-                     "JOIN instalacion i ON r.instalacion_id = i.id WHERE r.usuario_id = u.id AND r.pagado = TRUE) AS montante_reserva, " +
-                     "(SELECT GROUP_CONCAT(a.nombre) FROM inscripcion_actividad ia " +
-                     "JOIN actividad a ON ia.actividad_id = a.id WHERE ia.usuario_id = u.id) AS actividades, " +
-                     "(SELECT SUM(p.monto) FROM pago p WHERE p.usuario_id = u.id) AS total " +
-                     "FROM usuario u " +
-                     "WHERE u.rol = 'SOCIO'";
+                "COALESCE(SUM(p.monto), 0) AS montanteReserva, " +  // Suma de los pagos realizados
+                "COALESCE(SUM(a.coste_socio), 0) AS actividades, " + // Suma de los costos de las actividades
+                "COALESCE(SUM(p.monto), 0) + COALESCE(SUM(a.coste_socio), 0) AS total " +  // Suma total
+                "FROM USUARIO u " +
+                "LEFT JOIN PAGO p ON u.id = p.usuario_id " +
+                "LEFT JOIN INSCRIPCION_ACTIVIDAD ia ON u.id = ia.usuario_id " +
+                "LEFT JOIN ACTIVIDAD a ON ia.actividad_id = a.id " +
+                "WHERE u.rol = 'SOCIO' " +  // Filtra solo a los socios
+                "GROUP BY u.id";
 
         return db.executeQueryPojo(ContabilidadDTO.class, sql);
-    }
-
-    /**
-     * Obtiene la información de un socio específico según su DNI.
-     */
-    public ContabilidadDTO obtenerSocioPorDni(String dni) {
-        String sql = "SELECT u.nombre, u.dni, u.estado, " +
-                     "(SELECT SUM(i.precio_hora) FROM reserva_instalacion r " +
-                     "JOIN instalacion i ON r.instalacion_id = i.id WHERE r.usuario_id = u.id AND r.pagado = TRUE) AS montante_reserva, " +
-                     "(SELECT GROUP_CONCAT(a.nombre) FROM inscripcion_actividad ia " +
-                     "JOIN actividad a ON ia.actividad_id = a.id WHERE ia.usuario_id = u.id) AS actividades, " +
-                     "(SELECT SUM(p.monto) FROM pago p WHERE p.usuario_id = u.id) AS total " +
-                     "FROM usuario u WHERE u.dni = ? AND u.rol = 'SOCIO'";
-
-        List<ContabilidadDTO> resultados = db.executeQueryPojo(ContabilidadDTO.class, sql, dni);
-        if (resultados.isEmpty()) {
-            throw new ApplicationException("No se encontró el socio con DNI: " + dni);
-        }
-        return resultados.get(0);
     }
 
     /**

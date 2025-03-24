@@ -49,7 +49,7 @@ public class ContabilidadController {
 
 			// Escribir los datos de cada socio
 			for (ContabilidadDTO socio : socios) {
-				writer.write(String.format("%s\t%s\t%s\t%.2f\t%s\t%.2f\n", socio.getNombre(), socio.getDni(),
+				writer.write(String.format("%s\t%s\t%s\t%.2f\t%.2f\t%.2f\n", socio.getNombre(), socio.getDni(),
 						socio.getEstado(), socio.getMontanteReserva(), socio.getActividades(), socio.getTotal()));
 			}
 

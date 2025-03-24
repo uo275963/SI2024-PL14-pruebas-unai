@@ -5,7 +5,7 @@ public class ContabilidadDTO {
 	private String dni;
 	private String estado;
 	private double montanteReserva;
-	private String actividades;
+	private double actividades;
 	private double total;
 
 	// Constructores
@@ -13,7 +13,7 @@ public class ContabilidadDTO {
 	public ContabilidadDTO() {
 	};
 
-	public ContabilidadDTO(String nombre, String dni, String estado, double montanteReserva, String actividades,
+	public ContabilidadDTO(String nombre, String dni, String estado, double montanteReserva, double actividades,
 			double total) {
 		this.nombre = nombre;
 		this.dni = dni;
@@ -56,11 +56,11 @@ public class ContabilidadDTO {
 		this.montanteReserva = montanteReserva;
 	}
 
-	public String getActividades() {
+	public double getActividades() {
 		return actividades;
 	}
 
-	public void setActividades(String actividades) {
+	public void setActividades(double actividades) {
 		this.actividades = actividades;
 	}
 
