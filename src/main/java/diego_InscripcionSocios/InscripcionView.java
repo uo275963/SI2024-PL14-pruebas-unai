@@ -1,72 +1,95 @@
 package diego_InscripcionSocios;
 
-import diego_InscripcionSocios.ActividadDisplayDTO;
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
+import com.toedter.calendar.JDateChooser;
 
-public class InscripcionView extends JFrame {
-    private JTable table;
-    private JButton btnInscribir;
-    private InscripcionController controller;
-    
+public class InscripcionView {
+    private JFrame frame;
+    private JComboBox<Object> listaPeriodosInscripcion; // ComboBox para seleccionar el período
+    private JComboBox<ActividadComboBoxItem> listaActividades; // ComboBox para seleccionar la actividad
+    private JTextField UsuarioId; // Campo para ingresar el ID del usuario (puede ser autogenerado en otro escenario)
+    private JButton btnInscribirse; // Botón para realizar la inscripción
+    private JTable tablaInscripciones; // Tabla para mostrar inscripciones previas
+
     public InscripcionView() {
-        controller = new InscripcionController();
-        
-        setTitle("Inscripción a Actividades");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        
-        // Configurar tabla
-        String[] columnNames = { "Nombre", "Descripción", "Aforo", "Coste Socio", "Coste No Socio", "Fechas" };
-        table = new JTable();
-        JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane, BorderLayout.CENTER);
-        
-        // Botón de inscripción
-        btnInscribir = new JButton("Inscribirse");
-        btnInscribir.addActionListener(e -> inscribirUsuario());
-        add(btnInscribir, BorderLayout.SOUTH);
-        
-        // Cargar actividades
-        cargarActividades();
+        initialize();
     }
 
-    private void cargarActividades() {
-        List<ActividadDisplayDTO> actividades = controller.obtenerActividadesDisponibles();
-        String[][] data = new String[actividades.size()][6];
-        
-        for (int i = 0; i < actividades.size(); i++) {
-            ActividadDisplayDTO actividad = actividades.get(i);
-            data[i][0] = actividad.getNombre();
-            data[i][1] = actividad.getDescripcion();
-            data[i][2] = String.valueOf(actividad.getAforo_maximo());
-            data[i][3] = String.valueOf(actividad.getCoste_socio());
-            data[i][4] = String.valueOf(actividad.getCoste_no_socio());
-            data[i][5] = actividad.getFecha_inicio() + " - " + actividad.getFecha_fin();
-        }
-        
-        table.setModel(new javax.swing.table.DefaultTableModel(data, new String[] { "Nombre", "Descripción", "Aforo", "Coste Socio", "Coste No Socio", "Fechas" }));
+    private void initialize() {
+        frame = new JFrame("Inscripción a Actividad");
+        frame.setBounds(100, 100, 750, 750);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(new BorderLayout());
+
+        // Panel de encabezado con mensaje
+        JPanel panelEncabezado = new JPanel();
+        JLabel lblEncabezado = new JLabel("Seleccione un período y una actividad para inscribirse");
+        lblEncabezado.setFont(new Font("Arial", Font.BOLD, 14));
+        panelEncabezado.add(lblEncabezado);
+        frame.getContentPane().add(panelEncabezado, BorderLayout.NORTH);
+
+        // Panel de formulario para la inscripción
+        JPanel panelFormulario = new JPanel();
+        panelFormulario.setLayout(new GridLayout(4, 2, 10, 20)); // Mejor organización con más espacio
+
+        // Usuario ID (Este campo puede no ser necesario si lo gestionas desde el sistema de sesiones)
+        panelFormulario.add(new JLabel("ID de Usuario:"));
+        UsuarioId = new JTextField();
+        panelFormulario.add(UsuarioId);
+
+        // Selección de período
+        panelFormulario.add(new JLabel("Periodo de Inscripción:"));
+        listaPeriodosInscripcion = new JComboBox<>();
+        panelFormulario.add(listaPeriodosInscripcion);
+
+        // Selección de actividad
+        panelFormulario.add(new JLabel("Actividad:"));
+        listaActividades = new JComboBox<>();
+        panelFormulario.add(listaActividades);
+
+        // Botón para inscribirse
+        btnInscribirse = new JButton("Inscribirse");
+        panelFormulario.add(btnInscribirse);
+
+        frame.getContentPane().add(panelFormulario, BorderLayout.CENTER);
+
+        // Tabla para mostrar inscripciones previas
+        tablaInscripciones = new JTable();
+        JScrollPane scrollTabla = new JScrollPane(tablaInscripciones);
+        frame.getContentPane().add(scrollTabla, BorderLayout.SOUTH);
     }
 
-    private void inscribirUsuario() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1) {
-            int actividadId = Integer.parseInt((String) table.getValueAt(selectedRow, 0));
-            // Asumimos que el usuario está logueado, en este caso el id de usuario es un valor ficticio
-            int usuarioId = 1; // Esto debe ser reemplazado por el id real del usuario
-            controller.inscribirUsuario(usuarioId, actividadId);
-            JOptionPane.showMessageDialog(this, "Inscripción realizada con éxito.");
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione una actividad.");
-        }
+    // Métodos para acceder a los componentes desde el controlador
+    public JFrame getFrame() {
+        return frame;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            InscripcionView view = new InscripcionView();
-            view.setVisible(true);
-        });
+    public JComboBox<Object> getListaPeriodosInscripcion() {
+        return listaPeriodosInscripcion;
+    }
+
+    public JComboBox<ActividadComboBoxItem> getListaActividades() {
+        return listaActividades;
+    }
+
+    public JTextField getUsuarioId() {
+        return UsuarioId;
+    }
+
+    public JButton getBtnInscribirse() {
+        return btnInscribirse;
+    }
+
+    public JTable getTablaInscripciones() {
+        return tablaInscripciones;
+    }
+
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(frame, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(frame, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
     }
 }

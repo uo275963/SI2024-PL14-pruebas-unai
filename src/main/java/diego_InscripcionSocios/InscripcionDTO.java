@@ -1,28 +1,20 @@
 package diego_InscripcionSocios;
 
 public class InscripcionDTO {
-    private int id;
-    private int usuarioId;
-    private int actividadId;
-    private boolean pagado;
+    private int usuarioId;        // ID del usuario que se inscribe
+    private int actividadId;      // ID de la actividad a la que se inscribe
+    private boolean pagado;       // Indica si la inscripción ha sido pagada
 
-    public InscripcionDTO() {}
-
-    public InscripcionDTO(int id, int usuarioId, int actividadId, boolean pagado) {
-        this.id = id;
+    // Constructor
+    public InscripcionDTO() {};
+    
+    public InscripcionDTO(int usuarioId, int actividadId, boolean pagado) {
         this.usuarioId = usuarioId;
         this.actividadId = actividadId;
         this.pagado = pagado;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    // Getters y Setters
     public int getUsuarioId() {
         return usuarioId;
     }
@@ -47,13 +39,9 @@ public class InscripcionDTO {
         this.pagado = pagado;
     }
 
+    // Método toString para mostrar la inscripción
     @Override
     public String toString() {
-        return "InscripcionDTO{" +
-                "id=" + id +
-                ", usuarioId=" + usuarioId +
-                ", actividadId=" + actividadId +
-                ", pagado=" + pagado +
-                '}';
+        return "InscripcionDTO [usuarioId=" + usuarioId + ", actividadId=" + actividadId + ", pagado=" + pagado + "]";
     }
 }

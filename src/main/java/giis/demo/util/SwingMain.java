@@ -196,17 +196,17 @@ public class SwingMain {
 		frame.getContentPane().add(btnContabilidad);
 
 	
-	/*
+	
 	JButton btnInscripcion = new JButton("Inscripción Socios");
 	btnInscripcion.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			InscripcionController controller = new InscripcionController(
-					new InscripcionView(),
-					new InscripcionModel());
+					new InscripcionModel(),
+					new InscripcionView());
 			controller.initController();
 		}
 	});
-	frame.getContentPane().add(btnInscripcion);*/
+	frame.getContentPane().add(btnInscripcion);
 
 }
 
