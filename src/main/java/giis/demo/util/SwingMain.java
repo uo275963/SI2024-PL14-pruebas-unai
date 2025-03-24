@@ -18,11 +18,11 @@ import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
 import view.VisualizarReservasComoSocioView;
 import diego_Actividad.*;
-import diego_periodoInscripcion.*;
 import diego_ContabilidadReservas.*;
 import diego_InscripcionSocios.InscripcionController;
 import diego_InscripcionSocios.InscripcionModel;
 import diego_InscripcionSocios.InscripcionView;
+import diego_periodoInscripcion.*;
 import unai.lista_actividades.*;
 import unai.ver_reservas.*;
 
@@ -187,28 +187,24 @@ public class SwingMain {
 		JButton btnContabilidad = new JButton("Contabilidad Reservas");
 		btnContabilidad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ContabilidadController controller = new ContabilidadController(
-						new ContabilidadView(),
+				ContabilidadController controller = new ContabilidadController(new ContabilidadView(),
 						new ContabilidadModel());
 				controller.initController();
 			}
 		});
 		frame.getContentPane().add(btnContabilidad);
 
-	
-	
-	JButton btnInscripcion = new JButton("Inscripción Socios");
-	btnInscripcion.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			InscripcionController controller = new InscripcionController(
-					new InscripcionModel(),
-					new InscripcionView());
-			controller.initController();
-		}
-	});
-	frame.getContentPane().add(btnInscripcion);
+		JButton btnInscripcion = new JButton("Inscripción Socios");
+		btnInscripcion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InscripcionController controller = new InscripcionController(new InscripcionModel(),
+						new InscripcionView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnInscripcion);
 
-}
+	}
 
 	public JFrame getFrame() {
 		return this.frame;
