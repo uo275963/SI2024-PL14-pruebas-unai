@@ -76,17 +76,17 @@ public class InscribirNoSocioController {
         }
 
         // Verificar si el no socio existe en la base de datos
-        Integer socioId = model.getIdSocioPorDNI(dni);
+        Integer noSocioId = model.getIdSocioPorDNI(dni);
 
         // Si no existe, agregar al no socio a la base de datos
-        if (socioId == null) {
+        if (noSocioId == null) {
         	model.registrarNuevoNoSocio((view.getDniField().getText()), view.getNombreField().getText());
-            socioId = model.getIdSocioPorDNI(view.getDniField().getText().toString());
+            noSocioId = model.getIdSocioPorDNI(view.getDniField().getText().toString());
             
             
             System.out.println(view.getDniField().getText().toString());
-            System.out.println(socioId);
-            if (socioId == null) {
+            System.out.println(noSocioId);
+            if (noSocioId == null) {
                 JOptionPane.showMessageDialog(view.getFrame(), "No se pudo registrar al no socio.");
                 return;
             }
@@ -123,7 +123,13 @@ public class InscribirNoSocioController {
         }
 
         // Inscribir al no socio en la actividad
-        model.inscribirNoSocioEnActividad(socioId, actividadId);
+        model.inscribirNoSocioEnActividad(noSocioId, actividadId);
+        
+     // Registrar el pago para el no socio
+
+        // Obtener el costo para no socios
+        Double costeNoSocio = model.getCosteNoSocio(actividadId);
+        model.registrarPago(noSocioId, actividadId, costeNoSocio);
 
         // Mostrar mensaje de éxito
         JOptionPane.showMessageDialog(view.getFrame(), "¡Inscripción realizada con éxito!");

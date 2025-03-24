@@ -70,10 +70,52 @@ public class InscribirNoSocioModel {
 	
 	
 	
+	public Double getCosteNoSocio(int actividadId) {
+	    String sql = "SELECT coste_no_socio FROM ACTIVIDAD WHERE id = ?";
+	    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
+
+	    if (resultado != null && !resultado.isEmpty()) {
+	        Object[] fila = resultado.get(0);
+	        if (fila != null && fila.length > 0) {
+	            Object coste = fila[0];
+	            if (coste != null) {
+	                try {
+	                    return Double.parseDouble(coste.toString());
+	                } catch (NumberFormatException e) {
+	                    e.printStackTrace();
+	                    return 0.0;  // Devolver 0.0 si hay error
+	                }
+	            }
+	        }
+	    }
+	    return 0.0;  // Si no hay resultados
+	}
 	
 	
+	public void registrarPago(int usuarioId, int actividadId, Double monto) {
+	    String concepto = obtenerNombreActividad(actividadId);  // Recuperamos el nombre de la actividad
+	    String sql = "INSERT INTO PAGO (usuario_id, inscripcion_actividad_id, monto, concepto) VALUES (?, ?, ?, ?)";
+	    
+	    // Primero, insertar en la tabla de pagos
+	    db.executeUpdate(sql, usuarioId, actividadId, monto, concepto);
+	}
 	
-	
+	public String obtenerNombreActividad(int actividadId) {
+	    String sql = "SELECT nombre FROM ACTIVIDAD WHERE id = ?";
+	    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
+
+	    if (resultado != null && !resultado.isEmpty()) {
+	        Object[] fila = resultado.get(0);
+	        if (fila != null && fila.length > 0) {
+	            Object nombre = fila[0];
+	            if (nombre != null) {
+	                return nombre.toString();
+	            }
+	        }
+	    }
+	    return null;  // Si no se encuentra la actividad
+	}
+
 	
 	
 	
