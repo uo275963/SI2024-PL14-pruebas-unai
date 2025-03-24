@@ -12,7 +12,7 @@ public class PeriodoModel {
     /**
      * Guarda un nuevo período en la base de datos.
      */
-    public void guardarPeriodo(String nombre, Date fechaInicio, Date fechaFin, Date fechaFinNoSocios) {
+    public void guardarPeriodo(String nombre, String fechaInicio, String fechaFin, String fechaFinNoSocios) {
         if (nombre == null || nombre.isEmpty() || fechaInicio == null || fechaFin == null || fechaFinNoSocios == null) {
             throw new ApplicationException("Todos los campos deben estar completos.");
         }

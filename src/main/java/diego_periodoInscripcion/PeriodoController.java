@@ -38,15 +38,15 @@ public class PeriodoController {
     public void guardarPeriodo() {
         try {
             String nombre = view.getNombreField().getText();
-            Date fechaInicio = view.getFechaInicioChooser().getDate();
-            Date fechaFin = view.getFechaFinChooser().getDate();
-            Date fechaFinNoSocios = view.getFechaFinNoSociosChooser().getDate();
+            String fecha_inicio_socios = Util.dateToIsoString(view.getFechaInicioChooser().getDate());
+            String fecha_fin_socios = Util.dateToIsoString(view.getFechaFinChooser().getDate());
+            String fecha_fin_no_socios = Util.dateToIsoString(view.getFechaFinNoSociosChooser().getDate());
 
-            if (nombre.isEmpty() || fechaInicio == null || fechaFin == null || fechaFinNoSocios == null) {
+            if (nombre.isEmpty() || fecha_inicio_socios == null || fecha_fin_socios == null || fecha_fin_no_socios == null) {
                 throw new ApplicationException("Todos los campos deben estar completos.");
             }
 
-            model.guardarPeriodo(nombre, fechaInicio, fechaFin, fechaFinNoSocios);
+            model.guardarPeriodo(nombre, fecha_inicio_socios, fecha_fin_socios, fecha_fin_no_socios);
             view.mostrarMensaje("Período guardado correctamente.");
             getListaPeriodos();
         } catch (ApplicationException ex) {
@@ -60,27 +60,35 @@ public class PeriodoController {
     public void getListaPeriodos() {
         List<PeriodoDisplayDTO> periodos = model.getListaPeriodos();
 
-        // Definir el formato de las fechas
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        // Crear un modelo de tabla vacío con las cabeceras
+        DefaultTableModel tmodel = new DefaultTableModel(
+                new String[] {"id", "nombre", "fecha_inicio_socios", "fecha_fin_socios", "fecha_fin_no_socios" },
+                0);
 
-        // Crear un modelo de tabla con los datos formateados
-        String[] columnNames = {"id", "nombre", "fechaInicio", "fechaFin", "fechaFinNoSocios"};
-        Object[][] data = new Object[periodos.size()][columnNames.length];
+        // Formateador de fechas
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        for (int i = 0; i < periodos.size(); i++) {
-            PeriodoDisplayDTO periodo = periodos.get(i);
-            data[i][0] = periodo.getId();  // ID
-            data[i][1] = periodo.getNombre();  // Nombre
-            data[i][2] = periodo.getFechaInicio() != null ? dateFormat.format(periodo.getFechaInicio()) : "";
-            data[i][3] = periodo.getFechaFin() != null ? dateFormat.format(periodo.getFechaFin()) : "";
-            data[i][4] = periodo.getFechaFinNoSocios() != null ? dateFormat.format(periodo.getFechaFinNoSocios()) : "";
+        // Iterar sobre los períodos y agregar filas al modelo de la tabla
+        for (PeriodoDisplayDTO periodo : periodos) {
+            Object[] row = new Object[5];
+
+            row[0] = periodo.getId(); // id
+            row[1] = periodo.getNombre(); // nombre
+            row[2] = periodo.getFecha_inicio_socios();
+            row[3] = periodo.getFecha_fin_socios();
+            row[4] = periodo.getFecha_fin_no_socios();
+
+            // Agregar la fila al modelo de la tabla
+            tmodel.addRow(row);
         }
 
-        // Crear el modelo de tabla con los datos formateados
-        TableModel tmodel = new DefaultTableModel(data, columnNames);
+        // Establecer el modelo de la tabla en la vista
         view.getTablaPeriodos().setModel(tmodel);
+
+        // Ajustar las columnas automáticamente
         SwingUtil.autoAdjustColumns(view.getTablaPeriodos());
     }
+
 
 
 

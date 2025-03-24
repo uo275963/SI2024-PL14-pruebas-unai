@@ -8,21 +8,21 @@ public class PeriodoDisplayDTO {
 	// Declaramos variables
 	private int id;
 	private String nombre;
-	private Date fechaInicio;
-	private Date fechaFin;
-	private Date fechaFinNoSocios;
+	private String fecha_inicio_socios;
+	private String fecha_fin_socios;
+	private String fecha_fin_no_socios;
 
 
 	// Constructor
 	public PeriodoDisplayDTO() {
 	}
 
-	public PeriodoDisplayDTO(int id, String nombre, Date fechaInicio, Date fechaFin, Date fechaFinNoSocios) {
+	public PeriodoDisplayDTO(int id, String nombre, String fecha_inicio_socios, String fecha_fin_socios, String fecha_fin_no_socios) {
 		this.id = id;
 		this.nombre = nombre;
-		this.fechaInicio = fechaInicio;
-		this.fechaFin = fechaFin;
-		this.fechaFinNoSocios = fechaFinNoSocios;
+		this.fecha_inicio_socios = fecha_inicio_socios;
+		this.fecha_fin_socios = fecha_fin_socios;
+		this.fecha_fin_no_socios = fecha_fin_no_socios;
 	}
 
 	// Getters y Setters
@@ -43,28 +43,28 @@ public class PeriodoDisplayDTO {
 		this.nombre = nombre;
 	}
 
-	public Date getFechaInicio() {
-		return fechaInicio;
+	public String getFecha_inicio_socios() {
+		return fecha_inicio_socios;
 	}
 
-	public void setFechaInicio(Date fechaInicio) {
-		this.fechaInicio = fechaInicio;
+	public void setFecha_inicio_socios(String fecha_inicio_socios) {
+		this.fecha_inicio_socios = fecha_inicio_socios;
 	}
 
-	public Date getFechaFin() {
-		return fechaFin;
+	public String getFecha_fin_socios() {
+		return fecha_fin_socios;
 	}
 
-	public void setFechaFin(Date fechaFin) {
-		this.fechaFin = fechaFin;
+	public void setFecha_fin_socios(String fecha_fin_socios) {
+		this.fecha_fin_socios = fecha_fin_socios;
 
 	}
 
-	public Date getFechaFinNoSocios() {
-		return fechaFinNoSocios;
+	public String getFecha_fin_no_socios() {
+		return fecha_fin_no_socios;
 	}
 
-	public void setFechaFinNoSocios(Date fechaFinNoSocios) {
-		this.fechaFinNoSocios = fechaFinNoSocios;
+	public void setFecha_fin_no_socios(String fecha_fin_no_socios) {
+		this.fecha_fin_no_socios = fecha_fin_no_socios;
 	}
 }
