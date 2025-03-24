@@ -11,7 +11,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import giis.demo.util.Util;
@@ -57,6 +59,15 @@ public class InscribirSocioController {
 	
     public void initController() {
         // Agrega los eventos a los componentes de la vista
+    	view.getBotonInsc().addActionListener(e -> inscribirSocioEnActividad());
+    	view.getBotonVolver().addActionListener(e -> {
+              // Aquí puedes cerrar la ventana desde el controlador
+              JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(view.getBotonVolver());
+              if (ventana != null) {
+                  ventana.dispose();  // Cierra la ventana
+              }
+          });
+
     }
 
     
@@ -101,6 +112,36 @@ public class InscribirSocioController {
         view.getTablaActividades().revalidate();
         view.getTablaActividades().repaint();
     }
+    
+    private void inscribirSocioEnActividad() {
+        int socioFila = view.getTabSocios().getSelectedRow();
+        int actividadFila = view.getTablaActividades().getSelectedRow();
+
+        if (socioFila == -1 || actividadFila == -1) {
+            JOptionPane.showMessageDialog(view.getFrame(), "Seleccione un socio y una actividad", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+       
+        
+       // Obtener el ID del socio seleccionado en la tabla
+        int socioId = model.getIdSocioPorDNI(view.getTabSocios().getValueAt(view.getTabSocios().getSelectedRow(), 1).toString());
+
+        // Obtener el ID de la actividad seleccionada en la tabla
+        int actividadId = model.getIdActividadPorNombre(view.getTablaActividades().getValueAt(view.getTablaActividades().getSelectedRow(), 0).toString());
+
+        // Llamar al método para inscribir al socio
+        model.inscribirSocioEnActividad(socioId, actividadId);
+
+
+        try {
+            model.inscribirSocioEnActividad(socioId, actividadId);
+            JOptionPane.showMessageDialog(view.getFrame(), "Inscripción realizada con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view.getFrame(), "Error al inscribir: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
 
 

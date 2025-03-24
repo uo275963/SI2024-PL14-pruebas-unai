@@ -3,6 +3,7 @@ package unai.inscribir_socio;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import giis.demo.util.ApplicationException;
 import giis.demo.util.Database;
@@ -18,6 +19,69 @@ public class InscribirSocioModel {
 	        String sql = "SELECT nombre, dni FROM USUARIO WHERE rol = 'SOCIO' AND estado = 'ACTIVO'";
 	        return db.executeQueryPojo(SocioDTO.class, sql);
 	    }
+	  
+	  public void inscribirSocioEnActividad(int socioId, int actividadId) {
+		    // Construir la consulta SQL para insertar la inscripción
+		    String sql = "INSERT INTO INSCRIPCION_ACTIVIDAD (usuario_id, actividad_id, pagado) " +
+		                 "VALUES (" + socioId + ", " + actividadId + ", FALSE)";
+
+		    // Imprimir la consulta para depuración
+		    System.out.println(sql);
+
+		    // Ejecutar la consulta
+		    db.executeUpdate(sql);
+		}
+	  
+	  public Integer getIdSocioPorDNI(String dni) {
+		  String sql = "SELECT id FROM USUARIO WHERE dni = ? AND rol = 'SOCIO'";
+
+		// Ejecuta la consulta y obtiene el resultado como una lista de arrays
+		List<Object[]> resultado = db.executeQueryArray(sql, dni);
+
+		if (resultado != null && !resultado.isEmpty()) {
+		    // Accede al primer array dentro de la lista
+		    Object[] fila = resultado.get(0); // El primer array en la lista
+		    if (fila != null && fila.length > 0) {
+		        Object id = fila[0]; // El valor de 'id' estará en la primera posición del array
+		        if (id != null) {
+		            try {
+		                return Integer.parseInt(id.toString()); // Convierte a Integer de manera segura
+		            } catch (NumberFormatException e) {
+		                e.printStackTrace();
+		                return null;
+		            }
+		        }
+		    }
+		}
+		return null; // Si no hay resultados o si el id es nulo
+
+
+		}
+
+	  public Integer getIdActividadPorNombre(String nombreActividad) {
+		  String sql = "SELECT id FROM ACTIVIDAD WHERE nombre = ?";  // Asegúrate de que el nombre de la columna sea correcto
+
+		    // Ejecuta la consulta y obtiene el resultado como una lista de arrays
+		    List<Object[]> resultado = db.executeQueryArray(sql, nombreActividad);
+
+		    if (resultado != null && !resultado.isEmpty()) {
+		        // Accede al primer array dentro de la lista
+		        Object[] fila = resultado.get(0); // El primer array en la lista
+		        if (fila != null && fila.length > 0) {
+		            Object id = fila[0]; // El valor de 'id' estará en la primera posición del array
+		            if (id != null) {
+		                try {
+		                    return Integer.parseInt(id.toString()); // Convierte a Integer de manera segura
+		                } catch (NumberFormatException e) {
+		                    e.printStackTrace();
+		                    return null;
+		                }
+		            }
+		        }
+		    }
+		    return null; // Si no hay resultados o si el id es nulo
+		}
+
 	 
 	  public List<ListaActividadesDisplayDTO> getListaActividadesValidas() {
 	        // Obtener la fecha actual en formato YYYY-MM-DD
