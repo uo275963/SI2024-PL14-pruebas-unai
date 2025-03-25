@@ -71,8 +71,8 @@ public class PeriodoController {
         // Iterar sobre los períodos y agregar filas al modelo de la tabla
         for (PeriodoDisplayDTO periodo : periodos) {
             Object[] row = new Object[5];
-
-            row[0] = periodo.getId(); // id
+            
+            row[0] = periodo.getId();
             row[1] = periodo.getNombre(); // nombre
             row[2] = periodo.getFecha_inicio_socios();
             row[3] = periodo.getFecha_fin_socios();

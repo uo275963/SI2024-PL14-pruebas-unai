@@ -12,12 +12,12 @@ public class PeriodoDisplayDTO {
 	private String fecha_fin_socios;
 	private String fecha_fin_no_socios;
 
-
 	// Constructor
 	public PeriodoDisplayDTO() {
 	}
 
-	public PeriodoDisplayDTO(int id, String nombre, String fecha_inicio_socios, String fecha_fin_socios, String fecha_fin_no_socios) {
+	public PeriodoDisplayDTO(int id, String nombre, String fecha_inicio_socios, String fecha_fin_socios,
+			String fecha_fin_no_socios) {
 		this.id = id;
 		this.nombre = nombre;
 		this.fecha_inicio_socios = fecha_inicio_socios;
