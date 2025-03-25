@@ -114,6 +114,31 @@ public class ReservaAutomaticaModel {
 
 	    return db.executeQueryArray(sql, new Object[]{instalacionId, fechaInicio, fechaFin, horaInicio, horaInicio, horaFin, horaFin});
 	}
+	
+	public List<Object[]> obtenerReservasNoAdmin() {
+	    String sql = "SELECT r.id, u.nombre, r.fecha, r.hora_inicio, r.hora_fin, r.pagado " +
+	                 "FROM RESERVA_INSTALACION r " +
+	                 "JOIN USUARIO u ON r.usuario_id = u.id " +
+	                 "WHERE u.rol <> 'ADMIN'";
+
+	    List<Object[]> resultados = db.executeQueryArray(sql, new Object[]{});
+
+	    // Convertimos la columna pagado a boolean manualmente
+	    for (Object[] fila : resultados) {
+	        int pagadoInt = (int) fila[5]; // Obtenemos el valor entero
+	        fila[5] = pagadoInt == 1; // Convertimos 1 -> true, 0 -> false
+	    }
+
+	    return resultados;
+	}
+
+
+
+	public void eliminarReservasNoAdmin() {
+	    String sql = "DELETE FROM RESERVA_INSTALACION WHERE usuario_id IN " +
+	                 "(SELECT id FROM USUARIO WHERE rol <> 'ADMIN')";
+	    db.executeUpdate(sql, new Object[]{});
+	}
 
 
 

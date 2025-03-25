@@ -29,6 +29,7 @@ public class ReservaAutomaticaView {
 	private JTextArea taConflictos;
 	private JButton bReserva;
 	private JButton bCerrar;
+	private JButton bEliminar;
 
 	/**
 	 * Launch the application.
@@ -58,7 +59,7 @@ public class ReservaAutomaticaView {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 567, 608);
+		frame.setBounds(100, 100, 569, 621);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Seleccionar actividades: ");
@@ -147,15 +148,15 @@ public class ReservaAutomaticaView {
 		frame.getContentPane().add(lblNewLabel_6);
 		
 		JSeparator separator_3 = new JSeparator();
-		separator_3.setBounds(0, 516, 555, 2);
+		separator_3.setBounds(0, 539, 555, 2);
 		frame.getContentPane().add(separator_3);
 		
 		bCerrar = new JButton("Cerrar\r\n");
-		bCerrar.setBounds(439, 539, 91, 23);
+		bCerrar.setBounds(439, 552, 91, 23);
 		frame.getContentPane().add(bCerrar);
 		
 		bReserva = new JButton("Hacer Reserva");
-		bReserva.setBounds(298, 539, 124, 23);
+		bReserva.setBounds(298, 552, 124, 23);
 		frame.getContentPane().add(bReserva);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -165,6 +166,10 @@ public class ReservaAutomaticaView {
 		taConflictos = new JTextArea();
 		scrollPane_1.setViewportView(taConflictos);
 		taConflictos.setEditable(false);
+		
+		bEliminar = new JButton("Eliminar reservas\r\n");
+		bEliminar.setBounds(347, 505, 183, 23);
+		frame.getContentPane().add(bEliminar);
 	}
 
 	public JFrame getFrame() {
@@ -266,4 +271,13 @@ public class ReservaAutomaticaView {
 	public void setbCerrar(JButton bCerrar) {
 		this.bCerrar = bCerrar;
 	}
+
+	public JButton getbEliminar() {
+		return bEliminar;
+	}
+
+	public void setbEliminar(JButton bEliminar) {
+		this.bEliminar = bEliminar;
+	}
+	
 }

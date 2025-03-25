@@ -51,6 +51,11 @@ public class ReservaAutomaticaController {
 		    String actividadSeleccionada = view.getCbActividades().getSelectedItem().toString();
 		    reservarActividadSeleccionada(actividadSeleccionada);
 		}));
+		
+		view.getbEliminar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> {
+		    eliminarReservasNoAdmin();
+		}));
+
 	}
 	
 	/**
@@ -199,4 +204,69 @@ public class ReservaAutomaticaController {
 	        }
 	    }
 	}
+	
+	public void eliminarReservasNoAdmin() {
+	    List<Object[]> reservasAEliminar = model.obtenerReservasNoAdmin();
+	    
+	    // Comprobamos si hay conflictos en taConflictos
+	    if (view.getTaConflictos().getText().trim().isEmpty()) {
+	        JOptionPane.showMessageDialog(null, 
+	            "No hay conflictos existentes.", 
+	            "Información", 
+	            JOptionPane.INFORMATION_MESSAGE);
+	        return; // No hacemos nada si no hay conflictos
+	    }
+
+	    if (reservasAEliminar.isEmpty()) {
+	        JOptionPane.showMessageDialog(null, 
+	            "No hay reservas de usuarios no administradores para eliminar.", 
+	            "Información", 
+	            JOptionPane.INFORMATION_MESSAGE);
+	        return;
+	    }
+
+	    StringBuilder mensajeReservas = new StringBuilder("Se eliminarán las siguientes reservas:\n");
+	    for (Object[] reserva : reservasAEliminar) {
+	        String usuario = reserva[1].toString();  // Nombre del usuario
+	        String fecha = reserva[2].toString();   // Fecha de la reserva
+	        String horaInicio = reserva[3].toString(); // Hora de inicio
+	        String horaFin = reserva[4].toString(); // Hora de fin
+	        boolean pagado = (boolean) reserva[5]; // Boolean válido
+
+	        mensajeReservas.append("- ").append(usuario).append(", ")
+	                       .append(fecha).append(", ")
+	                       .append(horaInicio).append(" - ")
+	                       .append(horaFin).append(", Pagado: ")
+	                       .append(pagado ? "Sí" : "No").append("\n");
+	    }
+
+	    // Mostrar la lista de reservas con dos botones: OK y Cancelar
+	    int opcion = JOptionPane.showOptionDialog(
+	        null, 
+	        mensajeReservas.toString(), 
+	        "Confirmar eliminación", 
+	        JOptionPane.OK_CANCEL_OPTION, 
+	        JOptionPane.WARNING_MESSAGE, 
+	        null, 
+	        new Object[]{"OK", "Cancelar"}, 
+	        "Cancelar"
+	    );
+
+	    // Si el usuario presiona "OK", eliminar las reservas
+	    if (opcion == JOptionPane.OK_OPTION) {
+	        model.eliminarReservasNoAdmin(); // Llamamos al modelo para eliminar las reservas
+	        
+	        JOptionPane.showMessageDialog(null, 
+	            "Reservas eliminadas correctamente.", 
+	            "Éxito", 
+	            JOptionPane.INFORMATION_MESSAGE);
+	    } else {
+	        JOptionPane.showMessageDialog(null, 
+	            "Eliminación cancelada. No se ha eliminado ninguna reserva.", 
+	            "Cancelado", 
+	            JOptionPane.INFORMATION_MESSAGE);
+	    }
+	}
+
+
 }
