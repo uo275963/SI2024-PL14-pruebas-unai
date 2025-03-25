@@ -94,8 +94,6 @@ public class VisualizarActividadesComoSocioView {
 	public VisualizarActividadesComoSocioView() {
 		initialize();
 	}
-	
-	
 
 	public JTextField getTFFechaInicio() {
 		return TFFechaInicio;
@@ -175,7 +173,7 @@ public class VisualizarActividadesComoSocioView {
 		TFFechaFin.setColumns(10);
 		TFFechaFin.setBounds(375, 54, 118, 20);
 		frame.getContentPane().add(TFFechaFin);
-		
+
 		btnCerrar = new JButton("Cerrar");
 		btnCerrar.setBounds(611, 356, 85, 21);
 		frame.getContentPane().add(btnCerrar);
