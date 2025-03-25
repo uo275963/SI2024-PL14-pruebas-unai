@@ -57,6 +57,48 @@ public class InscribirSocioModel {
 
 
 		}
+	  
+	  public int getAforoMaximoDeActividad(int actividadId) {
+		    String sql = "SELECT aforo_maximo FROM ACTIVIDAD WHERE id = ?";
+		    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
+
+		    if (resultado != null && !resultado.isEmpty()) {
+		        Object[] fila = resultado.get(0);
+		        if (fila != null && fila.length > 0) {
+		            Object aforo = fila[0];
+		            if (aforo != null) {
+		                try {
+		                    return Integer.parseInt(aforo.toString());
+		                } catch (NumberFormatException e) {
+		                    e.printStackTrace();
+		                    return -1;  // Devolver -1 en caso de error
+		                }
+		            }
+		        }
+		    }
+		    return -1;  // Si no hay resultados o el aforo es nulo
+		}
+
+		public int getNumeroDeInscritos(int actividadId) {
+		    String sql = "SELECT COUNT(*) FROM INSCRIPCION_ACTIVIDAD WHERE actividad_id = ?";
+		    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
+
+		    if (resultado != null && !resultado.isEmpty()) {
+		        Object[] fila = resultado.get(0);
+		        if (fila != null && fila.length > 0) {
+		            Object count = fila[0];
+		            if (count != null) {
+		                try {
+		                    return Integer.parseInt(count.toString());
+		                } catch (NumberFormatException e) {
+		                    e.printStackTrace();
+		                    return -1;  // Devolver -1 en caso de error
+		                }
+		            }
+		        }
+		    }
+		    return -1;  // Si no hay resultados o el conteo es nulo
+		}
 
 	  public Integer getIdActividadPorNombre(String nombreActividad) {
 		  String sql = "SELECT id FROM ACTIVIDAD WHERE nombre = ?";  // Asegúrate de que el nombre de la columna sea correcto
