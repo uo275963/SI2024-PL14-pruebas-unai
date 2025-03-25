@@ -133,6 +133,16 @@ public class InscribirNoSocioController {
 
         // Mostrar mensaje de éxito
         JOptionPane.showMessageDialog(view.getFrame(), "¡Inscripción realizada con éxito!");
+        
+     // Suponiendo que ya tienes estos valores después de realizar la inscripción
+     
+        String nombreActividad = model.obtenerNombreActividad(actividadId);
+        String nombreInstalacion = model.obtenerNombreInstalacion(actividadId);
+        String fechaInscripcion = java.time.LocalDate.now().toString();
+
+        // Crear y mostrar la ventana de recibo
+        ReciboView recibo = new ReciboView(dni, nombre, costeNoSocio, nombreActividad, nombreInstalacion, fechaInscripcion);
+        recibo.mostrar();
     }
 
     

@@ -66,6 +66,24 @@ public class InscribirNoSocioModel {
 	}
 	
 	
+	public String obtenerNombreInstalacion(int actividadId) {
+	    String sql = "SELECT i.nombre FROM ACTIVIDAD a JOIN INSTALACION i ON a.instalacion_id = i.id WHERE a.id = ?";
+	    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
+
+	    if (resultado != null && !resultado.isEmpty()) {
+	        Object[] fila = resultado.get(0);
+	        if (fila != null && fila.length > 0) {
+	            Object nombre = fila[0];
+	            if (nombre != null) {
+	                return nombre.toString();
+	            }
+	        }
+	    }
+	    return null;  // Si no se encuentra la instalación
+	}
+
+	
+	
 	
 	
 	
