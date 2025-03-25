@@ -3,6 +3,7 @@ package giis.demo.util;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
+import controller.CancelarReservaSocioController;
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
 import controller.VisualizarActividadesComoSocioController;
@@ -12,10 +13,12 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import giis.demo.tkrun.*;
+import model.CancelarReservaSocioModel;
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
 import model.VisualizarActividadesComoSocioModel;
 import model.VisualizarReservasComoSocioModel;
+import view.CancelarReservaSocioView;
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
 import view.VisualizarActividadesComoSocioView;
@@ -196,6 +199,14 @@ public class SwingMain {
 		frame.getContentPane().add(btnVisualizarReservasComoSocio);
 		*/
 		
+		JButton btnCancelarReservaSocio = new JButton("Cancelar reserva para socio");
+		btnCancelarReservaSocio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CancelarReservaSocioController controller = new CancelarReservaSocioController(new CancelarReservaSocioModel(), new CancelarReservaSocioView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnCancelarReservaSocio);
 		
 
 
