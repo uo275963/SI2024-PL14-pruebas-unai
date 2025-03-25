@@ -6,7 +6,7 @@ import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import diego_periodoInscripcion.PeriodoEntity;
+import diego_periodoInscripcion.PeriodoDisplayDTO;
 import giis.demo.util.ApplicationException;
 import giis.demo.util.SwingUtil;
 import giis.demo.util.Util;

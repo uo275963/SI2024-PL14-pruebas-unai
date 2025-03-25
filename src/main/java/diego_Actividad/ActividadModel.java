@@ -2,7 +2,7 @@ package diego_Actividad;
 
 import java.util.List;
 
-import diego_periodoInscripcion.PeriodoEntity;
+import diego_periodoInscripcion.PeriodoDisplayDTO;
 import giis.demo.util.Database;
 import unai.lista_actividades.PeriodoDTO;
 import unai.ver_reservas.InstalacionDTO;
