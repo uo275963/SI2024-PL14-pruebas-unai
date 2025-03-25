@@ -3,7 +3,6 @@ package diego_Actividad;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import javax.swing.ComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -11,145 +10,115 @@ import diego_periodoInscripcion.PeriodoEntity;
 import giis.demo.util.ApplicationException;
 import giis.demo.util.SwingUtil;
 import giis.demo.util.Util;
+import unai.lista_actividades.PeriodoDTO;
+import unai.ver_reservas.InstalacionDTO;
 
 public class ActividadController {
-    private ActividadModel model;
-    private ActividadView view;
-    private String lastSelectedKey = ""; // Guarda la última clave seleccionada
+	private ActividadModel model;
+	private ActividadView view;
 
-    public ActividadController(ActividadModel model, ActividadView view) {
-        this.model = model;
-        this.view = view;
-        this.initView();
-    }
+	public ActividadController(ActividadModel model, ActividadView view) {
+		this.model = model;
+		this.view = view;
+		this.initView();
+	}
 
-    public void initController() {
-        view.getBtnGuardar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> guardarActividad()));
-        view.getBtnMostrar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> getListaActividades()));
+	public void initView() {
+		cargarListaPeriodosInscripcion();
+		cargarInstalacionesEnComboBox();
+		cargarTablaActividades();
+		view.getFrame().setVisible(true);	}
 
-        view.getTablaActividades().addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseReleased(java.awt.event.MouseEvent e) {
-                SwingUtil.exceptionWrapper(() -> updateDetail());
-            }
-        });
-        
-        // Agregar el ActionListener para el ComboBox de períodos de inscripción
-        view.getListaPeriodosInscripcion().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SwingUtil.exceptionWrapper(() -> actualizarPeriodoInscripcion());
-            }
-        });
-    }
+	public void initController() {
+		view.getBtnGuardar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> guardarActividad()));
+	}
 
-    public void initView() {
-        getListaActividades();
-        view.getFrame().setVisible(true);
-    }
+	private void cargarTablaActividades() {
+	    List<ActividadDisplayDTO> actividades = model.getListaActividades();
+	    DefaultTableModel tableModel = new DefaultTableModel(
+	            new String[] { "ID", "Nombre", "Descripción", "Instalación", "Aforo", "Coste Socio", "Coste No Socio",
+	                    "Fecha Inicio", "Fecha Fin", "Días", "Hora Inicio", "Hora Fin", "Periodo Inscripción" },
+	            0);
 
-    /**
-     * Guarda una nueva actividad en la base de datos.
-     */
-    public void guardarActividad() {
-        try {
-            String nombre = view.getNombreField().getText();
-            String descripcion = view.getDescripcionField().getText();
-            int instalacionId = Integer.parseInt(view.getListaInstalaciones().getText()); // Suponiendo que se recibe como texto
-            int aforoMaximo = Integer.parseInt(view.getAforoMaximoField().getText());
-            double costeSocio = Double.parseDouble(view.getCosteSocioField().getText());
-            double costeNoSocio = Double.parseDouble(view.getCosteNoSocioField().getText());
-            String fechaInicio = Util.dateToIsoString(view.getFechaInicioChooser().getDate());
-            String fechaFin = Util.dateToIsoString(view.getFechaFinChooser().getDate());
-            String dias = view.getDiasField().getText();
-            String horaInicio = view.getHoraInicioField().getText();
-            String horaFin = view.getHoraFinField().getText();
-            
-            // Obtener id periodo
-            Object selectedItem = view.getListaPeriodosInscripcion().getSelectedItem();
-            int periodoInscripcionId = 0;
-            Object[] selectedPeriodo = (Object[]) selectedItem;
-            periodoInscripcionId = (int) selectedPeriodo[0];
+	    // Obtenemos las listas de periodos e instalaciones
+	    List<PeriodoDTO> periodos = model.getPeriodosInscripcion();
+	    List<InstalacionDTO> instalaciones = model.getInstalaciones();
 
-            if (nombre.isEmpty() || descripcion.isEmpty() || fechaInicio == null || fechaFin == null || dias.isEmpty() || horaInicio.isEmpty() || horaFin.isEmpty()) {
-                throw new ApplicationException("Todos los campos deben estar completos.");
-            }
+	    // Rellenar la tabla con los datos de actividades
+	    for (ActividadDisplayDTO actividad : actividades) {
+	        // Buscar el nombre de la instalación y el periodo basándonos en sus IDs
+	        String nombreInstalacion = "";
+	        for (InstalacionDTO instalacion : instalaciones) {
+	            if (instalacion.getId() == actividad.getInstalacion_id()) {
+	                nombreInstalacion = instalacion.getNombre();
+	                break;
+	            }
+	        }
 
-            model.guardarActividad(nombre, descripcion, instalacionId, aforoMaximo, costeSocio, costeNoSocio, fechaInicio, fechaFin, dias, horaInicio, horaFin, periodoInscripcionId);
-            view.mostrarMensaje("Actividad guardada correctamente.");
-            getListaActividades();
-        } catch (ApplicationException ex) {
-            view.mostrarError(ex.getMessage());
-        }
-    }
+	        String nombrePeriodoInscripcion = "";
+	        for (PeriodoDTO periodo : periodos) {
+	            if (periodo.getId() == actividad.getPeriodo_inscripcion_id()) {
+	                nombrePeriodoInscripcion = periodo.getNombre();
+	                break;
+	            }
+	        }
 
-    /**
-     * Obtiene la lista de actividades desde el modelo y la muestra en la vista.
-     */
-    public void getListaActividades() {
-        List<ActividadDisplayDTO> actividades = model.getListaActividades();
-        TableModel tmodel = SwingUtil.getTableModelFromPojos(actividades, new String[]{"id", "nombre", "descripcion", "instalacion_id", "aforo_maximo", "coste_socio", "coste_no_socio", "fecha_inicio", "fecha_fin", "dias", "hora_inicio", "hora_fin", "periodo_inscripcion_id"});
-        view.getTablaActividades().setModel(tmodel);
-        SwingUtil.autoAdjustColumns(view.getTablaActividades());
+	        // Añadir la fila con los nombres de la instalación y el periodo
+	        tableModel.addRow(new Object[] { actividad.getId(), actividad.getNombre(), actividad.getDescripcion(),
+	                nombreInstalacion, actividad.getAforo_maximo(), actividad.getCoste_socio(),
+	                actividad.getCoste_no_socio(), actividad.getFecha_inicio(), actividad.getFecha_fin(),
+	                actividad.getDias(), actividad.getHora_inicio(), actividad.getHora_fin(), nombrePeriodoInscripcion });
+	    }
 
-        restoreDetail();
+	    view.getTablaActividades().setModel(tableModel);
+	}
 
-        List<Object[]> actividadesList = model.getListaActividadesArray();
-        ComboBoxModel<Object> lmodel = SwingUtil.getComboModelFromList(actividadesList);
-        view.getListaActividades().setModel(lmodel);
-    }
+	private void guardarActividad() {
+		try {
+			String nombre = view.getNombreField().getText();
+			String descripcion = view.getDescripcionField().getText();
+			int instalacionId = view.getListaInstalaciones().getSelectedIndex();
+			int aforoMaximo = Integer.parseInt(view.getAforoMaximoField().getText());
+			double costeSocio = Double.parseDouble(view.getCosteSocioField().getText());
+			double costeNoSocio = Double.parseDouble(view.getCosteNoSocioField().getText());
+			String fechaInicio = view.getFechaInicioChooser().getDate().toString();
+			String fechaFin = view.getFechaFinChooser().getDate().toString();
+			String dias = view.getDiasField().getText();
+			String horaInicio = view.getHoraInicioField().getText();
+			String horaFin = view.getHoraFinField().getText();
+			int periodoInscripcionId = view.getListaPeriodosInscripcion().getSelectedIndex();
 
-    /**
-     * Restaura la selección de detalles en la tabla.
-     */
-    public void restoreDetail() {
-        this.lastSelectedKey = SwingUtil.selectAndGetSelectedKey(view.getTablaActividades(), this.lastSelectedKey);
-        if ("".equals(this.lastSelectedKey)) {
-            view.getDetalleActividad().setModel(new DefaultTableModel());
-        } else {
-            this.updateDetail();
-        }
-    }
+			model.guardarActividad(nombre, descripcion, instalacionId, aforoMaximo, costeSocio, costeNoSocio,
+					fechaInicio, fechaFin, dias, horaInicio, horaFin, periodoInscripcionId);
 
-    /**
-     * Actualiza la vista con los detalles de la actividad seleccionada.
-     */
-    public void updateDetail() {
-        this.lastSelectedKey = SwingUtil.getSelectedKey(view.getTablaActividades());
-        int idActividad = Integer.parseInt(this.lastSelectedKey);
+			view.mostrarMensaje("Actividad guardada exitosamente.");
+			cargarTablaActividades();
+		} catch (Exception ex) {
+			view.mostrarError("Error al guardar actividad: " + ex.getMessage());
+		}
+	}
 
-        ActividadEntity actividad = model.getActividad(idActividad);
-        TableModel tmodel = SwingUtil.getRecordModelFromPojo(actividad, new String[]{"id", "nombre", "descripcion", "instalacion_id", "aforo_maximo", "coste_socio", "coste_no_socio", "fecha_inicio", "fecha_fin", "dias", "hora_inicio", "hora_fin", "periodo_inscripcion_id"});
-        view.getDetalleActividad().setModel(tmodel);
-        SwingUtil.autoAdjustColumns(view.getDetalleActividad());
-    }
-    
-    /**
-     * Actualiza la información del periodo de inscripción basado en la selección del ComboBox.
-     */
-    public void actualizarPeriodoInscripcion() {
-        // Obtener el objeto seleccionado en el ComboBox
-        Object selectedItem = view.getListaPeriodosInscripcion().getSelectedItem();
+	// Cargar los Periodos en el ComboBox
+	private void cargarListaPeriodosInscripcion() {
+		List<PeriodoDTO> periodos = model.getPeriodosInscripcion();
+		view.getListaPeriodosInscripcion().removeAllItems();
 
-        // Verificar que el item seleccionado no sea nulo y sea un array (id, nombre)
-        if (selectedItem != null && selectedItem instanceof Object[]) {
-            Object[] selectedPeriodo = (Object[]) selectedItem;
-            int idPeriodoInscripcion = (int) selectedPeriodo[0];  // El primer elemento es el ID del periodo
+		// Agregar un valor por defecto que indique que no hay periodo seleccionado
+		view.getListaPeriodosInscripcion().addItem(""); // Esto agregará un elemento vacío al combo box
+		for (PeriodoDTO periodo : periodos) {
+			view.getListaPeriodosInscripcion().addItem(periodo.getNombre());
+		}
+	}
 
-            // Usar el ID para obtener el periodo de inscripción completo
-            PeriodoEntity periodoInscripcion = model.getPeriodoInscripcion(idPeriodoInscripcion);
-
-        }
-    }
-    
- // Obtiene la lista de períodos de inscripción y los muestra en el ComboBox
-    public void cargarListaPeriodosInscripcion() {
-        List<Object[]> periodosInscripcion = model.getListaPeriodosInscripcionArray(); // Método similar a getListaPeriodosArray
-        ComboBoxModel<Object> lmodel = SwingUtil.getComboModelFromList(periodosInscripcion);
-        view.getListaPeriodosInscripcion().setModel(lmodel);
-    }
-
-    
-    
+	/**
+	 * Carga las instalaciones en el ComboBox
+	 */
+	private void cargarInstalacionesEnComboBox() {
+		List<InstalacionDTO> instalaciones = model.getInstalaciones();
+		view.getListaInstalaciones().removeAllItems();
+		view.getListaInstalaciones().addItem(""); // Opción vacía
+		for (InstalacionDTO instalacion : instalaciones) {
+			view.getListaInstalaciones().addItem(instalacion.getNombre());
+		}
+	}
 }
-

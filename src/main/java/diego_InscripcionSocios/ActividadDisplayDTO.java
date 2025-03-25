@@ -1,4 +1,4 @@
-package diego_Actividad;
+package diego_InscripcionSocios;
 
 import java.util.Date;
 

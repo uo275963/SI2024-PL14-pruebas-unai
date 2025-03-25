@@ -11,9 +11,7 @@ public class PeriodoView {
 	private JDateChooser dateFin;
 	private JDateChooser dateFinNoSocios;
 	private JButton btnGuardar;
-	private JButton btnMostrar;
 	private JTable tablaPeriodos;
-	private JTable detallePeriodo;
 	private JComboBox<Object> listaPeriodos;
 
 	public PeriodoView() {
@@ -22,7 +20,7 @@ public class PeriodoView {
 
 	private void initialize() {
 		frame = new JFrame("Gestión de Períodos");
-		frame.setBounds(100, 100, 600, 500);
+		frame.setBounds(100, 100, 760, 760);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout());
 
@@ -47,8 +45,6 @@ public class PeriodoView {
 
 		btnGuardar = new JButton("Guardar Período");
 		panelFormulario.add(btnGuardar);
-		btnMostrar = new JButton("Mostrar Períodos");
-		panelFormulario.add(btnMostrar);
 
 		frame.getContentPane().add(panelFormulario, BorderLayout.NORTH);
 
@@ -56,15 +52,7 @@ public class PeriodoView {
 		JScrollPane scrollTabla = new JScrollPane(tablaPeriodos);
 		frame.getContentPane().add(scrollTabla, BorderLayout.CENTER);
 
-		JPanel panelDetalles = new JPanel(new BorderLayout());
-		detallePeriodo = new JTable();
-		panelDetalles.add(new JLabel("Detalles del Período"), BorderLayout.NORTH);
-		panelDetalles.add(new JScrollPane(detallePeriodo), BorderLayout.CENTER);
-
 		listaPeriodos = new JComboBox<>();
-		panelDetalles.add(listaPeriodos, BorderLayout.SOUTH);
-
-		frame.getContentPane().add(panelDetalles, BorderLayout.SOUTH);
 	}
 
 	// Métodos para acceder a los componentes desde el controlador
@@ -75,8 +63,6 @@ public class PeriodoView {
 	public JTextField getNombreField() {
 		return txtNombre;
 	}
-
-
 
 	public JDateChooser getFechaInicioChooser() {
 		return dateInicio;
@@ -94,17 +80,10 @@ public class PeriodoView {
 		return btnGuardar;
 	}
 
-	public JButton getBtnMostrar() {
-		return btnMostrar;
-	}
-
 	public JTable getTablaPeriodos() {
 		return tablaPeriodos;
 	}
 
-	public JTable getDetallePeriodo() {
-		return detallePeriodo;
-	}
 
 	public JComboBox<Object> getListaPeriodos() {
 		return listaPeriodos;
