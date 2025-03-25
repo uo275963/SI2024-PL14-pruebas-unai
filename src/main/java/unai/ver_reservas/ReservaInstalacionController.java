@@ -46,6 +46,8 @@ public class ReservaInstalacionController {
             }
         });
     }
+    
+    
 
 
     // Carga las instalaciones en el ComboBox
@@ -70,78 +72,69 @@ public class ReservaInstalacionController {
     }
 
     private void actualizarTablaHorario(List<ReservaInstalacionDTO> reservas) {
-        // Crear el modelo de la tabla para mostrar las reservas
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Hora/Fecha");
 
-        // Agregar las fechas de los próximos 30 días
         LocalDate today = LocalDate.now();
         for (int i = 0; i < 30; i++) {
-            LocalDate fecha = today.plusDays(i);
-            model.addColumn(fecha);  // Agregar como LocalDate
+            model.addColumn(today.plusDays(i));
         }
 
-        // Crear las filas con los horarios (por ejemplo de 9:00 a 22:00)
+        // Crear las filas con los horarios (ejemplo: 9:00 - 21:00)
         for (int hora = 9; hora < 21; hora++) {
             String horaStr = String.format("%02d:00-%02d:00", hora, hora + 1);
-            Object[] fila = new Object[31];  // Una fila para cada hora, más la columna "Hora/Fecha"
-            fila[0] = horaStr;  // Primera celda de la fila con la hora
+            Object[] fila = new Object[31];  
+            fila[0] = horaStr; 
 
-            // Llenar las reservas para cada hora y fecha
             for (int i = 0; i < 30; i++) {
                 LocalDate fecha = today.plusDays(i);
-                boolean reservado = false;
+                String contenidoCelda = "Libre";
 
                 for (ReservaInstalacionDTO reserva : reservas) {
-                    // Convertimos la fecha de la reserva a LocalDate
                     LocalDate reservaFecha = LocalDate.parse(reserva.getFecha());
+                    int horaInicioReserva = Integer.parseInt(reserva.getHoraInicio().split(":")[0]);
+                    int horaFinReserva = Integer.parseInt(reserva.getHoraFin().split(":")[0]);
 
-                    // Verificamos si la fecha y la hora coinciden con la reserva
-                    if (reservaFecha.equals(fecha) && reserva.getHoraInicio().toString().equals(String.format("%02d:00", hora))) {
-                        // Si la reserva coincide, ponemos el nombre del usuario en la celda
-                        fila[i + 1] = "Reservado por " + reserva.getNombreUsuario();
-                        reservado = true;
-                        break;
+                    if (reservaFecha.equals(fecha) && hora >= horaInicioReserva && hora < horaFinReserva) {
+                        if (reserva.getNombreUsuario() != null) {
+                            contenidoCelda = "Reservado por " + reserva.getNombreUsuario();
+                        }
+                        if (reserva.getNombreActividad() != null) {
+                            if (!contenidoCelda.equals("Libre")) {
+                                contenidoCelda += " / ";
+                            }
+                            contenidoCelda += "Actividad: " + reserva.getNombreActividad();
+                        }
                     }
                 }
 
-                // Si no está reservado, mostramos "Libre"
-                if (!reservado) {
-                    fila[i + 1] = "Libre";
-                }
+                fila[i + 1] = contenidoCelda;
             }
 
             model.addRow(fila);
         }
 
-        // Asignar el modelo a la tabla
-        view.getTabHorario().setModel(model);
-        
-     // Asignar el modelo a la tabla
         view.getTabHorario().setModel(model);
 
-        // Ajustar el ancho de las columnas para que se ajusten al contenido (incluyendo la cabecera)
+        // Ajuste del ancho de columnas
         for (int column = 0; column < view.getTabHorario().getColumnCount(); column++) {
             int width = 0;
-
-            // Calcular el ancho máximo de la cabecera y de los valores de las celdas
             for (int row = 0; row < view.getTabHorario().getRowCount(); row++) {
                 TableCellRenderer renderer = view.getTabHorario().getCellRenderer(row, column);
                 Component comp = view.getTabHorario().prepareRenderer(renderer, row, column);
                 width = Math.max(width, comp.getPreferredSize().width);
             }
 
-            // Ajustar el ancho de la columna (también incluye el ancho de la cabecera)
             TableColumn tableColumn = view.getTabHorario().getColumnModel().getColumn(column);
-            int headerWidth = view.getTabHorario().getTableHeader().getDefaultRenderer().getTableCellRendererComponent(view.getTabHorario(), 
-                tableColumn.getHeaderValue(), false, false, -1, column).getPreferredSize().width;
-            tableColumn.setPreferredWidth(Math.max(width, headerWidth) + 10);  // Un poco de margen adicional
+            int headerWidth = view.getTabHorario().getTableHeader()
+                .getDefaultRenderer().getTableCellRendererComponent(view.getTabHorario(),
+                    tableColumn.getHeaderValue(), false, false, -1, column).getPreferredSize().width;
+            tableColumn.setPreferredWidth(Math.max(width, headerWidth) + 10);
         }
 
-        // Configura el modo de redimensionamiento de la tabla
-        view.getTabHorario().setAutoResizeMode(JTable.AUTO_RESIZE_OFF);  // Evita que las columnas se ajusten automáticamente
+        view.getTabHorario().setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-     // Aplicar el renderizador personalizado para cambiar el fondo
+        // Aplicar el renderizador para cambiar el color de las celdas ocupadas
         for (int i = 1; i < model.getColumnCount(); i++) {
             view.getTabHorario().getColumnModel().getColumn(i).setCellRenderer(new CustomTableCellRenderer());
         }

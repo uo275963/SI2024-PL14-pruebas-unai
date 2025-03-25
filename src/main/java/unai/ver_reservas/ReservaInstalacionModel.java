@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 import giis.demo.util.Database;
 import unai.lista_actividades.PeriodoDTO;
@@ -15,7 +16,8 @@ public class ReservaInstalacionModel {
 	
 	private Database db=new Database();
 
-	
+
+
 
 	
     // Obtener las instalaciones
