@@ -27,6 +27,7 @@ public class VisualizarPagosComoSocioView {
 	private JButton btnBuscar;
 	private JComboBox CBMeses;
 	private JLabel lblCosteMensual;
+	private JButton btnCerrar;
 
 	/**
 	 * Launch the application.
@@ -139,6 +140,18 @@ public class VisualizarPagosComoSocioView {
 		lblCosteMensual = new JLabel("");
 		lblCosteMensual.setBounds(10, 595, 158, 13);
 		frame.getContentPane().add(lblCosteMensual);
+		
+		btnCerrar = new JButton("Cerrar");
+		btnCerrar.setBounds(762, 595, 85, 21);
+		frame.getContentPane().add(btnCerrar);
+	}
+
+	public JButton getBtnCerrar() {
+		return btnCerrar;
+	}
+
+	public void setBtnCerrar(JButton btnCerrar) {
+		this.btnCerrar = btnCerrar;
 	}
 
 	public JFrame getFrame() {
@@ -164,6 +177,4 @@ public class VisualizarPagosComoSocioView {
 	public void setLblCosteMensual(JLabel lblCosteMensual) {
 		this.lblCosteMensual = lblCosteMensual;
 	}
-	
-	
 }

@@ -54,6 +54,11 @@ public class VisualizarPagosComoSocioController {
 		    cargarPagosPorMesSeleccionado(idSocio);
 		    calcularTotalPagos();
 		});
+		
+		this.view.getBtnCerrar().addActionListener(e -> {
+		    this.view.getFrame().setVisible(false);  // Cierra la ventana actual
+		});
+
 
 	}
 	
