@@ -8,13 +8,23 @@ public class ReservaInstalacionDTO {
     private String horaInicio;
     private String horaFin;
     private String nombreUsuario;
+    private String nombreActividad;
 
-    // Constructor con parámetros
+    public String getNombreActividad() {
+		return nombreActividad;
+	}
+
+	public void setNombreActividad(String nombreActividad) {
+		this.nombreActividad = nombreActividad;
+	}
+
+	// Constructor con parámetros
     public ReservaInstalacionDTO(String fecha, String horaInicio, String horaFin, String nombreUsuario) {
         this.fecha = fecha;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.nombreUsuario = nombreUsuario;
+        
     }
 
     // Constructor sin parámetros (necesario para DBUtils)

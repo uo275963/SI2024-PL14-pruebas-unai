@@ -1,41 +1,42 @@
 package diego_Actividad;
 
+
 public class ActividadEntity {
     private int id;
     private String nombre;
     private String descripcion;
-    private int instalacionId;
-    private int aforoMaximo;
-    private double costeSocio;
-    private double costeNoSocio;
-    private String fechaInicio;
-    private String fechaFin;
+    private int instalacion_id;
+    private int aforo_maximo;
+    private double coste_socio;
+    private double coste_no_socio;
+    private String fecha_inicio;
+    private String fecha_fin;
     private String dias;
-    private String horaInicio;
-    private String horaFin;
-    private int periodoInscripcionId;
+    private String hora_inicio;
+    private String hora_fin;
+    private int periodo_inscripcion_id;
 
     // Constructor vacío necesario para frameworks como JDBC, Hibernate, etc.
     public ActividadEntity() {
     }
 
     // Constructor con parámetros (opcional, por si lo necesitas)
-    public ActividadEntity(int id, String nombre, String descripcion, int instalacionId, int aforoMaximo,
-            double costeSocio, double costeNoSocio, String fechaInicio, String fechaFin, String dias,
-            String horaInicio, String horaFin, int periodoInscripcionId) {
+    public ActividadEntity(int id, String nombre, String descripcion, int instalacion_id, int aforo_maximo,
+            double coste_socio, double coste_no_socio, String fecha_inicio, String fecha_fin, String dias,
+            String hora_inicio, String hora_fin, int periodo_inscripcion_id) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.instalacionId = instalacionId;
-        this.aforoMaximo = aforoMaximo;
-        this.costeSocio = costeSocio;
-        this.costeNoSocio = costeNoSocio;
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
+        this.instalacion_id = instalacion_id;
+        this.aforo_maximo = aforo_maximo;
+        this.coste_socio = coste_socio;
+        this.coste_no_socio = coste_no_socio;
+        this.fecha_inicio = fecha_inicio;
+        this.fecha_fin = fecha_fin;
         this.dias = dias;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
-        this.periodoInscripcionId = periodoInscripcionId;
+        this.hora_inicio = hora_inicio;
+        this.hora_fin = hora_fin;
+        this.periodo_inscripcion_id = periodo_inscripcion_id;
     }
 
     // Getters y Setters
@@ -63,52 +64,52 @@ public class ActividadEntity {
         this.descripcion = descripcion;
     }
 
-    public int getInstalacionId() {
-        return instalacionId;
+    public int getInstalacion_id() {
+        return instalacion_id;
     }
 
-    public void setInstalacionId(int instalacionId) {
-        this.instalacionId = instalacionId;
+    public void setInstalacion_id(int instalacion_id) {
+        this.instalacion_id = instalacion_id;
     }
 
-    public int getAforoMaximo() {
-        return aforoMaximo;
+    public int getAforo_maximo() {
+        return aforo_maximo;
     }
 
-    public void setAforoMaximo(int aforoMaximo) {
-        this.aforoMaximo = aforoMaximo;
+    public void setAforo_maximo(int aforo_maximo) {
+        this.aforo_maximo = aforo_maximo;
     }
 
-    public double getCosteSocio() {
-        return costeSocio;
+    public double getCoste_socio() {
+        return coste_socio;
     }
 
-    public void setCosteSocio(double costeSocio) {
-        this.costeSocio = costeSocio;
+    public void setCoste_socio(double coste_socio) {
+        this.coste_socio = coste_socio;
     }
 
-    public double getCosteNoSocio() {
-        return costeNoSocio;
+    public double getCoste_no_socio() {
+        return coste_no_socio;
     }
 
-    public void setCosteNoSocio(double costeNoSocio) {
-        this.costeNoSocio = costeNoSocio;
+    public void setCoste_no_socio(double coste_no_socio) {
+        this.coste_no_socio = coste_no_socio;
     }
 
-    public String getFechaInicio() {
-        return fechaInicio;
+    public String getFecha_inicio() {
+        return fecha_inicio;
     }
 
-    public void setFechaInicio(String fechaInicio) {
-        this.fechaInicio = fechaInicio;
+    public void setFecha_inicio(String fecha_inicio) {
+        this.fecha_inicio = fecha_inicio;
     }
 
-    public String getFechaFin() {
-        return fechaFin;
+    public String getFecha_fin() {
+        return fecha_fin;
     }
 
-    public void setFechaFin(String fechaFin) {
-        this.fechaFin = fechaFin;
+    public void setFecha_fin(String fecha_fin) {
+        this.fecha_fin = fecha_fin;
     }
 
     public String getDias() {
@@ -119,37 +120,36 @@ public class ActividadEntity {
         this.dias = dias;
     }
 
-    public String getHoraInicio() {
-        return horaInicio;
+    public String getHora_inicio() {
+        return hora_inicio;
     }
 
-    public void setHoraInicio(String horaInicio) {
-        this.horaInicio = horaInicio;
+    public void setHora_inicio(String hora_inicio) {
+        this.hora_inicio = hora_inicio;
     }
 
-    public String getHoraFin() {
-        return horaFin;
+    public String getHora_fin() {
+        return hora_fin;
     }
 
-    public void setHoraFin(String horaFin) {
-        this.horaFin = horaFin;
+    public void setHora_fin(String hora_fin) {
+        this.hora_fin = hora_fin;
     }
 
-    public int getPeriodoInscripcionId() {
-        return periodoInscripcionId;
+    public int getPeriodo_inscripcion_id() {
+        return periodo_inscripcion_id;
     }
 
-    public void setPeriodoInscripcionId(int periodoInscripcionId) {
-        this.periodoInscripcionId = periodoInscripcionId;
+    public void setPeriodo_inscripcion_id(int periodo_inscripcion_id) {
+        this.periodo_inscripcion_id = periodo_inscripcion_id;
     }
 
     @Override
     public String toString() {
-        return "ActividadEntity [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", instalacionId="
-                + instalacionId + ", aforoMaximo=" + aforoMaximo + ", costeSocio=" + costeSocio + ", costeNoSocio="
-                + costeNoSocio + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ", dias=" + dias
-                + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + ", periodoInscripcionId=" + periodoInscripcionId
+        return "ActividadEntity [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", instalacion_id="
+                + instalacion_id + ", aforo_maximo=" + aforo_maximo + ", coste_socio=" + coste_socio + ", coste_no_socio="
+                + coste_no_socio + ", fecha_inicio=" + fecha_inicio + ", fecha_fin=" + fecha_fin + ", dias=" + dias
+                + ", hora_inicio=" + hora_inicio + ", hora_fin=" + hora_fin + ", periodo_inscripcion_id=" + periodo_inscripcion_id
                 + "]";
     }
 }
-
