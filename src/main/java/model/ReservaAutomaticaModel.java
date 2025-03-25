@@ -1,9 +1,13 @@
 package model;
 
-import java.sql.PreparedStatement;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -115,31 +119,91 @@ public class ReservaAutomaticaModel {
 	    return db.executeQueryArray(sql, new Object[]{instalacionId, fechaInicio, fechaFin, horaInicio, horaInicio, horaFin, horaFin});
 	}
 	
-	public List<Object[]> obtenerReservasNoAdmin() {
-	    String sql = "SELECT r.id, u.nombre, r.fecha, r.hora_inicio, r.hora_fin, r.pagado " +
-	                 "FROM RESERVA_INSTALACION r " +
-	                 "JOIN USUARIO u ON r.usuario_id = u.id " +
-	                 "WHERE u.rol <> 'ADMIN'";
 
-	    List<Object[]> resultados = db.executeQueryArray(sql, new Object[]{});
+    /**
+     * Método para obtener las reservas de la instalación que no son de un admin y que coinciden con la fecha, hora e instalación de la actividad.
+     * @param instalacionId El ID de la instalación.
+     * @param fechaInicio La fecha de inicio de la actividad.
+     * @param fechaFin La fecha de fin de la actividad.
+     * @param dias Los días de la actividad.
+     * @param horaInicio La hora de inicio de la actividad.
+     * @param horaFin La hora de fin de la actividad.
+     * @return Una lista con las reservas que cumplen los criterios.
+     */
+    public List<Object[]> obtenerReservasNoAdmin(int instalacionId, String fechaInicio, String fechaFin, String dias, String horaInicio, String horaFin) {
+        // Convertir las fechas de inicio y fin a LocalDate
+        LocalDate inicio = LocalDate.parse(fechaInicio);
+        LocalDate fin = LocalDate.parse(fechaFin);
+        
+        // Convertir las horas de inicio y fin a LocalTime
+        LocalTime horaInicioTime = LocalTime.parse(horaInicio);
+        LocalTime horaFinTime = LocalTime.parse(horaFin);
 
-	    // Convertimos la columna pagado a boolean manualmente
-	    for (Object[] fila : resultados) {
-	        int pagadoInt = (int) fila[5]; // Obtenemos el valor entero
-	        fila[5] = pagadoInt == 1; // Convertimos 1 -> true, 0 -> false
-	    }
+        // Separar los días de la actividad en un array
+        String[] diasArray = dias.split(",");
 
-	    return resultados;
-	}
+        // Lista para almacenar las reservas que coincidan
+        List<Object[]> reservasAEliminar = new ArrayList<>();
 
+        // Iterar sobre el rango de fechas
+        for (LocalDate fecha = inicio; !fecha.isAfter(fin); fecha = fecha.plusDays(1)) {
+            // Obtener el día de la semana de la fecha actual
+            String diaSemana = fecha.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
 
+            // Comprobar si el día está en los días especificados de la actividad
+            for (String dia : diasArray) {
+                if (dia.trim().equalsIgnoreCase(diaSemana)) {
+                    // Consulta SQL para obtener las reservas que coinciden con la instalación, fecha, hora, etc.
+                    String sql = "SELECT r.id, u.nombre, r.fecha, r.hora_inicio, r.hora_fin, r.pagado " +
+                                 "FROM RESERVA_INSTALACION r " +
+                                 "JOIN USUARIO u ON r.usuario_id = u.id " +
+                                 "WHERE r.instalacion_id = ? " +
+                                 "AND r.fecha = ? " +
+                                 "AND ((r.hora_inicio <= ? AND r.hora_fin > ?) OR (r.hora_inicio < ? AND r.hora_fin >= ?)) " +
+                                 "AND u.rol <> 'ADMIN'"; // Evitar admins
 
-	public void eliminarReservasNoAdmin() {
-	    String sql = "DELETE FROM RESERVA_INSTALACION WHERE usuario_id IN " +
-	                 "(SELECT id FROM USUARIO WHERE rol <> 'ADMIN')";
-	    db.executeUpdate(sql, new Object[]{});
-	}
+                    // Ejecutamos la consulta
+                    List<Object[]> reservas = db.executeQueryArray(sql, new Object[]{instalacionId, fecha.toString(), horaInicioTime.toString(), horaInicioTime.toString(), horaFinTime.toString(), horaFinTime.toString()});
 
+                    // Agregar las reservas que coinciden con los criterios
+                    reservasAEliminar.addAll(reservas);
+                }
+            }
+        }
 
+        // Devolvemos las reservas que coinciden con el criterio
+        return reservasAEliminar;
+    }
 
+    public void eliminarReservasNoAdmin(int instalacionId, String fechaInicio, String fechaFin, String dias, String horaInicio, String horaFin) {
+        // Convertir las fechas a LocalDate para compararlas más fácilmente
+        LocalDate inicio = LocalDate.parse(fechaInicio);
+        LocalDate fin = LocalDate.parse(fechaFin);
+
+        // Separar los días de la actividad
+        String[] diasArray = dias.split(",");
+
+        // Preparamos la consulta SQL para eliminar las reservas coincidentes
+        String sql = "DELETE FROM RESERVA_INSTALACION " +
+                     "WHERE usuario_id IN (SELECT id FROM USUARIO WHERE rol <> 'ADMIN') " +
+                     "AND instalacion_id = ? " +
+                     "AND fecha BETWEEN ? AND ? " +
+                     "AND ((hora_inicio <= ? AND hora_fin > ?) OR (hora_inicio < ? AND hora_fin >= ?))";
+
+        // Iteramos sobre las fechas de la actividad
+        for (LocalDate fecha = inicio; !fecha.isAfter(fin); fecha = fecha.plusDays(1)) {
+            // Obtener el día de la semana de la fecha actual
+            String diaSemana = fecha.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
+
+            // Comprobamos si el día está en los días especificados
+            for (String dia : diasArray) {
+                if (dia.trim().equalsIgnoreCase(diaSemana)) {
+                    // Si el día coincide, ejecutar la eliminación
+                    db.executeUpdate(sql, new Object[]{instalacionId, fecha.toString(), fecha.toString(), horaInicio, horaInicio, horaFin, horaFin});
+                }
+            }
+        }
+    }
+
+	
 }

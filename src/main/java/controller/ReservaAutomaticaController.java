@@ -1,5 +1,6 @@
 package controller;
 
+
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -53,7 +54,8 @@ public class ReservaAutomaticaController {
 		}));
 		
 		view.getbEliminar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> {
-		    eliminarReservasNoAdmin();
+			String actividadSeleccionada = view.getCbActividades().getSelectedItem().toString();
+		    eliminarReservasNoAdmin(actividadSeleccionada);
 		}));
 
 	}
@@ -204,9 +206,25 @@ public class ReservaAutomaticaController {
 	        }
 	    }
 	}
+
+
+public void eliminarReservasNoAdmin(String nombreActividad) {
 	
-	public void eliminarReservasNoAdmin() {
-	    List<Object[]> reservasAEliminar = model.obtenerReservasNoAdmin();
+		List<Object[]> detalles = model.getActividadDetalles2(nombreActividad);
+
+
+        Object[] detalle = detalles.get(0);
+        
+        String nombre = detalle[0].toString();  // Nombre de la actividad
+        String fechaInicio = detalle[1].toString();  // Fecha de inicio (String)
+        String fechaFin = detalle[2].toString();  // Fecha de fin (String)
+        int instalacionId = (int) detalle[3]; // Ahora detalle[3] es un entero (ID)
+        String dias = detalle[4].toString();  // Días de la actividad
+        String horaInicio = detalle[5].toString(); // Hora de inicio
+        String horaFin = detalle[6].toString(); // Hora de fin
+		
+		
+	    List<Object[]> reservasAEliminar = model.obtenerReservasNoAdmin(instalacionId, fechaInicio, fechaFin, dias, horaInicio, horaFin);
 	    
 	    // Comprobamos si hay conflictos en taConflictos
 	    if (view.getTaConflictos().getText().trim().isEmpty()) {
@@ -229,14 +247,19 @@ public class ReservaAutomaticaController {
 	    for (Object[] reserva : reservasAEliminar) {
 	        String usuario = reserva[1].toString();  // Nombre del usuario
 	        String fecha = reserva[2].toString();   // Fecha de la reserva
-	        String horaInicio = reserva[3].toString(); // Hora de inicio
-	        String horaFin = reserva[4].toString(); // Hora de fin
-	        boolean pagado = (boolean) reserva[5]; // Boolean válido
+	        String horaIni = reserva[3].toString(); // Hora de inicio
+	        String horaFi = reserva[4].toString(); // Hora de fin
+	        // Obtener el valor de "pagado" como Integer
+	        Integer pagadoInt = (Integer) reserva[5];
+
+	        // Convertir el valor a booleano: 1 -> true, 0 -> false
+	        boolean pagado = (pagadoInt != null && pagadoInt == 1); // Si es 1, es verdadero; si es 0, es falso
+
 
 	        mensajeReservas.append("- ").append(usuario).append(", ")
 	                       .append(fecha).append(", ")
-	                       .append(horaInicio).append(" - ")
-	                       .append(horaFin).append(", Pagado: ")
+	                       .append(horaIni).append(" - ")
+	                       .append(horaFi).append(", Pagado: ")
 	                       .append(pagado ? "Sí" : "No").append("\n");
 	    }
 
@@ -254,7 +277,7 @@ public class ReservaAutomaticaController {
 
 	    // Si el usuario presiona "OK", eliminar las reservas
 	    if (opcion == JOptionPane.OK_OPTION) {
-	        model.eliminarReservasNoAdmin(); // Llamamos al modelo para eliminar las reservas
+	        model.eliminarReservasNoAdmin(instalacionId, fechaInicio, fechaFin, dias, horaInicio, horaFin);; // Llamamos al modelo para eliminar las reservas
 	        
 	        JOptionPane.showMessageDialog(null, 
 	            "Reservas eliminadas correctamente.", 
@@ -267,6 +290,5 @@ public class ReservaAutomaticaController {
 	            JOptionPane.INFORMATION_MESSAGE);
 	    }
 	}
-
 
 }
