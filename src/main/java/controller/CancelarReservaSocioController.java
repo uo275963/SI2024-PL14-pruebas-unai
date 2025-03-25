@@ -2,7 +2,9 @@ package controller;
 
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import giis.demo.util.SwingUtil;
 import model.CancelarReservaSocioModel;
@@ -29,6 +31,10 @@ public class CancelarReservaSocioController {
 		
 		view.getBEliminar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> {
 			eliminarReserva();
+		}));
+		view.getbCerrar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> {
+			JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(view.getbCerrar());
+			frame.dispose();
 		}));
 	}
 
