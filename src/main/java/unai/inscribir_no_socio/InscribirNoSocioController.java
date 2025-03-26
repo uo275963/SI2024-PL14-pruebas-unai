@@ -125,16 +125,21 @@ public class InscribirNoSocioController {
         // Inscribir al no socio en la actividad
         model.inscribirNoSocioEnActividad(noSocioId, actividadId);
         
-     // Registrar el pago para el no socio
+        
+        // Verificar si el socio ya está inscrito
+        if (model.estaNoSocioInscritoEnActividad(noSocioId, actividadId)) {
+        	JOptionPane.showMessageDialog(view.getFrame(), "El socio ya está inscrito en la actividad", "Error", JOptionPane.ERROR_MESSAGE);
+            return; // No realiza la inscripción si ya está inscrito
+        }
 
-        // Obtener el costo para no socios
+        // Obtener el coste para no socios y registrar el pago para el no socio
+
         Double costeNoSocio = model.getCosteNoSocio(actividadId);
         model.registrarPago(noSocioId, actividadId, costeNoSocio);
 
         // Mostrar mensaje de éxito
         JOptionPane.showMessageDialog(view.getFrame(), "¡Inscripción realizada con éxito!");
         
-     // Suponiendo que ya tienes estos valores después de realizar la inscripción
      
         String nombreActividad = model.obtenerNombreActividad(actividadId);
         String nombreInstalacion = model.obtenerNombreInstalacion(actividadId);

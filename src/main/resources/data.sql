@@ -23,6 +23,7 @@ INSERT INTO CONFIGURACION (clave, valor) VALUES
 	
 DELETE FROM USUARIO;
 INSERT INTO USUARIO (nombre, dni, password, rol, estado, recibos_pendientes) VALUES
+('Enrique García', '12345689X', 'password123', 'SOCIO', 'ACTIVO', 0),
 ('Juan Pérez', '12345678A', 'password123', 'SOCIO', 'ACTIVO', 0),
 ('María Gómez', '87654321B', 'password456', 'SOCIO', 'MOROSO', 2),
 ('Carlos Sánchez', '11223344C', 'adminpass', 'ADMIN', 'ACTIVO', 0),

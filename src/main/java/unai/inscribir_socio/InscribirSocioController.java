@@ -146,6 +146,12 @@ public class InscribirSocioController {
             return;
         }
         
+        // Verificar si el socio ya está inscrito
+        if (model.estaSocioInscritoEnActividad(socioId, actividadId)) {
+        	JOptionPane.showMessageDialog(view.getFrame(), "El socio ya está inscrito en la actividad", "Error", JOptionPane.ERROR_MESSAGE);
+            return; // No realiza la inscripción si ya está inscrito
+        }
+        
         
         // Llamar al método para inscribir al socio
         model.inscribirSocioEnActividad(socioId, actividadId);
