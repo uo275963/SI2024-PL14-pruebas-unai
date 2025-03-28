@@ -2,6 +2,8 @@ package diego_periodoInscripcion;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.swing.ComboBoxModel;
 import javax.swing.table.DefaultTableModel;
@@ -14,7 +16,6 @@ import giis.demo.util.Util;
 public class PeriodoController {
     private PeriodoModel model;
     private PeriodoView view;
-    private String lastSelectedKey = ""; // Guarda la última clave seleccionada
 
     public PeriodoController(PeriodoModel model, PeriodoView view) {
         this.model = model;
@@ -24,14 +25,6 @@ public class PeriodoController {
 
     public void initController() {
         view.getBtnGuardar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> guardarPeriodo()));
-        view.getBtnMostrar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> getListaPeriodos()));
-
-        view.getTablaPeriodos().addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseReleased(java.awt.event.MouseEvent e) {
-                SwingUtil.exceptionWrapper(() -> updateDetail());
-            }
-        });
     }
 
     public void initView() {
@@ -45,15 +38,15 @@ public class PeriodoController {
     public void guardarPeriodo() {
         try {
             String nombre = view.getNombreField().getText();
-            String fechaInicio = Util.dateToIsoString(view.getFechaInicioChooser().getDate());
-            String fechaFin = Util.dateToIsoString(view.getFechaFinChooser().getDate());
-            String fechaFinNoSocios = Util.dateToIsoString(view.getFechaFinNoSociosChooser().getDate());
+            String fecha_inicio_socios = Util.dateToIsoString(view.getFechaInicioChooser().getDate());
+            String fecha_fin_socios = Util.dateToIsoString(view.getFechaFinChooser().getDate());
+            String fecha_fin_no_socios = Util.dateToIsoString(view.getFechaFinNoSociosChooser().getDate());
 
-            if (nombre.isEmpty() || fechaInicio == null || fechaFin == null || fechaFinNoSocios == null) {
+            if (nombre.isEmpty() || fecha_inicio_socios == null || fecha_fin_socios == null || fecha_fin_no_socios == null) {
                 throw new ApplicationException("Todos los campos deben estar completos.");
             }
 
-            model.guardarPeriodo(nombre, fechaInicio, fechaFin, fechaFinNoSocios);
+            model.guardarPeriodo(nombre, fecha_inicio_socios, fecha_fin_socios, fecha_fin_no_socios);
             view.mostrarMensaje("Período guardado correctamente.");
             getListaPeriodos();
         } catch (ApplicationException ex) {
@@ -66,39 +59,38 @@ public class PeriodoController {
      */
     public void getListaPeriodos() {
         List<PeriodoDisplayDTO> periodos = model.getListaPeriodos();
-        TableModel tmodel = SwingUtil.getTableModelFromPojos(periodos, new String[]{"id", "nombre", "descripcion", "fechaInicio", "fechaFin", "fechaFinNoSocios"});
-        view.getTablaPeriodos().setModel(tmodel);
-        SwingUtil.autoAdjustColumns(view.getTablaPeriodos());
 
-        restoreDetail();
+        // Crear un modelo de tabla vacío con las cabeceras
+        DefaultTableModel tmodel = new DefaultTableModel(
+                new String[] {"id", "nombre", "fecha_inicio_socios", "fecha_fin_socios", "fecha_fin_no_socios" },
+                0);
 
-        List<Object[]> periodosList = model.getListaPeriodosArray();
-        ComboBoxModel<Object> lmodel = SwingUtil.getComboModelFromList(periodosList);
-        view.getListaPeriodos().setModel(lmodel);
-    }
+        // Formateador de fechas
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    /**
-     * Restaura la selección de detalles en la tabla.
-     */
-    public void restoreDetail() {
-        this.lastSelectedKey = SwingUtil.selectAndGetSelectedKey(view.getTablaPeriodos(), this.lastSelectedKey);
-        if ("".equals(this.lastSelectedKey)) {
-            view.getDetallePeriodo().setModel(new DefaultTableModel());
-        } else {
-            this.updateDetail();
+        // Iterar sobre los períodos y agregar filas al modelo de la tabla
+        for (PeriodoDisplayDTO periodo : periodos) {
+            Object[] row = new Object[5];
+            
+            row[0] = periodo.getId();
+            row[1] = periodo.getNombre(); // nombre
+            row[2] = periodo.getFecha_inicio_socios();
+            row[3] = periodo.getFecha_fin_socios();
+            row[4] = periodo.getFecha_fin_no_socios();
+
+            // Agregar la fila al modelo de la tabla
+            tmodel.addRow(row);
         }
+
+        // Establecer el modelo de la tabla en la vista
+        view.getTablaPeriodos().setModel(tmodel);
+
+        // Ajustar las columnas automáticamente
+        SwingUtil.autoAdjustColumns(view.getTablaPeriodos());
     }
 
-    /**
-     * Actualiza la vista con los detalles del período seleccionado.
-     */
-    public void updateDetail() {
-        this.lastSelectedKey = SwingUtil.getSelectedKey(view.getTablaPeriodos());
-        int idPeriodo = Integer.parseInt(this.lastSelectedKey);
 
-        PeriodoEntity periodo = model.getPeriodo(idPeriodo);
-        TableModel tmodel = SwingUtil.getRecordModelFromPojo(periodo, new String[]{"id", "nombre", "descripcion", "fechaInicio", "fechaFin", "fechaFinNoSocios"});
-        view.getDetallePeriodo().setModel(tmodel);
-        SwingUtil.autoAdjustColumns(view.getDetallePeriodo());
-    }
+
+
+
 }
