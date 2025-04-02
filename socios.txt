@@ -1,3 +1,0 @@
-Nombre	DNI	Estado	Montante Reserva	Actividades	Total
-Juan Pérez	12345678A	ACTIVO	30,00	10,00	40,00
-María Gómez	87654321B	MOROSO	15,00	0,00	15,00
