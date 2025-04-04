@@ -95,6 +95,9 @@ public class VisualizarActividadesComoSocioController {
 
         // Limpiar el ComboBox antes de llenarlo
         this.view.getCbInstalaciones().removeAllItems();
+        
+        // Agregar la opción "Todas"
+        this.view.getCbInstalaciones().addItem("Todas");
 
         // Llenar el ComboBox con los nombres de las instalaciones
         if (instalaciones != null && !instalaciones.isEmpty()) {
@@ -113,6 +116,12 @@ public class VisualizarActividadesComoSocioController {
         String instalacionSeleccionada = (String) this.view.getCbInstalaciones().getSelectedItem();
         String fechaInicio = this.view.getTFFechaInicio().getText();
         String fechaFin = this.view.getTFFechaFin().getText();
+        
+        
+     // Si la opción seleccionada es "Todas", asignamos null o un valor especial
+        if ("Todas".equals(instalacionSeleccionada)) {
+            instalacionSeleccionada = null; // O puedes usar "TODAS" si tu modelo lo maneja
+        }
 
         // Validar formato de fechas
         if (!esFechaValida(fechaInicio) || !esFechaValida(fechaFin)) {
