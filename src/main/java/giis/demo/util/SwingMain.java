@@ -2,7 +2,7 @@ package giis.demo.util;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
-
+import controller.ReservaAutomaticaController;
 import controller.CancelarReservaSocioController;
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
@@ -14,12 +14,14 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import giis.demo.tkrun.*;
+import model.ReservaAutomaticaModel;
 import model.CancelarReservaSocioModel;
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
 import model.VisualizarPagosComoSocioModel;
 import model.VisualizarActividadesComoSocioModel;
 import model.VisualizarReservasComoSocioModel;
+import view.ReservaAutomaticaView;
 import view.CancelarReservaSocioView;
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
@@ -181,15 +183,21 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnReservarSocioComoAdmin);
+
+
 		
+
+				
 		JButton btnVisualizarActividadesComoSocio = new JButton("Visualizar actividades como socio");
 		btnVisualizarActividadesComoSocio.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
 				VisualizarActividadesComoSocioController controller = new VisualizarActividadesComoSocioController(new VisualizarActividadesComoSocioModel (), new VisualizarActividadesComoSocioView ());
 				controller.initController();
 			}
 		});
 		frame.getContentPane().add(btnVisualizarActividadesComoSocio);
+		
 
 		JButton btnVerPagosComoSocio = new JButton("Ver pagos como socio");
 		btnVerPagosComoSocio.addActionListener(new ActionListener() {
@@ -201,6 +209,19 @@ public class SwingMain {
 		});
 		frame.getContentPane().add(btnVerPagosComoSocio);
 
+		
+		JButton btnReservaAutomatica = new JButton("Reserva automática");
+		btnReservaAutomatica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ReservaAutomaticaController controller = new ReservaAutomaticaController(new ReservaAutomaticaModel(), new ReservaAutomaticaView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnReservaAutomatica);
+		
+		
+		
+		
 		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad");
 		btnInscribirSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
