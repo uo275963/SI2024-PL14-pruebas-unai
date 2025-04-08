@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import controller.ReservaAutomaticaController;
 import controller.CancelarReservaSocioController;
+import controller.GenerarInformeSociosController;
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
 import controller.VisualizarPagosComoSocioController;
@@ -16,6 +17,7 @@ import java.awt.event.ActionEvent;
 import giis.demo.tkrun.*;
 import model.ReservaAutomaticaModel;
 import model.CancelarReservaSocioModel;
+import model.GenerarInformeSociosModel;
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
 import model.VisualizarPagosComoSocioModel;
@@ -23,6 +25,7 @@ import model.VisualizarActividadesComoSocioModel;
 import model.VisualizarReservasComoSocioModel;
 import view.ReservaAutomaticaView;
 import view.CancelarReservaSocioView;
+import view.GenerarInformeSociosView;
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
 import view.VisualizarPagosComoSocioView;
@@ -273,6 +276,15 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnInscripcion);
+		
+		JButton btnInformeSocios = new JButton("Generar Informe Socios");
+		btnInformeSocios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GenerarInformeSociosController controller = new GenerarInformeSociosController(new GenerarInformeSociosModel(), new GenerarInformeSociosView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnInformeSocios);
 
 	}
 
