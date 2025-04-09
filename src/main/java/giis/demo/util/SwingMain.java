@@ -36,6 +36,7 @@ import unai.lista_actividades.*;
 import unai.ver_reservas.*;
 import unai.inscribir_socio.*;
 import unai.inscribir_no_socio.*;
+import unai.inscribir_socio_usuario.*;
 
 import model.VisualizarReservasComoSocioModel;
 import view.VisualizarReservasComoSocioView;
@@ -201,7 +202,7 @@ public class SwingMain {
 		});
 		frame.getContentPane().add(btnVerPagosComoSocio);
 
-		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad");
+		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad (ADMIN)");
 		btnInscribirSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				InscribirSocioController controller = new InscribirSocioController(new InscribirSocioModel(),
@@ -252,6 +253,14 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnInscripcion);
+		
+		JButton btnInscripcionSocioUsuario = new JButton("Un socio se inscribe en una actividad (USUARIO)");
+		btnInscripcionSocioUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UsuarioInscribirSocioController controller = new UsuarioInscribirSocioController(new UsuarioInscribirSocioModel(), new UsuarioInscribirSocioView(), new UsuarioLoginView());
+			}
+		});
+		frame.getContentPane().add(btnInscripcionSocioUsuario);
 
 	}
 

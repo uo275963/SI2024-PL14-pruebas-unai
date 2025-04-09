@@ -61,7 +61,6 @@ public class InscribirSocioController {
         // Agrega los eventos a los componentes de la vista
     	view.getBotonInsc().addActionListener(e -> inscribirSocioEnActividad());
     	view.getBotonVolver().addActionListener(e -> {
-              // Aquí puedes cerrar la ventana desde el controlador
               JFrame ventana = (JFrame) SwingUtilities.getWindowAncestor(view.getBotonVolver());
               if (ventana != null) {
                   ventana.dispose();  // Cierra la ventana
