@@ -20,13 +20,16 @@ public class GenerarInformeSociosView {
 	private JRadioButton RBPeriodoPersonalizado;
 	private JComboBox CBEstaciones;
 	private JComboBox CBEstacionesAño;
-	private JComboBox CBAño;
+	private JComboBox CBAno;
 	private JComboBox CBMesInicio;
 	private JComboBox CBAñoInicio;
 	private JComboBox CBMesFinal;
 	private JComboBox CBAñoFinal;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JComboBox CBMes;
+	private JComboBox CBMesAno;
+	private JButton btnGenerarInforme;
+	private JButton btnCerrar;
 
 	/**
 	 * Launch the application.
@@ -127,9 +130,9 @@ public class GenerarInformeSociosView {
 		lblNewLabel_3.setBounds(10, 190, 45, 13);
 		frame.getContentPane().add(lblNewLabel_3);
 		
-		CBAño = new JComboBox();
-		CBAño.setBounds(10, 210, 100, 30);
-		frame.getContentPane().add(CBAño);
+		CBAno = new JComboBox();
+		CBAno.setBounds(10, 210, 100, 30);
+		frame.getContentPane().add(CBAno);
 		
 		JLabel lblNewLabel_4 = new JLabel("Personalizado");
 		lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -162,21 +165,49 @@ public class GenerarInformeSociosView {
 		CBAñoFinal.setBounds(457, 280, 100, 30);
 		frame.getContentPane().add(CBAñoFinal);
 		
-		JButton btnGenerarInforme = new JButton("Generar informe");
+		btnGenerarInforme = new JButton("Generar informe");
 		btnGenerarInforme.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnGenerarInforme.setBounds(146, 470, 150, 30);
 		frame.getContentPane().add(btnGenerarInforme);
 		
-		JButton btnCerrar = new JButton("Cerrar");
+		btnCerrar = new JButton("Cerrar");
 		btnCerrar.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnCerrar.setBounds(27, 470, 100, 30);
 		frame.getContentPane().add(btnCerrar);
+		
+		CBMesAno = new JComboBox();
+		CBMesAno.setBounds(120, 70, 100, 30);
+		frame.getContentPane().add(CBMesAno);
 	}
 	
 	
 	
 	
 
+
+	public JComboBox getCBMesAno() {
+		return CBMesAno;
+	}
+
+	public void setCBMesAno(JComboBox cBMesAno) {
+		CBMesAno = cBMesAno;
+	}
+
+	public JButton getBtnGenerarInforme() {
+		return btnGenerarInforme;
+	}
+
+	public void setBtnGenerarInforme(JButton btnGenerarInforme) {
+		this.btnGenerarInforme = btnGenerarInforme;
+	}
+
+	public JButton getBtnCerrar() {
+		return btnCerrar;
+	}
+
+	public void setBtnCerrar(JButton btnCerrar) {
+		this.btnCerrar = btnCerrar;
+	}
 
 	public JComboBox getCBMes() {
 		return CBMes;
@@ -238,12 +269,12 @@ public class GenerarInformeSociosView {
 		CBEstacionesAño = cBEstacionesAño;
 	}
 
-	public JComboBox getCBAño() {
-		return CBAño;
+	public JComboBox getCBAno() {
+		return CBAno;
 	}
 
-	public void setCBAño(JComboBox cBAño) {
-		CBAño = cBAño;
+	public void setCBAño(JComboBox cBAno) {
+		CBAno = cBAno;
 	}
 
 	public JComboBox getCBMesInicio() {
