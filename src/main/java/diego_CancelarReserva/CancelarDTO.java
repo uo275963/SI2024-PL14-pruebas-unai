@@ -6,6 +6,8 @@ public class CancelarDTO {
     private String nombre_usuario;
     private String nombre_actividad;
     private String nombre_instalacion;
+    private String fecha_actividad;
+    private String hora_actividad;
 
     // Getters y Setters
     public int getUsuario_id() {
@@ -46,5 +48,19 @@ public class CancelarDTO {
 
     public void setNombre_instalacion(String nombre_instalacion) {
         this.nombre_instalacion = nombre_instalacion;
+    }
+    
+    public String getFecha_actividad() {
+        return fecha_actividad;
+    }
+    public void setFecha_actividad(String fecha_actividad) {
+        this.fecha_actividad = fecha_actividad;
+    }
+
+    public String getHora_actividad() {
+        return hora_actividad;
+    }
+    public void setHora_actividad(String hora_actividad) {
+        this.hora_actividad = hora_actividad;
     }
 }

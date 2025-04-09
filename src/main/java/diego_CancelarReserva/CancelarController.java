@@ -57,13 +57,16 @@ public class CancelarController {
     private void cargarReservasUsuario(int usuarioId) {
         List<CancelarDTO> reservas = model.obtenerReservasUsuario(usuarioId);
         DefaultTableModel tableModel = new DefaultTableModel(
-                new String[]{"Nombre Usuario", "Nombre Actividad", "Instalación"}, 0);
+                new String[]{"Nombre Usuario", "Nombre Actividad", "Instalación", "Hora", "Fecha"}, 0);
 
         for (CancelarDTO dto : reservas) {
             tableModel.addRow(new Object[]{
                     dto.getNombre_usuario(),
                     dto.getNombre_actividad(),
-                    dto.getNombre_instalacion()
+                    dto.getNombre_instalacion(),
+                    dto.getHora_actividad(),
+                    dto.getFecha_actividad(),
+                    
             });
         }
 
