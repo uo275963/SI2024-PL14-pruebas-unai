@@ -1,93 +1,101 @@
 package diego_CancelarReserva;
 
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.time.LocalDate;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
+import giis.demo.util.SwingUtil;
+
 public class CancelarController {
-	private CancelarView view;
-	private CancelarModel model;
+    private CancelarModel model;
+    private CancelarView view;
 
-	public CancelarController(CancelarView model, CancelarModel view) {
-		this.model = model;
-		this.view = view;
-		this.initView();
-	}
-	
-	public void initView() {
-		cargarUsuarios();
-		view.getFrame().setVisible(true);;
-	}
+    private int usuarioIdLogeado; // Guarda el ID del usuario tras login
 
-	public void initController() {
-		view.getBtnBuscar().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cargarReservas();
-			}
-		});
+    public CancelarController(CancelarModel model, CancelarView view) {
+        this.model = model;
+        this.view = view;
+        initView();
+    }
 
-		view.getBtnCancelar().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cancelarReserva();
-			}
-		});
-	}
+    public void initView() {
+        view.mostrarLogin();
+        view.getFrame().setVisible(true);
+    }
 
-	// Cargar usuarios en el JComboBox
-	private void cargarUsuarios() {
-		try {
-			List<String> usuarios = model.obtenerUsuarios();
-			for (String usuario : usuarios) {
-				view.getComboUsuarios().addItem(usuario);
-			}
-		} catch (Exception e) {
-			view.mostrarError("Error al cargar usuarios: " + e.getMessage());
-		}
-	}
+    public void initController() {
+        view.getBtnLogin().addActionListener(e -> SwingUtil.exceptionWrapper(() -> login()));
+        view.getBtnCancelar().addActionListener(e -> SwingUtil.exceptionWrapper(() -> cancelarReserva()));
+    }
 
-	// Buscar reservas del usuario seleccionado y mostrarlas en la tabla
-	private void cargarReservas() {
-		String usuario = (String) view.getComboUsuarios().getSelectedItem();
-		if (usuario == null || usuario.isEmpty()) {
-			view.mostrarError("Seleccione un usuario válido.");
-			return;
-		}
+    private void login() {
+        String nombreUsuario = view.getUsuarioField().getText();
+        String contrasena = new String(view.getPasswordField().getPassword());
 
-		try {
-			List<String[]> reservas = model.obtenerReservas(usuario);
+        if (nombreUsuario.isEmpty() || contrasena.isEmpty()) {
+            view.mostrarError("Por favor, complete todos los campos.");
+            return;
+        }
 
-			// Preparar tabla
-			String[] columnas = {"ID", "Actividad", "Fecha", "Hora"};
-			DefaultTableModel tableModel = new DefaultTableModel(columnas, 0);
+        try {
+            usuarioIdLogeado = model.obtenerIdUsuario(nombreUsuario, contrasena);
 
-			for (String[] reserva : reservas) {
-				tableModel.addRow(reserva);
-			}
+            if (usuarioIdLogeado == -1) {
+                view.mostrarError("Credenciales incorrectas.");
+                return;
+            }
 
-			view.getTablaReservas().setModel(tableModel);
+            cargarReservasUsuario(usuarioIdLogeado);
+            view.mostrarCancelar();
+        } catch (Exception e) {
+            view.mostrarError("Error durante el login: " + e.getMessage());
+        }
+    }
 
-		} catch (Exception e) {
-			view.mostrarError("Error al cargar reservas: " + e.getMessage());
-		}
-	}
+    private void cargarReservasUsuario(int usuarioId) {
+        List<CancelarDTO> reservas = model.obtenerReservasUsuario(usuarioId);
+        DefaultTableModel tableModel = new DefaultTableModel(
+                new String[]{"Nombre Usuario", "Nombre Actividad", "Instalación"}, 0);
 
-	// Cancelar reserva seleccionada
-	private void cancelarReserva() {
-		int filaSeleccionada = view.getTablaReservas().getSelectedRow();
+        for (CancelarDTO dto : reservas) {
+            tableModel.addRow(new Object[]{
+                    dto.getNombre_usuario(),
+                    dto.getNombre_actividad(),
+                    dto.getNombre_instalacion()
+            });
+        }
 
-		if (filaSeleccionada == -1) {
-			view.mostrarError("Seleccione una reserva para cancelar.");
-			return;
-		}
+        view.getTablaReservas().setModel(tableModel);
+    }
 
-		String idReserva = view.getTablaReservas().getValueAt(filaSeleccionada, 0).toString();
+    private void cancelarReserva() {
+        int filaSeleccionada = view.getTablaReservas().getSelectedRow();
+        if (filaSeleccionada == -1) {
+            view.mostrarError("Seleccione una reserva para cancelar.");
+            return;
+        }
 
-		try {
-			model.cancelarReserva(idReserva);
-			view.mostrarMensaje("Reserva cancelada correctamente.");
-			cargarReservas(); // Refrescar tabla
-		} catch (Exception e) {
-			view.mostrarError("Error al cancelar reserva: " + e.getMessage());
-		}
-	}
+        try {
+            List<CancelarDTO> reservas = model.obtenerReservasUsuario(usuarioIdLogeado);
+            CancelarDTO reserva = reservas.get(filaSeleccionada);
+
+            // Verificar restricción: mínimo 1 día de antelación
+            LocalDate fechaHoy = LocalDate.now();
+            LocalDate fechaActividad = model.obtenerFechaActividad(reserva.getActividad_id());
+
+            if (fechaHoy.plusDays(1).isAfter(fechaActividad)) {
+                view.mostrarError("Solo puede cancelar con al menos 1 día de antelación.");
+                return;
+            }
+
+            model.cancelarReserva(usuarioIdLogeado, reserva.getActividad_id());
+            view.mostrarMensaje("Reserva cancelada exitosamente.");
+            cargarReservasUsuario(usuarioIdLogeado); // Refrescar tabla
+
+        } catch (Exception e) {
+            view.mostrarError("Error al cancelar la reserva: " + e.getMessage());
+        }
+    }
 }

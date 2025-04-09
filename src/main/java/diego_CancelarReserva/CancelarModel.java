@@ -1,75 +1,72 @@
 package diego_CancelarReserva;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import giis.demo.util.Database;
 
 public class CancelarModel {
-	 private Database db = new Database();
 
-	/**
-	 * Obtiene todos los usuarios que tienen reservas activas.
-	 * @return Lista de nombres de usuario
-	 */
-	public List<String> obtenerUsuarios() {
-		List<String> usuarios = new ArrayList<>();
-		String sql = "SELECT DISTINCT u.nombre FROM usuario u " +
-					 "JOIN inscripcion_actividad ia ON u.usuario_id = ia.usuario_id " +
-					 "WHERE ia.pagado = 1";
+    private Database db = new Database();
 
-		
+    // Verifica usuario y contraseña, devuelve el ID del usuario si es correcto, -1 si no existe
+    public int obtenerIdUsuario(String nombre, String password) {
+        String sql = "SELECT id FROM USUARIO WHERE nombre=? AND password=?";
+        List<Object[]> rows = db.executeQueryArray(sql, nombre, password);
 
-		return usuarios;
-	}
+        if (rows.isEmpty()) {
+            return -1;
+        }
 
-	/**
-	 * Obtiene las reservas pagadas de un usuario específico.
-	 * @param nombreUsuario Nombre del usuario
-	 * @return Lista de arrays con los datos de cada reserva
-	 */
-	public List<String[]> obtenerReservas(String nombreUsuario) {
-		List<String[]> reservas = new ArrayList<>();
+        return ((Number) rows.get(0)[0]).intValue();
+    }
 
-		String sql = "SELECT ia.inscripcion_id AS id, a.nombre AS actividad, p.fecha_inicio AS fecha, a.hora_inicio AS hora " +
-					 "FROM inscripcion_actividad ia " +
-					 "JOIN usuario u ON ia.usuario_id = u.usuario_id " +
-					 "JOIN actividad a ON ia.actividad_id = a.actividad_id " +
-					 "JOIN periodo p ON a.periodo_id = p.periodo_id " +
-					 "WHERE u.nombre = ? AND ia.pagado = 1";
+    // Devuelve las reservas activas de un usuario
+    public List<CancelarDTO> obtenerReservasUsuario(int usuarioId) {
+    	 String sql = ""
+    		        + "SELECT u.id AS usuario_id, a.id AS actividad_id, u.nombre AS nombre_usuario, "
+    		        + "a.nombre AS nombre_actividad, i.nombre AS nombre_instalacion "
+    		        + "FROM INSCRIPCION_ACTIVIDAD ia "
+    		        + "JOIN USUARIO u ON ia.usuario_id = u.id "
+    		        + "JOIN ACTIVIDAD a ON ia.actividad_id = a.id "
+    		        + "JOIN INSTALACION i ON a.instalacion_id = i.rowid "
+    		        + "WHERE u.id = ?";
 
-		try (PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
-			stmt.setString(1, nombreUsuario);
-			try (ResultSet rs = stmt.executeQuery()) {
-				while (rs.next()) {
-					String[] reserva = {
-						rs.getString("id"),
-						rs.getString("actividad"),
-						rs.getString("fecha"),
-						rs.getString("hora")
-					};
-					reservas.add(reserva);
-				}
-			}
-		} catch (SQLException e) {
-			throw new RuntimeException("Error al obtener reservas: " + e.getMessage(), e);
-		}
+        List<Object[]> rows = db.executeQueryArray(sql, usuarioId);
+        List<CancelarDTO> reservas = new ArrayList<>();
 
-		return reservas;
-	}
+        for (Object[] row : rows) {
+            CancelarDTO dto = new CancelarDTO();
+            dto.setUsuario_id(((Number) row[0]).intValue());
+            dto.setActividad_id(((Number) row[1]).intValue());
+            dto.setNombre_usuario((String) row[2]);
+            dto.setNombre_actividad((String) row[3]);
+            dto.setNombre_instalacion((String) row[4]);
+            reservas.add(dto);
+        }
 
-	/**
-	 * Marca una reserva como cancelada (pagado = 0).
-	 * @param idReserva ID de la reserva
-	 */
-	public void cancelarReserva(String idReserva) {
-		String sql = "UPDATE inscripcion_actividad SET pagado = 0 WHERE inscripcion_id = ?";
+        return reservas;
+    }
 
-		try (PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
-			stmt.setString(1, idReserva);
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			throw new RuntimeException("Error al cancelar reserva: " + e.getMessage(), e);
-		}
-	}
+
+    // Elimina la inscripción del usuario en la actividad
+    public void cancelarReserva(int usuarioId, int actividadId) {
+        String sql = "DELETE FROM INSCRIPCION_ACTIVIDAD WHERE usuario_id = ? AND actividad_id = ?";
+        db.executeUpdate(sql, usuarioId, actividadId);
+    }
+
+    // Devuelve la fecha de la actividad
+    public LocalDate obtenerFechaActividad(int actividadId) {
+        String sql = "SELECT fecha_inicio FROM ACTIVIDAD WHERE id = ?";
+        List<Object[]> rows = db.executeQueryArray(sql, actividadId);
+
+        if (rows.isEmpty()) {
+            throw new RuntimeException("No se encontró la actividad con ID: " + actividadId);
+        }
+
+        Date fechaSql = (Date) rows.get(0)[0];
+        return fechaSql.toLocalDate();
+    }
 }

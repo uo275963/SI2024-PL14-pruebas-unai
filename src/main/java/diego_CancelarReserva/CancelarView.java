@@ -4,80 +4,131 @@ import java.awt.*;
 import javax.swing.*;
 
 public class CancelarView {
-	private JFrame frame;
-	private JTable tablaReservas;
-	private JButton btnCancelar;
-	private JButton btnBuscar;
-	private JComboBox<Object> comboUsuarios;
+    // Variables para el JFrame y sus paneles
+    private JFrame frame;
+    private JPanel panelPrincipal; // Panel que utiliza CardLayout para cambiar entre vistas
 
-	public CancelarView() {
-		initialize();
-	}
+    // Componentes para la pantalla de Login
+    private JPanel panelLogin;
+    private JTextField txtUsuario;
+    private JPasswordField pwdContrasena;
+    private JButton btnLogin;
 
-	private void initialize() {
-		frame = new JFrame("Cancelar Reserva");
-		frame.setBounds(100, 100, 700, 500);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout());
+    // Componentes para la pantalla de Cancelación de Reserva
+    private JPanel panelCancelar;
+    private JTable tablaReservas;
+    private JButton btnCancelar;
+    
+    // Constantes para identificar las tarjetas del CardLayout
+    private final String LOGIN_PANEL = "loginPanel";
+    private final String CANCELAR_PANEL = "cancelarPanel";
 
-		// Panel superior con instrucciones
-		JPanel panelEncabezado = new JPanel();
-		JLabel lblEncabezado = new JLabel("Seleccione un usuario para ver y cancelar reservas");
-		lblEncabezado.setFont(new Font("Arial", Font.BOLD, 14));
-		panelEncabezado.add(lblEncabezado);
-		frame.getContentPane().add(panelEncabezado, BorderLayout.NORTH);
+    public CancelarView() {
+        initialize();
+    }
 
-		// Panel central con controles
-		JPanel panelCentro = new JPanel(new GridLayout(2, 2, 10, 20));
-		panelCentro.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    private void initialize() {
+        // Configuración básica del frame
+        frame = new JFrame("Cancelar Reserva");
+        frame.setBounds(100, 100, 600, 500);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(new BorderLayout());
 
-		// ComboBox de usuarios
-		panelCentro.add(new JLabel("Usuario:"));
-		comboUsuarios = new JComboBox<>();
-		panelCentro.add(comboUsuarios);
+        // Panel principal usando CardLayout para alternar entre vistas
+        panelPrincipal = new JPanel(new CardLayout());
+        frame.getContentPane().add(panelPrincipal, BorderLayout.CENTER);
 
-		// Botón buscar
-		btnBuscar = new JButton("Buscar Reservas");
-		panelCentro.add(btnBuscar);
+        // --- Inicialización de la Vista de Login ---
+        panelLogin = new JPanel();
+        panelLogin.setLayout(new GridLayout(3, 2, 10, 10)); // Disposición en 3 filas x 2 columnas
 
-		// Botón cancelar
-		btnCancelar = new JButton("Cancelar Reserva");
-		panelCentro.add(btnCancelar);
+        JLabel lblUsuario = new JLabel("Usuario:");
+        txtUsuario = new JTextField();
+        txtUsuario.setMaximumSize(new Dimension(2147483646, 2147483647));
+        JLabel lblContrasena = new JLabel("Contraseña:");
+        pwdContrasena = new JPasswordField();
 
-		frame.getContentPane().add(panelCentro, BorderLayout.CENTER);
+        btnLogin = new JButton("Iniciar Sesión");
 
-		// Tabla de reservas en la parte inferior
-		tablaReservas = new JTable();
-		JScrollPane scrollTabla = new JScrollPane(tablaReservas);
-		frame.getContentPane().add(scrollTabla, BorderLayout.SOUTH);
-	}
+        panelLogin.add(lblUsuario);
+        panelLogin.add(txtUsuario);
+        panelLogin.add(lblContrasena);
+        panelLogin.add(pwdContrasena);
+        // Espacio vacío para mayor orden
+        panelLogin.add(new JLabel(""));
+        panelLogin.add(btnLogin);
 
-	// Métodos getter para el controlador
-	public JFrame getFrame() {
-		return frame;
-	}
+        // Agregar panel de login al panel principal
+        panelPrincipal.add(panelLogin, LOGIN_PANEL);
 
-	public JTable getTablaReservas() {
-		return tablaReservas;
-	}
+        // --- Inicialización de la Vista de Cancelación ---
+        panelCancelar = new JPanel();
+        panelCancelar.setLayout(new BorderLayout(10, 10));
 
-	public JButton getBtnCancelar() {
-		return btnCancelar;
-	}
+        // Encabezado o mensaje de instrucciones
+        JPanel panelEncabezado = new JPanel();
+        JLabel lblEncabezado = new JLabel("Seleccione la reserva a cancelar (Con mínimo 1 día de antelación):");
+        lblEncabezado.setFont(new Font("Arial", Font.BOLD, 14));
+        panelEncabezado.add(lblEncabezado);
+        panelCancelar.add(panelEncabezado, BorderLayout.NORTH);
 
-	public JButton getBtnBuscar() {
-		return btnBuscar;
-	}
+        // Tabla para mostrar las reservas del usuario
+        tablaReservas = new JTable();
+        JScrollPane scrollTabla = new JScrollPane(tablaReservas);
+        panelCancelar.add(scrollTabla, BorderLayout.CENTER);
 
-	public JComboBox<Object> getComboUsuarios() {
-		return comboUsuarios;
-	}
+        // Botón para cancelar la reserva seleccionada
+        JPanel panelBotones = new JPanel();
+        btnCancelar = new JButton("Cancelar Reserva");
+        panelBotones.add(btnCancelar);
+        panelCancelar.add(panelBotones, BorderLayout.SOUTH);
 
-	public void mostrarMensaje(String mensaje) {
-		JOptionPane.showMessageDialog(frame, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
-	}
+        // Agregar panel de cancelación al panel principal
+        panelPrincipal.add(panelCancelar, CANCELAR_PANEL);
+    }
+    
+    // Métodos para cambiar de vista en el CardLayout
+    public void mostrarLogin() {
+        CardLayout cl = (CardLayout)(panelPrincipal.getLayout());
+        cl.show(panelPrincipal, LOGIN_PANEL);
+    }
+    
+    public void mostrarCancelar() {
+        CardLayout cl = (CardLayout)(panelPrincipal.getLayout());
+        cl.show(panelPrincipal, CANCELAR_PANEL);
+    }
+    
+    // Métodos para acceder a los componentes desde el controlador
+    public JFrame getFrame() {
+        return frame;
+    }
 
-	public void mostrarError(String mensaje) {
-		JOptionPane.showMessageDialog(frame, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-	}
+    public JTextField getUsuarioField() {
+        return txtUsuario;
+    }
+
+    public JPasswordField getPasswordField() {
+        return pwdContrasena;
+    }
+    
+    public JButton getBtnLogin() {
+        return btnLogin;
+    }
+    
+    public JTable getTablaReservas() {
+        return tablaReservas;
+    }
+    
+    public JButton getBtnCancelar() {
+        return btnCancelar;
+    }
+    
+    // Métodos para mostrar mensajes e informar al usuario
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(frame, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(frame, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 }

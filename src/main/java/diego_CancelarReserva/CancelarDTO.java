@@ -1,107 +1,50 @@
 package diego_CancelarReserva;
 
-import java.time.LocalDate;
-
 public class CancelarDTO {
-    private int reservaId;
-    private int usuarioId;
-    private int instalacionId;
-    private String fecha;
-    private String horaInicio;
-    private String horaFin;
-    private boolean pagado;
-
-    /**
-     * Constructor por defecto requerido por el mapeo de la base de datos.
-     */
-    public CancelarDTO() {
-    }
-
-    /**
-     * Constructor completo para inicializar el DTO.
-     * 
-     * @param reservaId     Identificador único de la reserva.
-     * @param usuarioId     Identificador del usuario que realizó la reserva.
-     * @param instalacionId Identificador de la instalación reservada.
-     * @param fecha         Fecha en la que se realizó la reserva.
-     * @param horaInicio    Hora de inicio de la reserva.
-     * @param horaFin       Hora de fin de la reserva.
-     * @param pagado        Indica si la reserva ya fue pagada.
-     */
-    public CancelarDTO(int reservaId, int usuarioId, int instalacionId, String fecha, String horaInicio, String horaFin, boolean pagado) {
-        this.reservaId = reservaId;
-        this.usuarioId = usuarioId;
-        this.instalacionId = instalacionId;
-        this.fecha = fecha;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
-        this.pagado = pagado;
-    }
+    private int usuario_id;
+    private int actividad_id;
+    private String nombre_usuario;
+    private String nombre_actividad;
+    private String nombre_instalacion;
 
     // Getters y Setters
-
-    public int getReservaId() {
-        return reservaId;
+    public int getUsuario_id() {
+        return usuario_id;
     }
 
-    public void setReservaId(int reservaId) {
-        this.reservaId = reservaId;
+    public void setUsuario_id(int usuario_id) {
+        this.usuario_id = usuario_id;
     }
 
-    public int getUsuarioId() {
-        return usuarioId;
+    public int getActividad_id() {
+        return actividad_id;
     }
 
-    public void setUsuarioId(int usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setActividad_id(int actividad_id) {
+        this.actividad_id = actividad_id;
     }
 
-    public int getInstalacionId() {
-        return instalacionId;
+    public String getNombre_usuario() {
+        return nombre_usuario;
     }
 
-    public void setInstalacionId(int instalacionId) {
-        this.instalacionId = instalacionId;
+    public void setNombre_usuario(String nombre_usuario) {
+        this.nombre_usuario = nombre_usuario;
     }
 
-    public String getFecha() {
-        return fecha;
+    public String getNombre_actividad() {
+        return nombre_actividad;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setNombre_actividad(String nombre_actividad) {
+        this.nombre_actividad = nombre_actividad;
     }
 
-    public String getHoraInicio() {
-        return horaInicio;
+    public String getNombre_instalacion() {
+        return nombre_instalacion;
     }
 
-    public void setHoraInicio(String horaInicio) {
-        this.horaInicio = horaInicio;
-    }
-
-    public String getHoraFin() {
-        return horaFin;
-    }
-
-    public void setHoraFin(String horaFin) {
-        this.horaFin = horaFin;
-    }
-
-    public boolean isPagado() {
-        return pagado;
-    }
-
-    public void setPagado(boolean pagado) {
-        this.pagado = pagado;
-    }
-
-    /**
-     * Método que retorna una representación en forma de cadena del objeto.
-     * Esto es útil para mostrar la información de la reserva en la vista.
-     */
-    @Override
-    public String toString() {
-        return "Reserva " + reservaId + " - Fecha: " + fecha + " (" + horaInicio + " - " + horaFin + ")";
+    public void setNombre_instalacion(String nombre_instalacion) {
+        this.nombre_instalacion = nombre_instalacion;
     }
 }
