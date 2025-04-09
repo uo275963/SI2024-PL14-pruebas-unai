@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import controller.ReservaAutomaticaController;
 import controller.CancelarReservaSocioController;
 import controller.DesapuntarSocioActividadoController;
+import controller.InformeUsoInstalacionesController;
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
 import controller.VisualizarPagosComoSocioController;
@@ -18,6 +19,7 @@ import giis.demo.tkrun.*;
 import model.ReservaAutomaticaModel;
 import model.CancelarReservaSocioModel;
 import model.DesapuntarSocioModel;
+import model.InformeUsoInstalacionesModel;
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
 import model.VisualizarPagosComoSocioModel;
@@ -26,6 +28,7 @@ import model.VisualizarReservasComoSocioModel;
 import view.ReservaAutomaticaView;
 import view.CancelarReservaSocioView;
 import view.DesapuntarSocioActividadView;
+import view.InformeUsoInstalacionesView;
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
 import view.VisualizarPagosComoSocioView;
@@ -286,6 +289,16 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnCancelarInscripcionSocio);
+		
+		JButton btnInformeUsoInstalaciones = new JButton("Informe de uso de las instalaciones");
+		btnInformeUsoInstalaciones.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InformeUsoInstalacionesController controller = new InformeUsoInstalacionesController(new InformeUsoInstalacionesModel(),
+						new InformeUsoInstalacionesView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnInformeUsoInstalaciones);
 
 	}
 
