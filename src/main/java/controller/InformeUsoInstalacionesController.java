@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.List;
+
 import javax.swing.DefaultComboBoxModel;
 
 import model.InformeUsoInstalacionesModel;
@@ -13,7 +15,6 @@ public class InformeUsoInstalacionesController {
 		this.model=m;
 		this.view=v;
 		initView();
-		initController();
 	}
 	public void initView(){
 		view.getFrame().setVisible(true);
@@ -24,6 +25,7 @@ public class InformeUsoInstalacionesController {
 		view.getrBCuatrimestre().addActionListener(e -> escogerPeriodo());
 		view.getrBAño().addActionListener(e -> escogerPeriodo());
 		view.getrBPersonalizado().addActionListener(e -> escogerPeriodo());
+		view.getcBCuatrimestreAño().addActionListener(e -> cargarCuatrimestres());
 	}
 	
 	private void deshabilitarComponentes() {
@@ -41,6 +43,15 @@ public class InformeUsoInstalacionesController {
 	private void escogerPeriodo() {
 		deshabilitarComponentes();
 		cargarAños();
+		cargarMeses();
+		cargarCuatrimestres();
+		 // Solo cargar cuatrimestres si hay un año seleccionado
+	    if (view.getrBCuatrimestre().isSelected()) {
+	        String anioSeleccionado = (String) view.getcBCuatrimestreAño().getSelectedItem();
+	        if (anioSeleccionado != null && !anioSeleccionado.isEmpty()) {
+	            cargarCuatrimestres();  // Cargar cuatrimestres solo si hay año seleccionado
+	        }
+	    }
 		if(view.getrBMes().isSelected()) {
 			view.getcBMesMes().setEnabled(true);
 			view.getcBAñoMes().setEnabled(true);
@@ -80,6 +91,30 @@ public class InformeUsoInstalacionesController {
 		view.getcBCuatrimestreMes().setModel(model);
 		view.getcBPersonalizadoMesInicio().setModel(model);
 		view.getcBPersonalizadoMesFin().setModel(model);
+	}
+	
+	private void cargarCuatrimestres() {
+	    // Obtener el año seleccionado en el JComboBox
+	    String anioSeleccionado = (String) view.getcBCuatrimestreAño().getSelectedItem();
+	    if (anioSeleccionado != null && !anioSeleccionado.isEmpty()) {
+	        int anio = Integer.parseInt(anioSeleccionado);
+
+	        // Obtener los cuatrimestres correspondientes a ese año
+	        List<Object[]> cuatrimestres = model.obtenerNombreCuatrimestres(anio);
+
+	        // Crear el modelo para el JComboBox
+	        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
+
+	        // Añadir los cuatrimestres al modelo
+	        for (Object[] fila : cuatrimestres) {
+	            if (fila[0] != null) {
+	                modelo.addElement(fila[0].toString());
+	            }
+	        }
+
+	        // Asignar el modelo al JComboBox de cuatrimestres
+	        view.getcBCuatrimestreMes().setModel(modelo);
+	    }
 	}
 
 }

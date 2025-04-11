@@ -111,11 +111,11 @@ public class InformeUsoInstalacionesView {
 		frame.getContentPane().add(lblNewLabel_2);
 		
 		cBCuatrimestreMes = new JComboBox();
-		cBCuatrimestreMes.setBounds(150, 136, 90, 22);
+		cBCuatrimestreMes.setBounds(150, 136, 142, 22);
 		frame.getContentPane().add(cBCuatrimestreMes);
 		
 		cBCuatrimestreAño = new JComboBox();
-		cBCuatrimestreAño.setBounds(276, 136, 90, 22);
+		cBCuatrimestreAño.setBounds(335, 136, 90, 22);
 		frame.getContentPane().add(cBCuatrimestreAño);
 		
 		JLabel lblNewLabel_3 = new JLabel("Año:");
