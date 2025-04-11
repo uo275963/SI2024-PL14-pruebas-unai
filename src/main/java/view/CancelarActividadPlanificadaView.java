@@ -99,7 +99,6 @@ public class CancelarActividadPlanificadaView {
 		frame = new JFrame();
 		frame.setTitle("Cancelación de actividades");
 		frame.setBounds(100, 100, 932, 562);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("Actividades planificadas");
