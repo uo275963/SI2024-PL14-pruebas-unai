@@ -3,6 +3,7 @@ package giis.demo.util;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import controller.ReservaAutomaticaController;
+import controller.CancelarActividadPlanificadaController;
 import controller.CancelarReservaSocioController;
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
@@ -15,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import giis.demo.tkrun.*;
 import model.ReservaAutomaticaModel;
+import model.CancelarActividadPlanificadaModel;
 import model.CancelarReservaSocioModel;
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
@@ -22,6 +24,7 @@ import model.VisualizarPagosComoSocioModel;
 import model.VisualizarActividadesComoSocioModel;
 import model.VisualizarReservasComoSocioModel;
 import view.ReservaAutomaticaView;
+import view.CancelarActividadPlanificadaView;
 import view.CancelarReservaSocioView;
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
@@ -81,7 +84,7 @@ public class SwingMain {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Main");
-		frame.setBounds(0, 0, 327, 324);
+		frame.setBounds(0, 0, 327, 490);
 		frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		/*
 		 * JButton btnEjecutarTkrun = new JButton("Ejecutar giis.demo.tkrun");
@@ -273,6 +276,15 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnInscripcion);
+		
+		JButton btnCancelarActividadPlanificada = new JButton("Cancelar actividad ");
+		btnCancelarActividadPlanificada.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CancelarActividadPlanificadaController controller = new CancelarActividadPlanificadaController(new CancelarActividadPlanificadaModel(), new CancelarActividadPlanificadaView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnCancelarActividadPlanificada);
 
 	}
 
