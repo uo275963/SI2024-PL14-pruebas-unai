@@ -161,9 +161,18 @@ public class InformeUsoInstalacionesController {
 			System.out.println("Fecha Mes: " + fechaInicio + " hasta " + fechaFinal);
 		}else if(view.getrBCuatrimestre().isSelected()) {
 			String año = view.getcBCuatrimestreAño().getSelectedItem().toString();
-			String estacion = view.getcBCuatrimestreMes().getSelectedItem().toString();
-			
-			// Falta confirmar aquí
+			int anioInt = Integer.parseInt(año);
+			String cuatrimestre = view.getcBCuatrimestreMes().getSelectedItem().toString();
+
+			List<Object[]> fechas = model.obtenerFechasCuatrimestre(cuatrimestre, anioInt);
+
+			if (!fechas.isEmpty()) {
+				fechaInicio = fechas.get(0)[0].toString();
+			    fechaFinal = fechas.get(0)[1].toString();
+			    System.out.println("Fecha Cuatrimestre: " + fechaInicio + " hasta " + fechaFinal);
+			} else {
+			    System.out.println("Error: No se encontró el cuatrimestre en la base de datos.");
+			}
 		}else if(view.getrBAño().isSelected()) {
 			// Año seleccionado, desde el 1 de enero hasta el 31 de diciembre
 			fechaAño = view.getcBAño().getSelectedItem().toString();
