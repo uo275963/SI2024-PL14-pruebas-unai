@@ -1,6 +1,7 @@
 package controller;
 
 
+import java.io.File;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -36,7 +37,19 @@ public class InformeUsoInstalacionesController {
 		view.getrBAño().addActionListener(e -> escogerPeriodo());
 		view.getrBPersonalizado().addActionListener(e -> escogerPeriodo());
 		view.getcBCuatrimestreAño().addActionListener(e -> cargarCuatrimestres());
+		view.getbInforme().addActionListener(e -> {
+			// Llamamos a obtenerFechasComoString() para obtener las fechas de inicio y fin
+		    obtenerFechasComoString();
 
+		    // Verificamos si las fechas fueron correctamente obtenidas
+		    if (fechaInicio != null && fechaFinal != null) {
+		        // Si las fechas están definidas, llamamos a generarInformeSocios con las fechas
+		        generarInformeInstalaciones(fechaInicio, fechaFinal);
+		    } else {
+		        // Si alguna de las fechas no está definida, mostramos un mensaje de error
+		        System.out.println("Error: Las fechas de inicio y fin no están definidas correctamente.");
+		    }
+		});
 	}
 	
 	private void deshabilitarComponentes() {
@@ -141,8 +154,108 @@ public class InformeUsoInstalacionesController {
 			String año = view.getcBAñoMes().getSelectedItem().toString();
 			// Fecha inicial será el 1ro del mes seleccionado
 			
+			fechaInicio = año + "-" + String.format("%02d", mes) + "-01";
+			// Fecha final será el último día del mes
+			int ultimoDia = obtenerUltimoDiaDelMes(mes, Integer.parseInt(año));
+			fechaFinal = año + "-" + String.format("%02d", mes) + "-" + String.format("%02d", ultimoDia);
+			System.out.println("Fecha Mes: " + fechaInicio + " hasta " + fechaFinal);
+		}else if(view.getrBCuatrimestre().isSelected()) {
+			String año = view.getcBCuatrimestreAño().getSelectedItem().toString();
+			String estacion = view.getcBCuatrimestreMes().getSelectedItem().toString();
+			
+			// Falta confirmar aquí
+		}else if(view.getrBAño().isSelected()) {
+			// Año seleccionado, desde el 1 de enero hasta el 31 de diciembre
+			fechaAño = view.getcBAño().getSelectedItem().toString();
+			fechaInicio = fechaAño + "-01-01"; // 1ro de enero
+			fechaFinal = fechaAño + "-12-31"; // 31 de diciembre
+			System.out.println("Fecha Año: "+ fechaInicio + " hasta " + fechaFinal);
+		}else if (view.getrBPersonalizado().isSelected()) {
+			int mesInicio = view.getcBPersonalizadoMesInicio().getSelectedIndex() + 1;
+			String añoInicio = view.getcBPersonalizadoAñoInicio().getSelectedItem().toString();
+			fechaInicio = añoInicio +"-"+ String.format("%02d", mesInicio)+ "-01"; // Primer dia del mes de Inicio
+			
+			int mesFinal = view.getcBPersonalizadoMesFin().getSelectedIndex() + 1;
+			String añoFinal = view.getcBPersonalizadoAñoFin().getSelectedItem().toString();
+			// Ultimo dia del mes final
+			int ultimoDiaFinal = obtenerUltimoDiaDelMes(mesFinal, Integer.parseInt(añoFinal));
+			fechaFinal = añoFinal + "-" + String.format("%02d", mesFinal) + "-" + String.format("%02d", ultimoDiaFinal);	
 		}
+		 // Verificación de que la fecha final no es anterior a la fecha de inicio
+        if (esFechaFinalAnterior(fechaInicio, fechaFinal)) {
+            System.out.println("Error: La fecha final no puede ser anterior a la fecha de inicio.");
+            // O podemos mostrar un mensaje en la interfaz
+        } else {
+            System.out.println("Fecha Desde: " + fechaInicio + " hasta " + fechaFinal);
+        }
 	}
+	
+	// Método para obtener el último día de un mes determinado
+	private int obtenerUltimoDiaDelMes(int mes, int año) {
+		   switch (mes) {
+		       case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+		           return 31; // Meses con 31 días
+		       case 4: case 6: case 9: case 11:
+		            return 30; // Meses con 30 días
+		       case 2:
+		           // Comprobamos si es año bisiesto
+		           if ((año % 4 == 0 && año % 100 != 0) || (año % 400 == 0)) {
+		               return 29; // Febrero en año bisiesto
+		           } else {
+		               return 28; // Febrero en año no bisiesto
+		           }
+		       default:
+		           return 0;
+		   }
+	}
+	
+	// Método para verificar si la fecha final es anterior a la fecha de inicio
+		private boolean esFechaFinalAnterior(String fechaInicio, String fechaFinal) {
+		    String[] inicioParts = fechaInicio.split("-");
+		    String[] finalParts = fechaFinal.split("-");
+
+		    // Compara año, mes y día
+		    int añoInicio = Integer.parseInt(inicioParts[0]);
+		    int mesInicio = Integer.parseInt(inicioParts[1]);
+		    int diaInicio = Integer.parseInt(inicioParts[2]);
+
+		    int añoFinal = Integer.parseInt(finalParts[0]);
+		    int mesFinal = Integer.parseInt(finalParts[1]);
+		    int diaFinal = Integer.parseInt(finalParts[2]);
+
+		    // Verifica si la fecha final es anterior a la fecha de inicio
+		    if (añoFinal < añoInicio) {
+		        return true;
+		    } else if (añoFinal == añoInicio) {
+		        if (mesFinal < mesInicio) {
+		            return true;
+		        } else if (mesFinal == mesInicio) {
+		            return diaFinal < diaInicio;
+		        }
+		    }
+		    return false;
+		}
+		
+		public void generarInformeInstalaciones(String fechaInicio, String fechaFinal) {
+		    if (fechaInicio != null && fechaFinal != null) {
+		        // Establecemos la ruta donde se guardará el informe
+		        String rutaInforme = "src/main/resources/informes/InformeInstalaciones.txt";  // Ruta relativa a tu proyecto
+		        File informeFile = new File(rutaInforme);
+
+		        // Aseguramos que la carpeta exista, si no, la creamos
+		        if (!informeFile.getParentFile().exists()) {
+		            informeFile.getParentFile().mkdirs();  // Crea la carpeta 'informes' si no existe
+		        }
+
+		        // Llamamos al método del modelo para generar el informe y guardarlo en el archivo
+		        model.generarInformeArchivo(fechaInicio, fechaFinal, informeFile.getAbsolutePath());
+		        System.out.println("Generando informe con las fechas: " + fechaInicio + " hasta " + fechaFinal);
+		    } else {
+		        System.out.println("Error: Las fechas de inicio y fin no están establecidas correctamente.");
+		    }
+		 
+		}
+		
 	
 }
 
