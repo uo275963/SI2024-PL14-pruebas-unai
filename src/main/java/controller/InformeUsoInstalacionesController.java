@@ -1,5 +1,6 @@
 package controller;
 
+
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -10,6 +11,15 @@ import view.InformeUsoInstalacionesView;
 public class InformeUsoInstalacionesController {
 	private InformeUsoInstalacionesModel model;
 	private InformeUsoInstalacionesView view;
+	
+	// Variables globales para guardar las fechas
+		private String fechaMes;
+		private String fechaMesAno;
+		private String fechaCuatrimestre;
+		private String fechaCuatrimestreAno;
+		private String fechaAño;
+		private String fechaInicio;
+		private String fechaFinal;
 	
 	public InformeUsoInstalacionesController(InformeUsoInstalacionesModel m, InformeUsoInstalacionesView v) {
 		this.model=m;
@@ -26,6 +36,7 @@ public class InformeUsoInstalacionesController {
 		view.getrBAño().addActionListener(e -> escogerPeriodo());
 		view.getrBPersonalizado().addActionListener(e -> escogerPeriodo());
 		view.getcBCuatrimestreAño().addActionListener(e -> cargarCuatrimestres());
+
 	}
 	
 	private void deshabilitarComponentes() {
@@ -116,7 +127,23 @@ public class InformeUsoInstalacionesController {
 	        view.getcBCuatrimestreMes().setModel(modelo);
 	    }
 	}
-
+	
+	public void obtenerFechasComoString() {
+		fechaMes = null;
+		fechaCuatrimestre = null;
+		fechaCuatrimestreAno = null;
+		fechaAño = null;
+		fechaInicio = null;
+		fechaFinal = null;
+		
+		if(view.getrBMes().isSelected()) {
+			int mes = view.getcBMesMes().getSelectedIndex() + 1;
+			String año = view.getcBAñoMes().getSelectedItem().toString();
+			// Fecha inicial será el 1ro del mes seleccionado
+			
+		}
+	}
+	
 }
 
 
