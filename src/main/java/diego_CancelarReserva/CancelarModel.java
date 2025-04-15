@@ -25,101 +25,91 @@ public class CancelarModel {
 
         return ((Number) rows.get(0)[0]).intValue();
     }
-
-    // Devuelve las reservas activas de un usuario
+    
+ // Método que obtiene las reservas del usuario logeado
     public List<CancelarDTO> obtenerReservasUsuario(int usuarioId) {
-        String sql = ""
-            + "SELECT u.id AS usuario_id, "
-            + "       a.id AS actividad_id, "
-            + "       u.nombre AS nombre_usuario, "
-            + "       a.nombre AS nombre_actividad, "
-            + "       i.nombre AS nombre_instalacion, "
-            + "       a.fecha_inicio, "
-            + "       a.hora_inicio "
-            + "FROM INSCRIPCION_ACTIVIDAD ia "
-            + "JOIN USUARIO u ON ia.usuario_id = u.id "
-            + "JOIN ACTIVIDAD a ON ia.actividad_id = a.id "
-            + "JOIN INSTALACION i ON a.instalacion_id = i.id "
-            + "WHERE u.id = ?";
+        List<CancelarDTO> reservas = new ArrayList<>();
+        
+        String sql = "SELECT i.nombre, r.fecha, r.hora_inicio " +
+                     "FROM RESERVA_INSTALACION r " +
+                     "JOIN INSTALACION i ON r.instalacion_id = i.id " +
+                     "WHERE r.usuario_id = ?";
 
         List<Object[]> rows = db.executeQueryArray(sql, usuarioId);
-        List<CancelarDTO> reservas = new ArrayList<>();
-
+        
         for (Object[] row : rows) {
-            CancelarDTO dto = new CancelarDTO();
-            dto.setUsuario_id(((Number) row[0]).intValue());
-            dto.setActividad_id(((Number) row[1]).intValue());
-            dto.setNombre_usuario((String) row[2]);
-            dto.setNombre_actividad((String) row[3]);
-            dto.setNombre_instalacion((String) row[4]);
-            dto.setFecha_actividad(row[5].toString());  // puede ser Date → String
-            dto.setHora_actividad((String) row[6]);
-            reservas.add(dto);
+            String nombreInstalacion = (String) row[0];
+            String fecha = (String) row[1];
+            String horaInicio = (String) row[2];
+            
+            // Crear un objeto DTO para la reserva
+            CancelarDTO reserva = new CancelarDTO(nombreInstalacion, fecha, horaInicio);
+            reservas.add(reserva);
         }
-
+        
         return reservas;
     }
 
+    // Método para cancelar una reserva, verificando el tiempo de antelación
+    public boolean cancelarReserva(int usuarioId, String nombreInstalacion, String fecha, String hora) {
+        // Convertir la fecha y hora a un LocalDateTime
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String fechaHora = fecha + " " + hora; // La hora ya está en el formato adecuado
+        LocalDateTime fechaReserva = LocalDateTime.parse(fechaHora, formatter);
 
-    // Elimina la inscripción del usuario en la actividad
-    public boolean cancelarReserva(int usuarioId, int actividadId) {
-        // Obtener fecha y hora de inicio de la actividad
-        String sql = "SELECT fecha_inicio, hora_inicio FROM ACTIVIDAD WHERE id = ?";
-        List<Object[]> rows = db.executeQueryArray(sql, actividadId);
+        // Obtener la fecha y hora actual
+        LocalDateTime fechaActual = LocalDateTime.now();
 
-        if (rows.isEmpty()) {
-            throw new RuntimeException("No se encontró la actividad con ID: " + actividadId);
+        // Verificar que haya al menos 24 horas de diferencia
+        Duration duracion = Duration.between(fechaActual, fechaReserva);
+        if (duracion.toHours() < 24) {
+            return false; // No se puede cancelar si no hay 24 horas de antelación
+        }
+        // Verificar si el usuario ya ha pagado la reserva
+        String sqlPago = "SELECT pagado, instalacion_id, fecha, hora_inicio FROM RESERVA_INSTALACION " +
+                         "WHERE usuario_id = ? AND instalacion_id = (SELECT id FROM INSTALACION WHERE nombre = ?) " +
+                         "AND fecha = ? AND hora_inicio = ?";
+
+        List<Object[]> pagoResult = db.executeQueryArray(sqlPago, usuarioId, nombreInstalacion, fecha, hora);
+
+        if (pagoResult.isEmpty()) {
+            return false; // Si no existe la reserva, no se puede cancelar
         }
 
-        String fechaStr = (String) rows.get(0)[0];
-        String horaStr = (String) rows.get(0)[1];
+        // Extraer la información sobre el pago
+        boolean pagado = (Boolean) pagoResult.get(0)[0];
+        int instalacionId = (Integer) pagoResult.get(0)[1];
+        String fechaReservaP = (String) pagoResult.get(0)[2];
+        String horaReserva = (String) pagoResult.get(0)[3];
 
-        LocalDateTime fechaActividad = LocalDateTime.parse(fechaStr + "T" + horaStr);
-        LocalDateTime ahora = LocalDateTime.now();
-        int horasMinimas = getHorasMinimasCancelacion();
+        if (pagado) {
+            // Si el usuario ya ha pagado, reembolsar el importe en el siguiente recibo mensual
+            String sqlImporte = "SELECT precio_hora FROM INSTALACION WHERE id = ?";
+            List<Object[]> precioResult = db.executeQueryArray(sqlImporte, instalacionId);
+            if (!precioResult.isEmpty()) {
+                double precioHora = (Double) precioResult.get(0)[0];
 
-        Duration diferencia = Duration.between(ahora, fechaActividad);
-
-        if (diferencia.toHours() < horasMinimas) {
-            return false;
+                // Insertar un nuevo recibo con el importe de la reserva
+                String sqlRecibo = "INSERT INTO PAGO (usuario_id, monto, concepto, fecha_pago) VALUES (?, ?, ?, NOW())";
+                db.executeUpdate(sqlRecibo, usuarioId, precioHora, "Reembolso por cancelación de reserva");
+            }
+        } else {
+            // Si el usuario no ha pagado, eliminar el pago pendiente
+            String sqlEliminarPago = "DELETE FROM PAGO WHERE usuario_id = ? AND concepto = ?";
+            db.executeUpdate(sqlEliminarPago, usuarioId);
         }
 
-        String deleteSql = "DELETE FROM INSCRIPCION_ACTIVIDAD WHERE usuario_id = ? AND actividad_id = ?";
-        db.executeUpdate(deleteSql, usuarioId, actividadId);
+        // Subconsulta para obtener el id de la instalación basada en el nombre
+        String sql = "DELETE FROM RESERVA_INSTALACION " +
+                     "WHERE usuario_id = ? " +
+                     "AND instalacion_id = (SELECT id FROM INSTALACION WHERE nombre = ?) " +
+                     "AND fecha = ? " +
+                     "AND hora_inicio = ?";
+        
+        db.executeUpdate(sql, usuarioId, nombreInstalacion, fecha, hora);
         return true;
+
+        
     }
-
-
-    // Devuelve la fecha de la actividad
-    public LocalDate obtenerFechaActividad(int actividadId) {
-        String sql = "SELECT fecha_inicio FROM ACTIVIDAD WHERE id = ?";
-        List<Object[]> rows = db.executeQueryArray(sql, actividadId);
-
-        if (rows.isEmpty()) {
-            throw new RuntimeException("No se encontró la actividad con ID: " + actividadId);
-        }
-
-     // Obtener la fecha como String desde la base de datos
-        String fechaStr = (String) rows.get(0)[0];
-
-        // Definir el formato de fecha esperado en la base de datos (Asegúrate de que coincida con el formato de tu base de datos)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        // Convertir el String a LocalDate
-        LocalDate fechaActividad = LocalDate.parse(fechaStr, formatter);
-
-        return fechaActividad;
-    }
-    
-    public int getHorasMinimasCancelacion() {
-        String sql = "SELECT valor FROM CONFIGURACION WHERE clave = 'min_horas_cancelacion'";
-        List<Object[]> rows = db.executeQueryArray(sql);
-
-        if (rows.isEmpty()) {
-            return 24; // Valor por defecto si no está definido en la base de datos
-        }
-
-        return Integer.parseInt((String) rows.get(0)[0]);
-    }
-
 }
+    

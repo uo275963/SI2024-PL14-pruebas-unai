@@ -57,16 +57,14 @@ public class CancelarController {
     private void cargarReservasUsuario(int usuarioId) {
         List<CancelarDTO> reservas = model.obtenerReservasUsuario(usuarioId);
         DefaultTableModel tableModel = new DefaultTableModel(
-                new String[]{"Nombre Usuario", "Nombre Actividad", "Instalación", "Hora", "Fecha"}, 0);
+                new String[]{"Nombre Instalacion", "Fecha", "Hora"}, 0);
 
         for (CancelarDTO dto : reservas) {
             tableModel.addRow(new Object[]{
-                    dto.getNombre_usuario(),
-                    dto.getNombre_actividad(),
                     dto.getNombre_instalacion(),
-                    dto.getHora_actividad(),
-                    dto.getFecha_actividad(),
-                    
+                    dto.getFecha(),
+                    dto.getHora(),
+                
             });
         }
 
@@ -84,21 +82,25 @@ public class CancelarController {
             List<CancelarDTO> reservas = model.obtenerReservasUsuario(usuarioIdLogeado);
             CancelarDTO reserva = reservas.get(filaSeleccionada);
 
-            // Verificar restricción: mínimo 1 día de antelación
-            LocalDate fechaHoy = LocalDate.now();
-            LocalDate fechaActividad = model.obtenerFechaActividad(reserva.getActividad_id());
+            // Obtener fecha y hora de la reserva como LocalDateTime para verificar restricción
+            LocalDate fechaReserva = LocalDate.parse(reserva.getFecha()); // Asegúrate de que el formato sea YYYY-MM-DD
 
-            if (fechaHoy.plusDays(1).isAfter(fechaActividad)) {
-                view.mostrarError("Solo puede cancelar con al menos 1 día de antelación.");
+            LocalDate fechaHoy = LocalDate.now();
+
+            // Si la reserva es para hoy o ya pasó, no se puede cancelar
+            if (!fechaHoy.isBefore(fechaReserva)) {
+                view.mostrarError("No se puede cancelar una reserva el mismo día o pasada.");
                 return;
             }
 
-            model.cancelarReserva(usuarioIdLogeado, reserva.getActividad_id());
-            view.mostrarMensaje("Reserva cancelada exitosamente.");
-            cargarReservasUsuario(usuarioIdLogeado); // Refrescar tabla
+            // Llamar al modelo para cancelar
+            model.cancelarReserva(usuarioIdLogeado, reserva.getNombre_instalacion(), reserva.getFecha(), reserva.getHora());
 
+            view.mostrarMensaje("Reserva cancelada exitosamente.");
+            cargarReservasUsuario(usuarioIdLogeado); // Refrescar la tabla
         } catch (Exception e) {
             view.mostrarError("Error al cancelar la reserva: " + e.getMessage());
         }
     }
+
 }
