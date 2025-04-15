@@ -1,10 +1,11 @@
 package diego_Informe;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import giis.demo.util.SwingUtil;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 public class InformeController {
     private InformeModel model;
@@ -17,63 +18,76 @@ public class InformeController {
         initController();
     }
 
-    private void initView() {
-        // Se carga inicialmente una tabla vacía
-        cargarTablaInforme();
+    public void initView() {
         view.getFrame().setVisible(true);
     }
 
-    private void initController() {
-        view.getBtnGenerarInforme().addActionListener(e -> SwingUtil.exceptionWrapper(() -> generarInforme()));
+    public void initController() {
+        view.getBtnBuscar().addActionListener(e -> cargarInforme());
+        view.getBtnGenerarInforme().addActionListener(e -> generarInforme());
     }
 
-    /**
-     * Al pulsar el botón, se obtiene el periodo seleccionado y se solicita al modelo la lista de 
-     * informe correspondiente a ese periodo, para posteriormente actualizar la tabla.
-     */
-    private void generarInforme() {
-        try {
-            // Recuperar el periodo seleccionado en el combo box
-            String periodo = (String) view.getComboPeriodo().getSelectedItem();
-            
-            // Obtener la lista de InformeDTO para ese periodo (este método debe implementarse en el modelo)
-            List<InformeDTO> informes = model.getInformePorPeriodo(periodo);
-            
-            // Actualizar la tabla de la vista con la información recuperada
-            cargarTablaInforme(informes);
-        } catch (Exception ex) {
-            view.mostrarError("Error generando informe: " + ex.getMessage());
+    private void cargarInforme() {
+        String fechaInicio = view.getTxtFechaInicio().getText();
+        String fechaFin = view.getTxtFechaFin().getText();
+
+        if (fechaInicio.isEmpty() || fechaFin.isEmpty()) {
+            view.mostrarError("Debe introducir ambas fechas.");
+            return;
         }
-    }
 
-    /**
-     * Actualiza la tabla del informe utilizando la lista de InformeDTO proporcionada
-     * @param informes Lista de objetos InformeDTO que contienen la información del informe.
-     */
-    private void cargarTablaInforme(List<InformeDTO> informes) {
-        // Definir las columnas de la tabla
-        DefaultTableModel tableModel = new DefaultTableModel(
-                new String[] { "Actividad", "N° Edición", "Inscripciones", "Socios", "No Socios" }, 0);
+        List<InformeDTO> informes = model.obtenerInformesPorPeriodo(fechaInicio, fechaFin);
 
-        // Recorrer la lista y añadir una fila por cada InformeDTO
+        DefaultTableModel dtm = (DefaultTableModel) view.getTablaInforme().getModel();
+        dtm.setRowCount(0);
+
         for (InformeDTO dto : informes) {
-            tableModel.addRow(new Object[] {
+            Object[] fila = new Object[]{
                 dto.getNombreActividad(),
                 dto.getNumeroEdicion(),
-                dto.getNumeroInscripciones(),
-                dto.getCantidadSocios(),
-                dto.getCantidadNoSocios()
-            });
+                dto.getNumeroInscritos(),
+                dto.getNumeroSinPlaza(),
+                String.format("%.2f", dto.getPorcentajeSocios()),
+                String.format("%.2f", dto.getPorcentajeNoSocios())
+            };
+            dtm.addRow(fila);
         }
-        view.getTablaInforme().setModel(tableModel);
     }
 
-    /**
-     * Inicializa la tabla en blanco (sin datos) para que la vista se inicie sin registros.
-     */
-    private void cargarTablaInforme() {
-        DefaultTableModel tableModel = new DefaultTableModel(
-                new String[] { "Actividad", "N° Edición", "Inscripciones", "Socios", "No Socios" }, 0);
-        view.getTablaInforme().setModel(tableModel);
+    private void generarInforme() {
+        String fechaInicio = view.getTxtFechaInicio().getText();
+        String fechaFin = view.getTxtFechaFin().getText();
+
+        if (fechaInicio.isEmpty() || fechaFin.isEmpty()) {
+            view.mostrarError("Debe introducir ambas fechas para generar el informe.");
+            return;
+        }
+
+        List<InformeDTO> informes = model.obtenerInformesPorPeriodo(fechaInicio, fechaFin);
+
+        if (informes.isEmpty()) {
+            view.mostrarMensaje("No hay datos para generar el informe.");
+            return;
+        }
+
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("informe.txt"))) {
+            writer.write("INFORME DE ACTIVIDADES\n");
+            writer.write("Periodo: " + fechaInicio + " - " + fechaFin + "\n\n");
+
+            for (InformeDTO dto : informes) {
+                writer.write("Actividad: " + dto.getNombreActividad() + "\n");
+                writer.write("Número de edición: " + dto.getNumeroEdicion() + "\n");
+                writer.write("Inscritos: " + dto.getNumeroInscritos() + "\n");
+                writer.write("Sin plaza: " + dto.getNumeroSinPlaza() + "\n");
+                writer.write("Socios (%): " + String.format("%.2f", dto.getPorcentajeSocios()) + "\n");
+                writer.write("No socios (%): " + String.format("%.2f", dto.getPorcentajeNoSocios()) + "\n");
+                writer.write("-------------------------------\n");
+            }
+
+            view.mostrarMensaje("Informe generado exitosamente como 'informe.txt'.");
+        } catch (IOException e) {
+            view.mostrarError("Error al generar el informe: " + e.getMessage());
+        }
     }
 }

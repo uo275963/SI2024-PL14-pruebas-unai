@@ -1,72 +1,93 @@
 package diego_Informe;
 
-import java.awt.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class InformeView {
+    // Componentes principales
     private JFrame frame;
-    private JComboBox<String> comboPeriodo;
-    private JButton btnGenerarInforme;
+    private JTextField txtFechaInicio;
+    private JTextField txtFechaFin;
+    private JButton btnBuscar;
     private JTable tablaInforme;
+    private JButton btnGenerarInforme;
 
     public InformeView() {
         initialize();
     }
 
     private void initialize() {
+        // Configuración básica del frame
         frame = new JFrame("Informe de Actividades");
         frame.setBounds(100, 100, 800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setLayout(new BorderLayout());
+        frame.setLayout(new BorderLayout(10, 10));
 
-        // Panel de encabezado
-        JPanel panelEncabezado = new JPanel();
-        JLabel lblEncabezado = new JLabel("Informe de Actividades");
-        lblEncabezado.setFont(new Font("Arial", Font.BOLD, 16));
-        panelEncabezado.add(lblEncabezado);
-        frame.getContentPane().add(panelEncabezado, BorderLayout.NORTH);
+        // --- Panel Superior: Selección de Fechas y Botón Buscar ---
+        JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        JLabel lblFechaInicio = new JLabel("Fecha Inicio (yyyy-MM-dd):");
+        txtFechaInicio = new JTextField(10);
+        JLabel lblFechaFin = new JLabel("Fecha Fin (yyyy-MM-dd):");
+        txtFechaFin = new JTextField(10);
+        btnBuscar = new JButton("Buscar");
 
-        // Panel para selección de periodo y generación del informe
-        JPanel panelControles = new JPanel();
-        panelControles.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        panelControles.add(new JLabel("Seleccione el periodo:"));
-        
-        comboPeriodo = new JComboBox<>();
-        // Se añaden los periodos de inscripción predefinidos (se pueden obtener dinámicamente)
-        comboPeriodo.addItem("Cuatrimestre 1");
-        comboPeriodo.addItem("Cuatrimestre 2");
-        panelControles.add(comboPeriodo);
-        
-        btnGenerarInforme = new JButton("Generar Informe");
-        panelControles.add(btnGenerarInforme);
-        
-        frame.getContentPane().add(panelControles, BorderLayout.CENTER);
+        panelSuperior.add(lblFechaInicio);
+        panelSuperior.add(txtFechaInicio);
+        panelSuperior.add(lblFechaFin);
+        panelSuperior.add(txtFechaFin);
+        panelSuperior.add(btnBuscar);
+        frame.add(panelSuperior, BorderLayout.NORTH);
 
-        // Tabla para mostrar el informe de actividades
+        // --- Panel Central: Tabla con el Informe ---
         tablaInforme = new JTable();
-        JScrollPane scrollPane = new JScrollPane(tablaInforme);
-        scrollPane.setPreferredSize(new Dimension(780, 300));
-        frame.getContentPane().add(scrollPane, BorderLayout.SOUTH);
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+        modeloTabla.addColumn("Actividad");
+        modeloTabla.addColumn("Edición");
+        modeloTabla.addColumn("Inscritos");
+        modeloTabla.addColumn("Sin Plaza");
+        modeloTabla.addColumn("% Socios");
+        modeloTabla.addColumn("% No Socios");
+        tablaInforme.setModel(modeloTabla);
+        JScrollPane scrollTabla = new JScrollPane(tablaInforme);
+        frame.add(scrollTabla, BorderLayout.CENTER);
+
+        // --- Panel Inferior: Botón para Generar Informe ---
+        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        btnGenerarInforme = new JButton("Generar Informe");
+        panelInferior.add(btnGenerarInforme);
+        frame.add(panelInferior, BorderLayout.SOUTH);
+
+        // Hacer visible la interfaz
+        frame.setVisible(true);
     }
 
-    // Métodos para que el controlador pueda interactuar con los componentes de la vista
+    // Métodos para que el controlador acceda a los componentes
     public JFrame getFrame() {
         return frame;
     }
-
-    public JComboBox<String> getComboPeriodo() {
-        return comboPeriodo;
+    
+    public JTextField getTxtFechaInicio() {
+        return txtFechaInicio;
     }
-
+    
+    public JTextField getTxtFechaFin() {
+        return txtFechaFin;
+    }
+    
+    public JButton getBtnBuscar() {
+        return btnBuscar;
+    }
+    
+    public JTable getTablaInforme() {
+        return tablaInforme;
+    }
+    
     public JButton getBtnGenerarInforme() {
         return btnGenerarInforme;
     }
 
-    public JTable getTablaInforme() {
-        return tablaInforme;
-    }
-
-    // Métodos para mostrar mensajes a la hora de mostrar información o errores
+    // Métodos para mostrar mensajes al usuario
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(frame, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
     }

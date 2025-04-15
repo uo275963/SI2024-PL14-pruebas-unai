@@ -1,23 +1,29 @@
 package diego_Informe;
 
 public class InformeDTO {
+    // Atributos para transportar los datos del informe
     private String nombreActividad;
     private int numeroEdicion;
-    private int numeroInscripciones;
-    private int cantidadSocios;
-    private int cantidadNoSocios;
+    private int numeroInscritos;
+    private int numeroSinPlaza;
+    private double porcentajeSocios;
+    private double porcentajeNoSocios;
 
+    // Constructor vacío
     public InformeDTO() {
-        // Constructor vacío
     }
 
-    public InformeDTO(String nombreActividad, int numeroEdicion, int numeroInscripciones, int cantidadSocios, int cantidadNoSocios) {
+    // Constructor parametrizado
+    public InformeDTO(String nombreActividad, int numeroEdicion, int numeroInscritos, int numeroSinPlaza, double porcentajeSocios, double porcentajeNoSocios) {
         this.nombreActividad = nombreActividad;
         this.numeroEdicion = numeroEdicion;
-        this.numeroInscripciones = numeroInscripciones;
-        this.cantidadSocios = cantidadSocios;
-        this.cantidadNoSocios = cantidadNoSocios;
+        this.numeroInscritos = numeroInscritos;
+        this.numeroSinPlaza = numeroSinPlaza;
+        this.porcentajeSocios = porcentajeSocios;
+        this.porcentajeNoSocios = porcentajeNoSocios;
     }
+
+    // Getters y Setters
 
     public String getNombreActividad() {
         return nombreActividad;
@@ -35,38 +41,49 @@ public class InformeDTO {
         this.numeroEdicion = numeroEdicion;
     }
 
-    public int getNumeroInscripciones() {
-        return numeroInscripciones;
+    public int getNumeroInscritos() {
+        return numeroInscritos;
     }
 
-    public void setNumeroInscripciones(int numeroInscripciones) {
-        this.numeroInscripciones = numeroInscripciones;
+    public void setNumeroInscritos(int numeroInscritos) {
+        this.numeroInscritos = numeroInscritos;
     }
 
-    public int getCantidadSocios() {
-        return cantidadSocios;
+    public int getNumeroSinPlaza() {
+        return numeroSinPlaza;
     }
 
-    public void setCantidadSocios(int cantidadSocios) {
-        this.cantidadSocios = cantidadSocios;
+    public void setNumeroSinPlaza(int numeroSinPlaza) {
+        this.numeroSinPlaza = numeroSinPlaza;
     }
 
-    public int getCantidadNoSocios() {
-        return cantidadNoSocios;
+    public double getPorcentajeSocios() {
+        return porcentajeSocios;
     }
 
-    public void setCantidadNoSocios(int cantidadNoSocios) {
-        this.cantidadNoSocios = cantidadNoSocios;
+    public void setPorcentajeSocios(double porcentajeSocios) {
+        this.porcentajeSocios = porcentajeSocios;
     }
 
+    public double getPorcentajeNoSocios() {
+        return porcentajeNoSocios;
+    }
+
+    public void setPorcentajeNoSocios(double porcentajeNoSocios) {
+        this.porcentajeNoSocios = porcentajeNoSocios;
+    }
+    
+    // Método toString para facilitar la visualización de datos
     @Override
     public String toString() {
         return "InformeDTO{" +
                 "nombreActividad='" + nombreActividad + '\'' +
                 ", numeroEdicion=" + numeroEdicion +
-                ", numeroInscripciones=" + numeroInscripciones +
-                ", cantidadSocios=" + cantidadSocios +
-                ", cantidadNoSocios=" + cantidadNoSocios +
+                ", numeroInscritos=" + numeroInscritos +
+                ", numeroSinPlaza=" + numeroSinPlaza +
+                ", porcentajeSocios=" + porcentajeSocios +
+                ", porcentajeNoSocios=" + porcentajeNoSocios +
                 '}';
     }
 }
+

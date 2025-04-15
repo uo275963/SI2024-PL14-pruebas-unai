@@ -19,6 +19,7 @@ import view.ReservarInstalacionParaSocioComoAdminView;
 import view.VisualizarReservasComoSocioView;
 import diego_Actividad.*;
 import diego_ContabilidadReservas.*;
+import diego_Informe.InformeController;
 import diego_InscripcionSocios.InscripcionController;
 import diego_InscripcionSocios.InscripcionModel;
 import diego_InscripcionSocios.InscripcionView;
@@ -26,6 +27,7 @@ import diego_periodoInscripcion.*;
 import unai.lista_actividades.*;
 import unai.ver_reservas.*;
 import diego_CancelarReserva.*;
+import diego_Informe.*;
 
 import model.VisualizarReservasComoSocioModel;
 import view.VisualizarReservasComoSocioView;
@@ -204,18 +206,27 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnInscripcion);
-		
+
 		// Cancelar Reservas
 		JButton btnCancelar = new JButton("Cancelar Reserva");
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CancelarController controller = new CancelarController(new CancelarModel(),
-						new CancelarView());
+				CancelarController controller = new CancelarController(new CancelarModel(), new CancelarView());
 				controller.initController();
 			}
 		});
 		frame.getContentPane().add(btnCancelar);
-		
+
+		// Informe
+		JButton btnInforme = new JButton("Informe Actividades");
+		btnInforme.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InformeController controller = new InformeController(new InformeModel(), new InformeView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnInforme);
+
 	}
 
 	public JFrame getFrame() {

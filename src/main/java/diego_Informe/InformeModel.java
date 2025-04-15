@@ -1,89 +1,70 @@
 package diego_Informe;
 
+import giis.demo.util.Database;
 import java.util.ArrayList;
 import java.util.List;
-
-import giis.demo.util.ApplicationException;
-import giis.demo.util.Database;
+import java.util.Map;
 
 public class InformeModel {
+    // Instancia para acceder a la base de datos. 
+    // Se asume que la clase Database extiende de DbUtil y define el método getUrl().
     private Database db = new Database();
 
     /**
-     * Genera un informe de actividades para un período determinado.
-     * Para cada actividad se obtiene: 
-     *  - nombre de la actividad, 
-     *  - número de edición (orden incremental), 
-     *  - número total de inscripciones, 
-     *  - cantidad de inscripciones de socios y 
-     *  - cantidad de inscripciones de no socios.
-     *
-     * @param nombrePeriodo El nombre del período de inscripción (por ejemplo, "Cuatrimestre 1")
-     * @return Lista de objetos InformeDTO con la información requerida.
-     */
-    public List<InformeDTO> getInformePorPeriodo(String nombrePeriodo) {
-        if (nombrePeriodo == null || nombrePeriodo.trim().isEmpty()) {
-            throw new ApplicationException("Debe seleccionar un período válido.");
-        }
-        
-        // Primero obtenemos el id del período de inscripción
-        String sqlPeriodo = "SELECT id FROM PERIODO_INSCRIPCION WHERE nombre = ?";
-        List<Integer> periodoIds = db.executeQueryPojo(Integer.class, sqlPeriodo, nombrePeriodo);
-        if (periodoIds.isEmpty()) {
-            throw new ApplicationException("No se encontró el período de inscripción: " + nombrePeriodo);
-        }
-        int periodoId = periodoIds.get(0);
-        
-        // Se obtienen las actividades correspondientes al período
-        String sqlActividades = "SELECT id, nombre FROM ACTIVIDAD WHERE periodo_inscripcion_id = ?";
-        // Utilizaremos executeQueryArray para obtener el id y el nombre (cada fila es un Object[] con [id, nombre])
-        List<Object[]> actividades = db.executeQueryArray(sqlActividades, periodoId);
-        
-        List<InformeDTO> informes = new ArrayList<>();
-        int edicion = 1; // Número de edición asignado de forma incremental
-        
-        // Para cada actividad se consultan los datos de inscripciones
-        for (Object[] actividad : actividades) {
-            int actividadId = ((Number) actividad[0]).intValue();
-            String nombreActividad = actividad[1].toString();
-            
-            // Consultar número total de inscripciones para esta actividad
-            String sqlTotalInscripciones = "SELECT COUNT(*) FROM INSCRIPCION_ACTIVIDAD WHERE actividad_id = ?";
-            int numeroInscripciones = getCount(sqlTotalInscripciones, actividadId);
-            
-            // Consultar cantidad de inscripciones de socios
-            String sqlSocios = "SELECT COUNT(*) FROM INSCRIPCION_ACTIVIDAD ia " +
-                               "JOIN USUARIO u ON ia.usuario_id = u.id " +
-                               "WHERE ia.actividad_id = ? AND u.rol = 'SOCIO'";
-            int cantidadSocios = getCount(sqlSocios, actividadId);
-            
-            // Consultar cantidad de inscripciones de no socios
-            String sqlNoSocios = "SELECT COUNT(*) FROM INSCRIPCION_ACTIVIDAD ia " +
-                                 "JOIN USUARIO u ON ia.usuario_id = u.id " +
-                                 "WHERE ia.actividad_id = ? AND u.rol = 'NO_SOCIO'";
-            int cantidadNoSocios = getCount(sqlNoSocios, actividadId);
-            
-            // Crear un nuevo objeto InformeDTO y asignar los datos
-            InformeDTO dto = new InformeDTO(nombreActividad, edicion, numeroInscripciones, cantidadSocios, cantidadNoSocios);
-            informes.add(dto);
-            edicion++;  // Incrementamos el número de edición para la siguiente actividad
-        }
-        
-        return informes;
-    }
-    
-    /**
-     * Método auxiliar que ejecuta una consulta SQL que devuelve una única cifra (COUNT(*)) y lo transforma a entero.
+     * Obtiene la lista de informes (InformeDTO) a partir del período seleccionado.
+     * Realiza la consulta a las tablas ACTIVIDAD, INSCRIPCION_ACTIVIDAD y USUARIO.
      * 
-     * @param sql La consulta SQL a ejecutar.
-     * @param param El parámetro a pasar a la consulta.
-     * @return Resultado entero de la consulta.
+     * Se obtienen las siguientes columnas:
+     *  - nombreActividad: el nombre de la actividad (alias de a.nombre).
+     *  - aforoMaximo: el aforo máximo de la actividad.
+     *  - inscritos: total de inscripciones en la actividad.
+     *  - socios: número de inscripciones de usuarios con rol 'SOCIO'.
+     *  - noSocios: número de inscripciones de usuarios con rol 'NO_SOCIO'.
+     * 
+     * Sobre estos valores se calculan:
+     *  - numeroSinPlaza: si inscritos > aforoMaximo, la diferencia; en otro caso, 0.
+     *  - porcentajeSocios y porcentajeNoSocios: porcentajes sobre el total de inscritos.
+     *  - Se asume el número de edición en 1 (dado que no disponemos de otro dato).
+     * 
+     * @param fechaInicio La fecha de inicio del período (formato "yyyy-MM-dd")
+     * @param fechaFin La fecha fin del período (formato "yyyy-MM-dd")
+     * @return Lista de InformeDTO con los datos procesados.
      */
-    private int getCount(String sql, Object param) {
-        List<Long> result = db.executeQueryPojo(Long.class, sql, param);
-        if (result.isEmpty()) {
-            return 0;
+    public List<InformeDTO> obtenerInformesPorPeriodo(String fechaInicio, String fechaFin) {
+        List<InformeDTO> listaInforme = new ArrayList<>();
+
+        String sql = "SELECT " +
+                "a.nombre AS nombreActividad, " +
+                "a.aforo_maximo AS aforoMaximo, " +
+                "COUNT(ia.usuario_id) AS inscritos, " +
+                "SUM(CASE WHEN u.rol = 'SOCIO' THEN 1 ELSE 0 END) AS socios, " +
+                "SUM(CASE WHEN u.rol = 'NO_SOCIO' THEN 1 ELSE 0 END) AS noSocios " +
+                "FROM ACTIVIDAD a " +
+                "LEFT JOIN INSCRIPCION_ACTIVIDAD ia ON a.id = ia.actividad_id " +
+                "LEFT JOIN USUARIO u ON ia.usuario_id = u.id " +
+                "WHERE a.fecha_inicio >= ? AND a.fecha_fin <= ? " +
+                "GROUP BY a.id, a.nombre, a.aforo_maximo";
+
+
+        // Ejecuta la consulta utilizando el método executeQueryMap de DbUtil
+        List<Map<String, Object>> resultados = db.executeQueryMap(sql, fechaInicio, fechaFin);
+
+        for (Map<String, Object> fila : resultados) {
+            String nombreActividad = (String) fila.get("nombreActividad");
+            int aforoMaximo = ((Number) fila.get("aforoMaximo")).intValue();
+            int inscritos = ((Number) fila.get("inscritos")).intValue();
+            int socios = ((Number) fila.get("socios")).intValue();
+            int noSocios = ((Number) fila.get("noSocios")).intValue();
+
+            int numeroSinPlaza = (inscritos > aforoMaximo) ? (inscritos - aforoMaximo) : 0;
+            double porcentajeSocios = (inscritos > 0) ? (socios * 100.0 / inscritos) : 0;
+            double porcentajeNoSocios = (inscritos > 0) ? (noSocios * 100.0 / inscritos) : 0;
+            
+            // Se asume el número de edición como 1.
+            InformeDTO dto = new InformeDTO(nombreActividad, 1, inscritos, numeroSinPlaza, porcentajeSocios, porcentajeNoSocios);
+            listaInforme.add(dto);
         }
-        return result.get(0).intValue();
+        
+        return listaInforme;
     }
 }
