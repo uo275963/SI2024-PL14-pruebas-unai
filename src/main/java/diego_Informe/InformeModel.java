@@ -61,7 +61,7 @@ public class InformeModel {
             double porcentajeNoSocios = (inscritos > 0) ? (noSocios * 100.0 / inscritos) : 0;
             
             // Se asume el número de edición como 1.
-            InformeDTO dto = new InformeDTO(nombreActividad, 1, inscritos, numeroSinPlaza, porcentajeSocios, porcentajeNoSocios);
+            InformeDTO dto = new InformeDTO(nombreActividad, 2025, inscritos, numeroSinPlaza, porcentajeSocios, porcentajeNoSocios);
             listaInforme.add(dto);
         }
         
