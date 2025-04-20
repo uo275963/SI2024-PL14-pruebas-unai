@@ -65,6 +65,7 @@ public class CancelarActividadPlanificadaController {
 	private void agregarListenerTablaActividades() {
 	    JTable tablaActividades = view.getTablaActividades();
 	    JTable tablaDetalle = view.getTablaCalendario();
+	    JTable tablaInscritos = view.getTablaInscritos(); // Asegúrate de tener este getter en la vista
 
 	    tablaActividades.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 	        @Override
@@ -75,25 +76,31 @@ public class CancelarActividadPlanificadaController {
 
 	            if (fila >= 0) {
 	                String nombreActividad = tablaActividades.getValueAt(fila, 0).toString();
-
 	                int actividadId = model.getActividadIdPorNombre(nombreActividad);
+
+	                // Cargar calendario/detalles
 	                List<Object[]> detalle = model.getDetalleActividadPorDias(actividadId);
-
-	                DefaultTableModel detalleModel = new DefaultTableModel();
-	                detalleModel.setColumnIdentifiers(new String[] {
-	                    "Instalación", "Día", "Fecha", "Hora Inicio", "Hora Fin"
-	                });
-
+	                DefaultTableModel detalleModel = new DefaultTableModel(
+	                    new String[] {"Instalación", "Día", "Fecha", "Hora Inicio", "Hora Fin"}, 0
+	                );
 	                for (Object[] filaDetalle : detalle) {
 	                    detalleModel.addRow(filaDetalle);
 	                }
-
 	                tablaDetalle.setModel(detalleModel);
+
+	                // Cargar inscritos
+	                List<Object[]> inscritos = model.getInscritosActividad(actividadId);
+	                DefaultTableModel inscritosModel = new DefaultTableModel(
+	                    new String[] {"Nombre", "DNI", "Pagado"}, 0
+	                );
+	                for (Object[] filaInscrito : inscritos) {
+	                    inscritosModel.addRow(filaInscrito);
+	                }
+	                tablaInscritos.setModel(inscritosModel);
 	            }
 	        }
 	    });
 	}
-
 
 
 }

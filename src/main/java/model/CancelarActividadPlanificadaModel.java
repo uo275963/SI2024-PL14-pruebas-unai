@@ -106,6 +106,15 @@ public class CancelarActividadPlanificadaModel {
 
 	    return -1;
 	}
+	
+	public List<Object[]> getInscritosActividad(int actividadId) {
+	    String sql = "SELECT U.nombre, U.dni, IA.pagado " +
+	                 "FROM INSCRIPCION_ACTIVIDAD IA " +
+	                 "JOIN USUARIO U ON IA.usuario_id = U.id " +
+	                 "WHERE IA.actividad_id = ?";
+	    return db.executeQueryArray(sql, actividadId);
+	}
+
 
 
 
