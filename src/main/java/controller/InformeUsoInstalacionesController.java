@@ -32,6 +32,8 @@ public class InformeUsoInstalacionesController {
 	}
 	public void initController() {
 		deshabilitarComponentes();
+		cargarMeses();
+		cargarAños();
 		view.getrBMes().addActionListener(e -> escogerPeriodo());
 		view.getrBCuatrimestre().addActionListener(e -> escogerPeriodo());
 		view.getrBAño().addActionListener(e -> escogerPeriodo());
@@ -98,11 +100,13 @@ public class InformeUsoInstalacionesController {
 		
 		// Establecer el modelo para el ComboBox de años
 		DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<String>(años);
+		DefaultComboBoxModel<String> modeloPer = new DefaultComboBoxModel<String>(años);
+	
 		view.getcBAñoMes().setModel(modelo);
 		view.getcBCuatrimestreAño().setModel(modelo);
 		view.getcBAño().setModel(modelo);
 		view.getcBPersonalizadoAñoFin().setModel(modelo);
-		view.getcBPersonalizadoAñoInicio().setModel(modelo);
+		view.getcBPersonalizadoAñoInicio().setModel(modeloPer);
 	}
 	
 	private void cargarMeses() {
@@ -111,10 +115,11 @@ public class InformeUsoInstalacionesController {
 		
 		// Establecer el modelo para el combox de meses
 		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(meses);
+		DefaultComboBoxModel<String> modelPer = new DefaultComboBoxModel<String>(meses);
 		view.getcBMesMes().setModel(model);
 		view.getcBCuatrimestreMes().setModel(model);
 		view.getcBPersonalizadoMesInicio().setModel(model);
-		view.getcBPersonalizadoMesFin().setModel(model);
+		view.getcBPersonalizadoMesFin().setModel(modelPer);
 	}
 	
 	private void cargarCuatrimestres() {
