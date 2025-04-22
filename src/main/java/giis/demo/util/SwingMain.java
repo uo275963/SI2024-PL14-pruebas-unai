@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import controller.ReservaAutomaticaController;
 import controller.CancelarActividadPlanificadaController;
 import controller.CancelarReservaSocioController;
+import controller.GenerarInformeSociosController;
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
 import controller.VisualizarPagosComoSocioController;
@@ -18,6 +19,7 @@ import giis.demo.tkrun.*;
 import model.ReservaAutomaticaModel;
 import model.CancelarActividadPlanificadaModel;
 import model.CancelarReservaSocioModel;
+import model.GenerarInformeSociosModel;
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
 import model.VisualizarPagosComoSocioModel;
@@ -26,6 +28,7 @@ import model.VisualizarReservasComoSocioModel;
 import view.ReservaAutomaticaView;
 import view.CancelarActividadPlanificadaView;
 import view.CancelarReservaSocioView;
+import view.GenerarInformeSociosView;
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
 import view.VisualizarPagosComoSocioView;
@@ -44,6 +47,7 @@ import unai.inscribir_socio.*;
 import unai.inscribir_no_socio.*;
 import diego_CancelarReserva.*;
 import diego_Informe.*;
+import unai.inscribir_socio_usuario.*;
 
 import model.VisualizarReservasComoSocioModel;
 import view.VisualizarReservasComoSocioView;
@@ -228,7 +232,8 @@ public class SwingMain {
 		
 		
 		
-		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad");
+
+		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad (ADMIN)");
 		btnInscribirSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				InscribirSocioController controller = new InscribirSocioController(new InscribirSocioModel(),
@@ -280,6 +285,7 @@ public class SwingMain {
 		});
 		frame.getContentPane().add(btnInscripcion);
 		
+
 		JButton btnCancelarActividadPlanificada = new JButton("Cancelar actividad ");
 		btnCancelarActividadPlanificada.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -288,6 +294,25 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnCancelarActividadPlanificada);
+
+
+		JButton btnInformeSocios = new JButton("Generar Informe Socios");
+		btnInformeSocios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GenerarInformeSociosController controller = new GenerarInformeSociosController(new GenerarInformeSociosModel(), new GenerarInformeSociosView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnInformeSocios);
+
+		JButton btnInscripcionSocioUsuario = new JButton("Un socio se inscribe en una actividad (USUARIO)");
+		btnInscripcionSocioUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UsuarioInscribirSocioController controller = new UsuarioInscribirSocioController(new UsuarioInscribirSocioModel(), new UsuarioInscribirSocioView(), new UsuarioLoginView());
+			}
+		});
+		frame.getContentPane().add(btnInscripcionSocioUsuario);
+
 
 		// Cancelar Reservas
 		JButton btnCancelar = new JButton("Cancelar Reserva");
@@ -308,6 +333,7 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnInforme);
+
 
 	}
 
