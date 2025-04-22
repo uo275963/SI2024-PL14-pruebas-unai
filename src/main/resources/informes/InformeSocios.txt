@@ -1,0 +1,42 @@
+Informe de Socios
+Periodo: 2025-01-01 - 2025-12-31
+Fecha de Inicio: 2025-01-01
+Fecha de Fin: 2025-12-31
+----------------------------------------------------------
+
+
+Socio ID: 1
+Nombre: Enrique García
+Número de Reservas: 2
+Número de Actividades: 1
+Instalación Más Usada: Pista de Tenis 1
+Dinero Gastado: 30€
+----------------------------------------------------------
+Socio ID: 2
+Nombre: Juan Pérez
+Número de Reservas: 2
+Número de Actividades: 0
+Instalación Más Usada: Pista de Tenis 1
+Dinero Gastado: 15€
+----------------------------------------------------------
+Socio ID: 3
+Nombre: María Gómez
+Número de Reservas: 1
+Número de Actividades: 0
+Instalación Más Usada: Sala de Spinning
+Dinero Gastado: 0€
+----------------------------------------------------------
+Socio ID: 6
+Nombre: test
+Número de Reservas: 0
+Número de Actividades: 0
+Instalación Más Usada: No ha reservado instalaciones
+Dinero Gastado: 0€
+----------------------------------------------------------
+Socio ID: 7
+Nombre: testt
+Número de Reservas: 0
+Número de Actividades: 0
+Instalación Más Usada: No ha reservado instalaciones
+Dinero Gastado: 0€
+----------------------------------------------------------

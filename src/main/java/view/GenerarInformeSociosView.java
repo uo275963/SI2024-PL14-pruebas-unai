@@ -69,7 +69,7 @@ public class GenerarInformeSociosView {
 		frame = new JFrame();
 		frame.setTitle("InformeSocios");
 		frame.setBounds(100, 100, 789, 547);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Escoga un periodo de tiempo:");

@@ -44,6 +44,25 @@ public class InscribirNoSocioModel {
 	    return -1;  // Si no hay resultados o el aforo es nulo
 	}
 	
+	  public boolean estaNoSocioInscritoEnActividad(int socioId, int actividadId) {
+		    String sql = "SELECT COUNT(*) FROM INSCRIPCION_ACTIVIDAD WHERE usuario_id = ? AND actividad_id = ?";
+		    List<Object[]> resultado = db.executeQueryArray(sql, socioId, actividadId);
+
+		    if (resultado != null && !resultado.isEmpty()) {
+		        Object[] fila = resultado.get(0);
+		        if (fila != null && fila.length > 0) {
+		            try {
+		                int count = Integer.parseInt(fila[0].toString());
+		                return count > 0; // Retorna true si ya está inscrito
+		            } catch (NumberFormatException e) {
+		                e.printStackTrace();
+		            }
+		        }
+		    }
+		    return false; // Si no hay resultados o hay un error
+		    
+	  }
+	
 	public int getNumeroDeInscritos(int actividadId) {
 	    String sql = "SELECT COUNT(*) FROM INSCRIPCION_ACTIVIDAD WHERE actividad_id = ?";
 	    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
