@@ -84,13 +84,13 @@ public class CancelarActividadPlanificadaModel {
 	// Método auxiliar para convertir DayOfWeek a letra del sistema ("L", "M", "X", "J", "V", "S", "D")
 	private String letraDia(DayOfWeek day) {
 	    switch (day) {
-	        case MONDAY: return "L";
-	        case TUESDAY: return "M";
-	        case WEDNESDAY: return "X";
-	        case THURSDAY: return "J";
-	        case FRIDAY: return "V";
-	        case SATURDAY: return "S";
-	        case SUNDAY: return "D";
+	        case MONDAY: return "Lunes";
+	        case TUESDAY: return "Martes";
+	        case WEDNESDAY: return "Miercoles";
+	        case THURSDAY: return "Jueves";
+	        case FRIDAY: return "Viernes";
+	        case SATURDAY: return "Sabado";
+	        case SUNDAY: return "Domingo";
 	        default: return "";
 	    }
 	}
@@ -108,12 +108,53 @@ public class CancelarActividadPlanificadaModel {
 	}
 	
 	public List<Object[]> getInscritosActividad(int actividadId) {
-	    String sql = "SELECT U.nombre, U.dni, IA.pagado " +
+	    String sql = "SELECT U.nombre, U.dni, U.rol, IA.pagado " +
 	                 "FROM INSCRIPCION_ACTIVIDAD IA " +
 	                 "JOIN USUARIO U ON IA.usuario_id = U.id " +
 	                 "WHERE IA.actividad_id = ?";
-	    return db.executeQueryArray(sql, actividadId);
+	    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
+
+	    // Si quieres mostrar "SOCIO" o "NO SOCIO" más explícitamente (opcional)
+	    List<Object[]> datosProcesados = new ArrayList<>();
+	    for (Object[] row : resultado) {
+	        String rol = row[2].toString().equalsIgnoreCase("SOCIO") ? "Socio" : "No Socio";
+	        datosProcesados.add(new Object[] { row[0], row[1], rol, row[3] });
+	    }
+
+	    return datosProcesados;
 	}
+
+	
+	
+	public int getTotalHorasReservadas(int actividadId) {
+	    String sql = "SELECT hora_inicio, hora_fin FROM RESERVA_INSTALACION " +
+	                 "WHERE instalacion_id = (SELECT instalacion_id FROM ACTIVIDAD WHERE id = ?) " +
+	                 "AND usuario_id = 3"; // Asegúrate de usar el mismo filtro que usas para identificar reservas "de actividad"
+
+	    List<Object[]> reservas = db.executeQueryArray(sql, actividadId);
+	    int totalMinutos = 0;
+
+	    for (Object[] row : reservas) {
+	        LocalTime inicio = LocalTime.parse(row[0].toString());
+	        LocalTime fin = LocalTime.parse(row[1].toString());
+	        totalMinutos += java.time.Duration.between(inicio, fin).toMinutes();
+	    }
+
+	    return totalMinutos / 60; // horas completas
+	}
+
+	public void eliminarReservasActividad(int actividadId) {
+	    String sql = "DELETE FROM RESERVA_INSTALACION " +
+	                 "WHERE instalacion_id = (SELECT instalacion_id FROM ACTIVIDAD WHERE id = ?) " +
+	                 "AND usuario_id = 3"; // filtra solo las reservas que se hicieron por actividad planificada
+	    db.executeUpdate(sql, actividadId);
+	}
+
+	public void eliminarInscripcionesActividad(int actividadId) {
+	    String sql = "DELETE FROM INSCRIPCION_ACTIVIDAD WHERE actividad_id = ?";
+	    db.executeUpdate(sql, actividadId);
+	}
+
 
 
 

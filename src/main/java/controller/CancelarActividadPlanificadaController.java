@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -38,6 +39,9 @@ public class CancelarActividadPlanificadaController {
 		this.initView();
 	    cargarActividadesEnTabla();
 	    agregarListenerTablaActividades();
+	    view.getBtnCerrar().addActionListener(e -> view.getFrame().setVisible(false));
+	    agregarListenerBtnCancelarActividad();
+
 	}
 	
 	public void cargarActividadesEnTabla() {
@@ -58,6 +62,42 @@ public class CancelarActividadPlanificadaController {
 	    // Obtener la tabla desde la vista y establecer el nuevo modelo
 	    JTable tabla = view.getTablaActividades();
 	    tabla.setModel(tableModel);
+	}
+
+	
+	
+	
+	private void agregarListenerBtnCancelarActividad() {
+	    view.getBtnCancelarActividad().addActionListener(e -> {
+	        JTable tablaActividades = view.getTablaActividades();
+	        int fila = tablaActividades.getSelectedRow();
+
+	        if (fila < 0) {
+	            JOptionPane.showMessageDialog(view.getFrame(), "Debe seleccionar una actividad.", "Aviso", JOptionPane.WARNING_MESSAGE);
+	            return;
+	        }
+
+	        String nombreActividad = tablaActividades.getValueAt(fila, 0).toString();
+	        int actividadId = model.getActividadIdPorNombre(nombreActividad);
+
+	        int totalInscritos = model.getInscritosActividad(actividadId).size();
+	        int totalHoras = model.getTotalHorasReservadas(actividadId);
+
+	        int confirm = JOptionPane.showConfirmDialog(
+	            view.getFrame(),
+	            "Se van a cancelar " + totalHoras + " horas reservadas y eliminar la inscripción de " + totalInscritos + " personas.\n¿Desea continuar?",
+	            "Confirmación",
+	            JOptionPane.YES_NO_OPTION
+	        );
+
+	        if (confirm == JOptionPane.YES_OPTION) {
+	            model.eliminarReservasActividad(actividadId);
+	            model.eliminarInscripcionesActividad(actividadId);
+	            JOptionPane.showMessageDialog(view.getFrame(), "Actividad cancelada con éxito.");
+
+	            cargarActividadesEnTabla(); // Actualiza vista
+	        }
+	    });
 	}
 
 	
@@ -91,12 +131,13 @@ public class CancelarActividadPlanificadaController {
 	                // Cargar inscritos
 	                List<Object[]> inscritos = model.getInscritosActividad(actividadId);
 	                DefaultTableModel inscritosModel = new DefaultTableModel(
-	                    new String[] {"Nombre", "DNI", "Pagado"}, 0
-	                );
-	                for (Object[] filaInscrito : inscritos) {
-	                    inscritosModel.addRow(filaInscrito);
-	                }
-	                tablaInscritos.setModel(inscritosModel);
+	                	    new String[] {"Nombre", "DNI", "Tipo Usuario", "Pagado"}, 0
+	                	);
+	                	for (Object[] filaInscrito : inscritos) {
+	                	    inscritosModel.addRow(filaInscrito);
+	                	}
+	                	tablaInscritos.setModel(inscritosModel);
+
 	            }
 	        }
 	    });
