@@ -15,6 +15,7 @@ INSERT INTO CONFIGURACION (clave, valor) VALUES
 ('hora_apertura', '09:00'),
 ('hora_cierre', '21:00'),
 ('reserva_antelacion_max_dias', '15'),
+('min_horas_cancelacion', '24'),
 ('max_horas_por_dia', '4'),
 ('max_horas_seguidas', '2'),
 ('max_horas_totales_reservadas', '10'),
