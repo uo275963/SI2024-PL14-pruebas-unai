@@ -41,6 +41,7 @@ import unai.inscribir_socio.*;
 import unai.inscribir_no_socio.*;
 import diego_CancelarReserva.*;
 import diego_Informe.*;
+import unai.inscribir_socio_usuario.*;
 
 import model.VisualizarReservasComoSocioModel;
 import view.VisualizarReservasComoSocioView;
@@ -84,7 +85,7 @@ public class SwingMain {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Main");
-		frame.setBounds(0, 0, 327, 324);
+		frame.setBounds(0, 0, 327, 454);
 		frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		/*
 		 * JButton btnEjecutarTkrun = new JButton("Ejecutar giis.demo.tkrun");
@@ -225,7 +226,8 @@ public class SwingMain {
 		
 		
 		
-		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad");
+
+		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad (ADMIN)");
 		btnInscribirSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				InscribirSocioController controller = new InscribirSocioController(new InscribirSocioModel(),
@@ -276,6 +278,14 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnInscripcion);
+		
+		JButton btnInscripcionSocioUsuario = new JButton("Un socio se inscribe en una actividad (USUARIO)");
+		btnInscripcionSocioUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UsuarioInscribirSocioController controller = new UsuarioInscribirSocioController(new UsuarioInscribirSocioModel(), new UsuarioInscribirSocioView(), new UsuarioLoginView());
+			}
+		});
+		frame.getContentPane().add(btnInscripcionSocioUsuario);
 
 		// Cancelar Reservas
 		JButton btnCancelar = new JButton("Cancelar Reserva");
