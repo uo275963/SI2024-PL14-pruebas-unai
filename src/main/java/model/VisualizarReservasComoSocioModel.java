@@ -14,18 +14,33 @@ public class VisualizarReservasComoSocioModel {
 
 	public List<Object[]> getReservarInstalaciones(String fechaInscripcion, String Instalacion) {
 
-		String sql = "SELECT RESERVA_INSTALACION.hora_inicio, " + "RESERVA_INSTALACION.hora_fin, "
-				+ "INSTALACION.nombre, "
-				+ "CASE WHEN RESERVA_INSTALACION.id IS NOT NULL THEN 'Reservada' ELSE 'Disponible' END AS estado_reserva, "
-				+ "USUARIO.dni AS dni_socio " + "FROM INSTALACION "
-				+ "LEFT JOIN RESERVA_INSTALACION ON INSTALACION.id = RESERVA_INSTALACION.instalacion_id "
-				+ "AND RESERVA_INSTALACION.fecha = ? "
-				+ "LEFT JOIN USUARIO ON RESERVA_INSTALACION.usuario_id = USUARIO.id " + "WHERE INSTALACION.nombre = ? "
-				+ "ORDER BY RESERVA_INSTALACION.hora_inicio";
+		// Consulta base sin la parte del filtro de instalación
+	    String sql = "SELECT RESERVA_INSTALACION.hora_inicio, "
+	               + "RESERVA_INSTALACION.hora_fin, "
+	               + "INSTALACION.nombre, "
+	               + "CASE WHEN RESERVA_INSTALACION.id IS NOT NULL THEN 'Reservada' ELSE 'Disponible' END AS estado_reserva, "
+	               + "USUARIO.dni AS dni_socio "
+	               + "FROM INSTALACION "
+	               + "LEFT JOIN RESERVA_INSTALACION ON INSTALACION.id = RESERVA_INSTALACION.instalacion_id "
+	               + "AND RESERVA_INSTALACION.fecha = ? "
+	               + "LEFT JOIN USUARIO ON RESERVA_INSTALACION.usuario_id = USUARIO.id ";
 
-		return db.executeQueryArray(sql, fechaInscripcion, Instalacion);
+	    // Si el parámetro 'instalacion' no es null, se añade el filtro correspondiente
+	    if (Instalacion != null && !Instalacion.isEmpty()) {
+	        sql += "WHERE INSTALACION.nombre = ? ";
+	    }
+	    
+	    // Ordenar los resultados por la hora de inicio
+	    sql += "ORDER BY RESERVA_INSTALACION.hora_inicio";
 
+	    // Ejecutar la consulta
+	    if (Instalacion != null && !Instalacion.isEmpty()) {
+	        return db.executeQueryArray(sql, fechaInscripcion, Instalacion);
+	    } else {
+	        return db.executeQueryArray(sql, fechaInscripcion);
+	    }
 	}
+	
 
 	public List<Object[]> getNombreInstalaciones() {
 		String sql = "SELECT nombre FROM INSTALACION";

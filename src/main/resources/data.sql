@@ -15,6 +15,7 @@ INSERT INTO CONFIGURACION (clave, valor) VALUES
 ('hora_apertura', '09:00'),
 ('hora_cierre', '21:00'),
 ('reserva_antelacion_max_dias', '15'),
+('min_horas_cancelacion', '24'),
 ('max_horas_por_dia', '4'),
 ('max_horas_seguidas', '2'),
 ('max_horas_totales_reservadas', '10'),
@@ -23,10 +24,13 @@ INSERT INTO CONFIGURACION (clave, valor) VALUES
 	
 DELETE FROM USUARIO;
 INSERT INTO USUARIO (nombre, dni, password, rol, estado, recibos_pendientes) VALUES
+('Enrique García', '12345689X', 'password123', 'SOCIO', 'ACTIVO', 0),
 ('Juan Pérez', '12345678A', 'password123', 'SOCIO', 'ACTIVO', 0),
 ('María Gómez', '87654321B', 'password456', 'SOCIO', 'MOROSO', 2),
 ('Carlos Sánchez', '11223344C', 'adminpass', 'ADMIN', 'ACTIVO', 0),
-('Ana López', '44332211D', 'password789', 'NO_SOCIO', 'ACTIVO', 0);
+('Ana López', '44332211D', 'password789', 'NO_SOCIO', 'ACTIVO', 0),
+('test', 'test', 'test', 'SOCIO', 'ACTIVO', 0),
+('testt', 'testt', 'testt', 'SOCIO', 'ACTIVO', 0);
 
 DELETE FROM INSTALACION;
 INSERT INTO INSTALACION (nombre, tipo, aforo_maximo, estado, precio_hora) VALUES
@@ -36,7 +40,7 @@ INSERT INTO INSTALACION (nombre, tipo, aforo_maximo, estado, precio_hora) VALUES
 
 DELETE FROM PERIODO_INSCRIPCION;
 INSERT INTO PERIODO_INSCRIPCION (nombre, fecha_inicio_socios, fecha_fin_socios, fecha_fin_no_socios) VALUES
-('Cuatrimestre 1', '2025-01-01', '2025-03-31', '2025-04-30'),
+('Cuatrimestre 1', '2025-01-01', '2025-12-31', '2025-04-30'),
 ('Cuatrimestre 2', '2025-05-01', '2025-07-30', '2025-08-30');
 
 DELETE FROM ACTIVIDAD;
@@ -65,3 +69,5 @@ DELETE FROM PAGO;
 INSERT INTO PAGO (usuario_id, monto, concepto, fecha_pago) VALUES
 (1, 30.00, 'Cuota mensual', '2025-02-01'),
 (2, 15.00, 'Reserva Tenis', '2025-02-10');
+
+DELETE FROM LISTA_ESPERA;

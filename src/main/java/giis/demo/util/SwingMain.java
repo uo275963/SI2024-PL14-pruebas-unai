@@ -3,8 +3,13 @@ package giis.demo.util;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import controller.ReservaAutomaticaController;
+import controller.CancelarActividadPlanificadaController;
 import controller.CancelarReservaSocioController;
+<<<<<<< HEAD
 import controller.DesapuntarSocioActividadoController;
+=======
+import controller.GenerarInformeSociosController;
+>>>>>>> refs/heads/main-nuevo
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
 import controller.VisualizarPagosComoSocioController;
@@ -16,16 +21,26 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import giis.demo.tkrun.*;
 import model.ReservaAutomaticaModel;
+import model.CancelarActividadPlanificadaModel;
 import model.CancelarReservaSocioModel;
+<<<<<<< HEAD
 import model.DesapuntarSocioModel;
+=======
+import model.GenerarInformeSociosModel;
+>>>>>>> refs/heads/main-nuevo
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
 import model.VisualizarPagosComoSocioModel;
 import model.VisualizarActividadesComoSocioModel;
 import model.VisualizarReservasComoSocioModel;
 import view.ReservaAutomaticaView;
+import view.CancelarActividadPlanificadaView;
 import view.CancelarReservaSocioView;
+<<<<<<< HEAD
 import view.DesapuntarSocioActividadView;
+=======
+import view.GenerarInformeSociosView;
+>>>>>>> refs/heads/main-nuevo
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
 import view.VisualizarPagosComoSocioView;
@@ -33,6 +48,7 @@ import view.VisualizarActividadesComoSocioView;
 import view.VisualizarReservasComoSocioView;
 import diego_Actividad.*;
 import diego_ContabilidadReservas.*;
+import diego_Informe.InformeController;
 import diego_InscripcionSocios.InscripcionController;
 import diego_InscripcionSocios.InscripcionModel;
 import diego_InscripcionSocios.InscripcionView;
@@ -41,6 +57,9 @@ import unai.lista_actividades.*;
 import unai.ver_reservas.*;
 import unai.inscribir_socio.*;
 import unai.inscribir_no_socio.*;
+import diego_CancelarReserva.*;
+import diego_Informe.*;
+import unai.inscribir_socio_usuario.*;
 
 import model.VisualizarReservasComoSocioModel;
 import view.VisualizarReservasComoSocioView;
@@ -84,7 +103,7 @@ public class SwingMain {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Main");
-		frame.setBounds(0, 0, 327, 324);
+		frame.setBounds(0, 0, 327, 490);
 		frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		/*
 		 * JButton btnEjecutarTkrun = new JButton("Ejecutar giis.demo.tkrun");
@@ -225,7 +244,8 @@ public class SwingMain {
 		
 		
 		
-		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad");
+
+		JButton btnInscribirSocio = new JButton("Inscribir un socio en una actividad (ADMIN)");
 		btnInscribirSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				InscribirSocioController controller = new InscribirSocioController(new InscribirSocioModel(),
@@ -277,6 +297,7 @@ public class SwingMain {
 		});
 		frame.getContentPane().add(btnInscripcion);
 		
+
 		JButton btnCancelarInscripcionSocio = new JButton("Cancelar inscripcion de un socio");
 		btnCancelarInscripcionSocio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -286,6 +307,56 @@ public class SwingMain {
 			}
 		});
 		frame.getContentPane().add(btnCancelarInscripcionSocio);
+
+
+		JButton btnCancelarActividadPlanificada = new JButton("Cancelar actividad ");
+		btnCancelarActividadPlanificada.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CancelarActividadPlanificadaController controller = new CancelarActividadPlanificadaController(new CancelarActividadPlanificadaModel(), new CancelarActividadPlanificadaView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnCancelarActividadPlanificada);
+
+
+		JButton btnInformeSocios = new JButton("Generar Informe Socios");
+		btnInformeSocios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GenerarInformeSociosController controller = new GenerarInformeSociosController(new GenerarInformeSociosModel(), new GenerarInformeSociosView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnInformeSocios);
+
+		JButton btnInscripcionSocioUsuario = new JButton("Un socio se inscribe en una actividad (USUARIO)");
+		btnInscripcionSocioUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UsuarioInscribirSocioController controller = new UsuarioInscribirSocioController(new UsuarioInscribirSocioModel(), new UsuarioInscribirSocioView(), new UsuarioLoginView());
+			}
+		});
+		frame.getContentPane().add(btnInscripcionSocioUsuario);
+
+
+		// Cancelar Reservas
+		JButton btnCancelar = new JButton("Cancelar Reserva");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CancelarController controller = new CancelarController(new CancelarModel(), new CancelarView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnCancelar);
+
+		// Informe
+		JButton btnInforme = new JButton("Informe Actividades");
+		btnInforme.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InformeController controller = new InformeController(new InformeModel(), new InformeView());
+				controller.initController();
+			}
+		});
+		frame.getContentPane().add(btnInforme);
+
 
 	}
 
