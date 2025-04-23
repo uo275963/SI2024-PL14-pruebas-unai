@@ -5,11 +5,11 @@ import javax.swing.JFrame;
 import controller.ReservaAutomaticaController;
 import controller.CancelarActividadPlanificadaController;
 import controller.CancelarReservaSocioController;
-<<<<<<< HEAD
+
 import controller.DesapuntarSocioActividadoController;
-=======
+
 import controller.GenerarInformeSociosController;
->>>>>>> refs/heads/main-nuevo
+
 import controller.ReservarInstalacionParaActividadComoAdminController;
 import controller.ReservarInstalacionParaSocioComoAdminController;
 import controller.VisualizarPagosComoSocioController;
@@ -23,11 +23,10 @@ import giis.demo.tkrun.*;
 import model.ReservaAutomaticaModel;
 import model.CancelarActividadPlanificadaModel;
 import model.CancelarReservaSocioModel;
-<<<<<<< HEAD
+
 import model.DesapuntarSocioModel;
-=======
+
 import model.GenerarInformeSociosModel;
->>>>>>> refs/heads/main-nuevo
 import model.ReservarInstalacionParaActividadComoAdminModel;
 import model.ReservarInstalacionParaSocioComoAdminModel;
 import model.VisualizarPagosComoSocioModel;
@@ -36,11 +35,8 @@ import model.VisualizarReservasComoSocioModel;
 import view.ReservaAutomaticaView;
 import view.CancelarActividadPlanificadaView;
 import view.CancelarReservaSocioView;
-<<<<<<< HEAD
 import view.DesapuntarSocioActividadView;
-=======
 import view.GenerarInformeSociosView;
->>>>>>> refs/heads/main-nuevo
 import view.ReservarInstalacionParaActividadComoAdminView;
 import view.ReservarInstalacionParaSocioComoAdminView;
 import view.VisualizarPagosComoSocioView;
