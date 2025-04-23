@@ -124,7 +124,7 @@ public class VisualizarActividadesComoSocioView {
 	 */
 	private void initialize() {
 		frame = new JFrame("Visualizar actividades");
-		frame.setBounds(100, 100, 759, 424);
+		frame.setBounds(100, 100, 964, 469);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -134,7 +134,7 @@ public class VisualizarActividadesComoSocioView {
 		frame.getContentPane().add(lblNombreSocio);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 86, 686, 260);
+		scrollPane.setBounds(10, 86, 930, 303);
 		frame.getContentPane().add(scrollPane);
 
 		tablaActividades = new JTable();
@@ -175,7 +175,7 @@ public class VisualizarActividadesComoSocioView {
 		frame.getContentPane().add(TFFechaFin);
 
 		btnCerrar = new JButton("Cerrar");
-		btnCerrar.setBounds(611, 356, 85, 21);
+		btnCerrar.setBounds(855, 400, 85, 21);
 		frame.getContentPane().add(btnCerrar);
 	}
 }
