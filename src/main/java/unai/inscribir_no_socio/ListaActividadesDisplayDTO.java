@@ -9,8 +9,10 @@ public class ListaActividadesDisplayDTO {
     private String periodo;
     private String finicio;
     private String ffin;
+    private int aforoDisponible; // 
+    private int listaEspera;    // 
 
-    // Getters y setters
+    // Getters y setters existentes
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
@@ -34,4 +36,11 @@ public class ListaActividadesDisplayDTO {
 
     public String getFfin() { return ffin; }
     public void setFfin(String ffin) { this.ffin = ffin; }
+    
+    // Nuevos getters y setters
+    public int getAforoDisponible() { return aforoDisponible; }
+    public void setAforoDisponible(int aforoDisponible) { this.aforoDisponible = aforoDisponible; }
+    
+    public int getListaEspera() { return listaEspera; }
+    public void setListaEspera(int listaEspera) { this.listaEspera = listaEspera; }
 }

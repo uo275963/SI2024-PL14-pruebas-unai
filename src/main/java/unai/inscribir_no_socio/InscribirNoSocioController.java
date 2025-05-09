@@ -66,6 +66,7 @@ public class InscribirNoSocioController {
     }
     
     
+
     private void realizarInscripcion() {
         String dni = view.getDniField().getText();
         String nombre = view.getNombreField().getText();
@@ -80,12 +81,9 @@ public class InscribirNoSocioController {
 
         // Si no existe, agregar al no socio a la base de datos
         if (noSocioId == null) {
-        	model.registrarNuevoNoSocio((view.getDniField().getText()), view.getNombreField().getText());
-            noSocioId = model.getIdSocioPorDNI(view.getDniField().getText().toString());
+            model.registrarNuevoNoSocio(dni, nombre);
+            noSocioId = model.getIdSocioPorDNI(dni);
             
-            
-            System.out.println(view.getDniField().getText().toString());
-            System.out.println(noSocioId);
             if (noSocioId == null) {
                 JOptionPane.showMessageDialog(view.getFrame(), "No se pudo registrar al no socio.");
                 return;
@@ -98,13 +96,28 @@ public class InscribirNoSocioController {
             JOptionPane.showMessageDialog(view.getFrame(), "Por favor, selecciona una actividad.");
             return;
         }
-        String actividadNombre = (String) view.getTablaActividades().getValueAt(row, 0); // Nombre de la actividad seleccionada
+        
+        String actividadNombre = (String) view.getTablaActividades().getValueAt(row, 0);
+        int aforoDisponible = (int) view.getTablaActividades().getValueAt(row, 8); // Columna de aforo disponible
+        
         Integer actividadId = model.getIdActividadPorNombre(actividadNombre);
-
         if (actividadId == null) {
             JOptionPane.showMessageDialog(view.getFrame(), "La actividad seleccionada no es válida.");
             return;
         }
+        
+        // Verificar si el no socio ya está inscrito
+        if (model.estaNoSocioInscritoEnActividad(noSocioId, actividadId)) {
+            JOptionPane.showMessageDialog(view.getFrame(), "El no socio ya está inscrito en esta actividad.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Verificar si estamos dentro del periodo de inscripción para no socios
+        if (!model.estaDentroPeriodoInscripcionNoSocios(actividadId)) {
+            JOptionPane.showMessageDialog(view.getFrame(), "Fuera del periodo de inscripción para no socios.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         
 
         // Obtener el aforo máximo y el número de inscritos
@@ -116,39 +129,56 @@ public class InscribirNoSocioController {
             return;
         }
 
-        // Comprobar si hay plazas disponibles
-        if (inscritos >= aforoMaximo) {
-            JOptionPane.showMessageDialog(view.getFrame(), "No hay plazas disponibles para esta actividad.");
+        // Verificar si ya está en lista de espera
+        if (model.estaEnListaEspera(noSocioId, actividadId)) {
+            int posicion = model.obtenerPosicionListaEspera(noSocioId, actividadId);
+            JOptionPane.showMessageDialog(view.getFrame(), 
+                "El no socio ya está en lista de espera para esta actividad. Posición: " + posicion, 
+                "Información", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        // Inscribir al no socio en la actividad
-        model.inscribirNoSocioEnActividad(noSocioId, actividadId);
-        
-        
-        // Verificar si el socio ya está inscrito
-        if (model.estaNoSocioInscritoEnActividad(noSocioId, actividadId)) {
-        	JOptionPane.showMessageDialog(view.getFrame(), "El socio ya está inscrito en la actividad", "Error", JOptionPane.ERROR_MESSAGE);
-            return; // No realiza la inscripción si ya está inscrito
+        // Comprobar si hay plazas disponibles
+        if (inscritos >= aforoMaximo) {
+            // No hay plazas, agregar a lista de espera
+            model.agregarAListaEspera(noSocioId, actividadId);
+            int posicion = model.obtenerPosicionListaEspera(noSocioId, actividadId);
+            JOptionPane.showMessageDialog(view.getFrame(), 
+                "No hay plazas disponibles. Se ha añadido al no socio a la lista de espera en posición: " + posicion, 
+                "Lista de Espera", JOptionPane.INFORMATION_MESSAGE);
+            cargarTablaActividadesValidas();
+            return;
         }
 
-        // Obtener el coste para no socios y registrar el pago para el no socio
+        // Hay plazas disponibles, inscribir al no socio
+        try {
+            model.inscribirNoSocioEnActividad(noSocioId, actividadId);
+            
+            // Obtener el coste para no socios y registrar el pago
+            Double costeNoSocio = model.getCosteNoSocio(actividadId);
+            model.registrarPago(noSocioId, actividadId, costeNoSocio);
 
-        Double costeNoSocio = model.getCosteNoSocio(actividadId);
-        model.registrarPago(noSocioId, actividadId, costeNoSocio);
+            // Mostrar mensaje de éxito
+            JOptionPane.showMessageDialog(view.getFrame(), "¡Inscripción realizada con éxito!");
+            
+            // Generar y mostrar recibo
+            String nombreActividad = model.obtenerNombreActividad(actividadId);
+            String nombreInstalacion = model.obtenerNombreInstalacion(actividadId);
+            String fechaInscripcion = java.time.LocalDate.now().toString();
 
-        // Mostrar mensaje de éxito
-        JOptionPane.showMessageDialog(view.getFrame(), "¡Inscripción realizada con éxito!");
-        
-     
-        String nombreActividad = model.obtenerNombreActividad(actividadId);
-        String nombreInstalacion = model.obtenerNombreInstalacion(actividadId);
-        String fechaInscripcion = java.time.LocalDate.now().toString();
-
-        // Crear y mostrar la ventana de recibo
-        ReciboView recibo = new ReciboView(dni, nombre, costeNoSocio, nombreActividad, nombreInstalacion, fechaInscripcion);
-        recibo.mostrar();
+            // Crear y mostrar la ventana de recibo
+            ReciboView recibo = new ReciboView(dni, nombre, costeNoSocio, nombreActividad, nombreInstalacion, fechaInscripcion);
+            recibo.mostrar();
+            
+            // Recargar tablas para reflejar cambios
+            cargarTablaActividadesValidas();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view.getFrame(), "Error al realizar la inscripción: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
+    
+    
 
     
     
@@ -175,7 +205,10 @@ public class InscribirNoSocioController {
         List<ListaActividadesDisplayDTO> actividades = model.getListaActividadesValidas();
 
         DefaultTableModel tableModel = new DefaultTableModel();
-        tableModel.setColumnIdentifiers(new Object[]{"Nombre", "Descripción", "Instalación", "Precio Socio", "Precio No Socio", "Periodo", "Inicio", "Fin"});
+        tableModel.setColumnIdentifiers(new Object[]{
+            "Nombre", "Descripción", "Instalación", "Precio Socio", "Precio No Socio", 
+            "Periodo", "Inicio", "Fin", "Plazas disponibles", "En cola"
+        });
 
         for (ListaActividadesDisplayDTO actividad : actividades) {
             tableModel.addRow(new Object[]{
@@ -186,7 +219,9 @@ public class InscribirNoSocioController {
                 actividad.getPrecio_n(),
                 actividad.getPeriodo(),
                 actividad.getFinicio(),
-                actividad.getFfin()
+                actividad.getFfin(),
+                actividad.getAforoDisponible(),
+                actividad.getListaEspera()
             });
         }
 
@@ -194,7 +229,6 @@ public class InscribirNoSocioController {
         view.getTablaActividades().revalidate();
         view.getTablaActividades().repaint();
     }
-    
 
 
        
@@ -218,7 +252,9 @@ public class InscribirNoSocioController {
                 actividad.getPrecio_n(),
                 actividad.getPeriodo(),
                 actividad.getFinicio(),
-                actividad.getFfin()
+                actividad.getFfin(),
+                actividad.getAforoDisponible(),
+                actividad.getListaEspera()
             });
         }
     }

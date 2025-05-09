@@ -23,6 +23,138 @@ public class InscribirNoSocioModel {
 	   
 	}
 	
+
+	// Método para verificar si estamos en el periodo de inscripción para no socios
+	public boolean estaDentroPeriodoInscripcionNoSocios(int actividadId) {
+	    String sql = "SELECT COUNT(*) FROM ACTIVIDAD a " +
+	                 "JOIN PERIODO_INSCRIPCION p ON a.periodo_inscripcion_id = p.id " +
+	                 "WHERE a.id = ? AND p.fecha_inicio_socios <= CURRENT_DATE " +
+	                 "AND p.fecha_fin_no_socios >= CURRENT_DATE";
+	    
+	    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
+	    
+	    if (resultado != null && !resultado.isEmpty()) {
+	        Object[] fila = resultado.get(0);
+	        if (fila != null && fila.length > 0) {
+	            try {
+	                int count = Integer.parseInt(fila[0].toString());
+	                return count > 0;
+	            } catch (NumberFormatException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    return false;
+	}
+
+	// Método para añadir a la lista de espera
+	public void agregarAListaEspera(int usuarioId, int actividadId) {
+	    // Obtener la posición del usuario en la lista de espera
+	    int posicion = obtenerUltimaPosicionListaEspera(actividadId) + 1;
+	    
+	    String sql = "INSERT INTO LISTA_ESPERA (usuario_id, actividad_id, posicion) VALUES (?, ?, ?)";
+	    db.executeUpdate(sql, usuarioId, actividadId, posicion);
+	}
+
+	// Método para obtener la última posición en la lista de espera
+	private int obtenerUltimaPosicionListaEspera(int actividadId) {
+	    String sql = "SELECT MAX(posicion) FROM LISTA_ESPERA WHERE actividad_id = ?";
+	    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
+	    
+	    if (resultado != null && !resultado.isEmpty()) {
+	        Object[] fila = resultado.get(0);
+	        if (fila != null && fila.length > 0 && fila[0] != null) {
+	            try {
+	                return Integer.parseInt(fila[0].toString());
+	            } catch (NumberFormatException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    return 0; // Si no hay nadie en la lista, devuelve 0
+	}
+
+	// Verificar si un usuario está en la lista de espera
+	public boolean estaEnListaEspera(int usuarioId, int actividadId) {
+	    String sql = "SELECT COUNT(*) FROM LISTA_ESPERA WHERE usuario_id = ? AND actividad_id = ?";
+	    List<Object[]> resultado = db.executeQueryArray(sql, usuarioId, actividadId);
+	    
+	    if (resultado != null && !resultado.isEmpty()) {
+	        Object[] fila = resultado.get(0);
+	        if (fila != null && fila.length > 0) {
+	            try {
+	                int count = Integer.parseInt(fila[0].toString());
+	                return count > 0;
+	            } catch (NumberFormatException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    return false;
+	}
+
+	// Obtener la posición en la lista de espera
+	public int obtenerPosicionListaEspera(int usuarioId, int actividadId) {
+	    String sql = "SELECT posicion FROM LISTA_ESPERA WHERE usuario_id = ? AND actividad_id = ?";
+	    List<Object[]> resultado = db.executeQueryArray(sql, usuarioId, actividadId);
+	    
+	    if (resultado != null && !resultado.isEmpty()) {
+	        Object[] fila = resultado.get(0);
+	        if (fila != null && fila.length > 0 && fila[0] != null) {
+	            try {
+	                return Integer.parseInt(fila[0].toString());
+	            } catch (NumberFormatException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    return -1;
+	}
+	
+
+	public void promoverDesdeLista(int actividadId) {
+	    // Obtener el aforo máximo y el número de inscritos
+	    int aforoMaximo = getAforoMaximoDeActividad(actividadId);
+	    int inscritos = getNumeroDeInscritos(actividadId);
+	    
+	    // Verificar si hay plazas libres y personas en la lista de espera
+	    if (aforoMaximo > inscritos) {
+	        // Obtener el siguiente en la lista de espera ordenado por posición
+	        String sql = "SELECT usuario_id FROM LISTA_ESPERA WHERE actividad_id = ? ORDER BY posicion ASC LIMIT 1";
+	        List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
+	        
+	        if (resultado != null && !resultado.isEmpty()) {
+	            Object[] fila = resultado.get(0);
+	            if (fila != null && fila.length > 0 && fila[0] != null) {
+	                try {
+	                    int usuarioId = Integer.parseInt(fila[0].toString());
+	                    
+	                    // Inscribir al usuario en la actividad
+	                    inscribirNoSocioEnActividad(usuarioId, actividadId);
+	                    
+	                    // Registrar el pago (suponiendo que se paga al ser promovido)
+	                    Double costeNoSocio = getCosteNoSocio(actividadId);
+	                    registrarPago(usuarioId, actividadId, costeNoSocio);
+	                    
+	                    // Eliminar de la lista de espera
+	                    sql = "DELETE FROM LISTA_ESPERA WHERE usuario_id = ? AND actividad_id = ?";
+	                    db.executeUpdate(sql, usuarioId, actividadId);
+	                    
+	                    // Reorganizar posiciones en la lista de espera
+	                    sql = "UPDATE LISTA_ESPERA SET posicion = posicion - 1 WHERE actividad_id = ? AND posicion > " +
+	                          "(SELECT posicion FROM LISTA_ESPERA WHERE usuario_id = ? AND actividad_id = ?)";
+	                    db.executeUpdate(sql, actividadId, usuarioId, actividadId);
+	                    
+	                    // Continuamos promocionando si hay más plazas disponibles
+	                    promoverDesdeLista(actividadId);
+	                } catch (NumberFormatException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        }
+	    }
+	}
+	
 	public int getAforoMaximoDeActividad(int actividadId) {
 	    String sql = "SELECT aforo_maximo FROM ACTIVIDAD WHERE id = ?";
 	    List<Object[]> resultado = db.executeQueryArray(sql, actividadId);
@@ -229,29 +361,29 @@ public class InscribirNoSocioModel {
 
 	 
 	  public List<ListaActividadesDisplayDTO> getListaActividadesValidas() {
-	        // Obtener la fecha actual en formato YYYY-MM-DD
-	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	        String fechaHoy = sdf.format(new Date());
+		    // Obtener la fecha actual en formato YYYY-MM-DD
+		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		    String fechaHoy = sdf.format(new Date());
 
-	        String sql = 
-	            "SELECT a.nombre AS nombre, " +
-	            "       a.descripcion AS desc, " +
-	            "       i.nombre AS inst, " +
-	            "       a.coste_socio AS precio_s, " +
-	            "       a.coste_no_socio AS precio_n, " +
-	            "       p.nombre AS periodo, " +
-	            "       a.fecha_inicio AS finicio, " +
-	            "       a.fecha_fin AS ffin " +
-	            "FROM ACTIVIDAD a " +
-	            "JOIN INSTALACION i ON a.instalacion_id = i.id " +
-	            "LEFT JOIN PERIODO_INSCRIPCION p ON a.periodo_inscripcion_id = p.id " +
-	            "WHERE p.fecha_inicio_socios <= " + "\"" + "2025-03-19" + "\" "
-	            + "AND p.fecha_fin_no_socios >= " + "\"" + "2025-03-19" + "\" ";
-	        
-	        System.out.println(sql);
-
-	        return db.executeQueryPojo(ListaActividadesDisplayDTO.class, sql);
-	    }
+		    String sql = 
+		        "SELECT a.nombre AS nombre, " +
+		        "       a.descripcion AS desc, " +
+		        "       i.nombre AS inst, " +
+		        "       a.coste_socio AS precio_s, " +
+		        "       a.coste_no_socio AS precio_n, " +
+		        "       p.nombre AS periodo, " +
+		        "       a.fecha_inicio AS finicio, " +
+		        "       a.fecha_fin AS ffin, " +
+		        "       a.aforo_maximo - (SELECT COUNT(*) FROM INSCRIPCION_ACTIVIDAD WHERE actividad_id = a.id) AS aforoDisponible, " +
+		        "       (SELECT COUNT(*) FROM LISTA_ESPERA WHERE actividad_id = a.id) AS listaEspera " +
+		        "FROM ACTIVIDAD a " +
+		        "JOIN INSTALACION i ON a.instalacion_id = i.id " +
+		        "LEFT JOIN PERIODO_INSCRIPCION p ON a.periodo_inscripcion_id = p.id " +
+		        "WHERE p.fecha_inicio_socios <= ? " +
+		        "AND p.fecha_fin_no_socios >= ?";
+		    
+		    return db.executeQueryPojo(ListaActividadesDisplayDTO.class, sql, fechaHoy, fechaHoy);
+		}
 	  
 	public List<ListaActividadesDisplayDTO> getListaActividades(String fechaInicio, String fechaFin) {
 		validateNotNull(fechaInicio,MSG_PERIODO_NO_NULO);
